@@ -14,7 +14,11 @@
   },
   "dependencies": {
     "uglify-js": ">= 1.1.1",
-    "optimist": ">= 0.2.8"
+    "optimist": ">= 0.2.8",
+    "async": ">= 0.1.9"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "bin": {
+    "doctor": "bin/doctor"
+  }
 }
