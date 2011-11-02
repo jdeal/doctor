@@ -29,3 +29,5 @@ _(module).export(
   g,
   h
 );
+
+var a = ['x','y'];
