@@ -1,7 +1,8 @@
 /**
  * hello \
- */
+ 
 
+*/
 
 x = 1;
 
@@ -31,3 +32,10 @@ _(module).export(
 );
 
 var a = ['x','y'];
+
+/*
+var x = 5, y = 10;
+
+f(x);
+wrap(t).f()
+*/
