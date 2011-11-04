@@ -11,7 +11,7 @@ x = 1;
 function bar(state, x){
 }
 
-exports.bar = bar;
+module.exports.bar = bar;
 
 g("thing");
 
@@ -26,9 +26,7 @@ if (true || false){
 }
 
 _(module).export(
-  f,
-  g,
-  h
+  bar
 );
 
 var a = ['x','y'];

@@ -15,7 +15,8 @@
   "dependencies": {
     "uglify-js": ">= 1.1.1",
     "optimist": ">= 0.2.8",
-    "async": ">= 0.1.9"
+    "async": ">= 0.1.9",
+    "traverse": ">= 0.5.2"
   },
   "devDependencies": {},
   "bin": {
