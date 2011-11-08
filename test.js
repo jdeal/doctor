@@ -1,12 +1,16 @@
 /**
- * hello \
- 
-
-*/
+ * hello
+ * crazy
+ *   monster
+ */
 
 x = 1;
 
 (a)(c,d);
+
+function foo(){
+  
+}
 
 function bar(state, x){
 }
