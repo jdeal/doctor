@@ -1,0 +1,106 @@
+@charset 'UTF-8';
+
+$borderColor: blue;
+$centerHeight: 500px;
+$hoverColor: lightgreen;
+$space: 10px;
+$textColor: #2e7db2;
+
+@font-face {
+  font-family: title;
+  /*src: url('fonts/kulminoituva.ttf');*/
+  src: url('fonts/plexifont.ttf');
+}
+
+@mixin panel() {
+  @include roundedCorners(15px, black, 1px);
+  background-color: white;
+  color: black;
+  margin: 0 0 $space 1%;
+  padding: 0 $space 0 $space;
+}
+
+@mixin roundedCorners($radius, $color, $thickness) {
+  border: solid $color $thickness;
+  border-radius: $radius;
+}
+
+* {
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+body {
+  background-color: black;
+  color: white;
+}
+
+footer {
+  border-bottom: solid $textColor 1px;
+  clear: left;
+  padding: $space;
+}
+
+header {
+  padding-left: $space;
+  padding-top: $space;
+}
+
+#content {
+  @include panel;
+  float: left;
+  height: $centerHeight;
+  padding-bottom: $space; /* to make panels same height */
+  width: 75%;
+}
+
+#logo {
+  height: 50px;
+  float: right;
+  margin-right: $space;
+}
+
+#toc {
+  @include panel;
+  float: left;
+  height: $centerHeight;
+  padding-top: $space;
+  width: 15%;
+}
+
+#toc a {
+  color: $textColor;
+  font-size: 14pt;
+  text-decoration: none;
+}
+
+#toc a:hover {
+  /*color: $hoverColor;*/
+  text-decoration: underline;
+}
+
+#toc ul {
+  list-style-type: disc;
+}
+
+#toc > ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.item {
+  color: $textColor;
+  font-family: monospace;
+  font-size: 18pt;
+  font-weight: bold;
+  padding-top: $space;
+}
+
+.type {
+  color: black;
+}
+
+.title {
+  font-family: title, sans-serif;
+  font-size: 48pt;
+}

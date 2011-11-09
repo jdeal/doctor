@@ -1,0 +1,56 @@
+{
+  "items": {
+    "root": {
+      "type": "group",
+      "items": [
+        "modules"
+      ]
+    },
+    "modules": {
+      "type": "group",
+      "key": "modules",
+      "name": "Modules",
+      "items": [
+        "test.js"
+      ]
+    },
+    "test.js": {
+      "type": "module",
+      "key": "test.js",
+      "name": "test.js",
+      "groups": [
+        "modules"
+      ],
+      "items": [
+        "test.js.foo",
+        "test.js.bar",
+        "test.js.api.bar"
+      ]
+    },
+    "test.js.foo": {
+      "type": "function",
+      "key": "test.js.foo",
+      "groups": [
+        "test.js"
+      ],
+      "name": "foo"
+    },
+    "test.js.bar": {
+      "type": "function",
+      "key": "test.js.bar",
+      "groups": [
+        "test.js"
+      ],
+      "name": "bar"
+    },
+    "test.js.api.bar": {
+      "key": "test.js.api.bar",
+      "type": "function",
+      "name": "bar",
+      "groups": [
+        "test.js"
+      ],
+      "api": true
+    }
+  }
+}
