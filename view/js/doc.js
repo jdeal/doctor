@@ -1,30 +1,55 @@
 'use strict';
 /*global alert: false */
 
-var aa = {}; // APTO API namespace
+var doc = {}; // namespace
 
-aa.loadReport = function () {
+doc.configure = function (config) {
+  if (config.title) {
+    $('head').append('<title>' + config.title + '</title>');
+    $('header > span').text(config.title);
+  }
+  if (config.logo) {
+    var img = $('<img>',
+      {id: 'logo', src: config.logo, alt: 'logo'});
+    $('header').append(img);
+  }
+};
+
+doc.load = function () {
+  doc.loadConfig();
+  doc.loadReport();
+};
+
+doc.loadConfig = function () {
+  doc.loadJSON('config.json', doc.configure);
+};
+
+doc.loadJSON = function (url, success) {
   $.ajax({
     dataType: 'json',
     error: function (err) {
-      alert('problem loading report');
+      alert('problem loading ' + url);
       console.log(err);
     },
-    success: aa.render,
-    url: 'report.json'
+    success: success,
+    url: url
   });
 };
 
-aa.render = function (report) {
+doc.loadReport = function () {
+  doc.loadJSON('report.json', doc.render);
+};
+
+doc.render = function (report) {
   // TODO: When does report sometimes have a property named "report"?
   report = report.report ? report.report : report;
 
   // Note that root is a "group".
   var root = report.items.root;
-  aa.renderToc(report, root, $('#toc'));
+  doc.renderToc(report, root, $('#toc'));
 };
 
-aa.renderItems = function (report, itemKeys) {
+doc.renderItems = function (report, itemKeys) {
   var content = $('#content');
   content.html('');
 
@@ -45,7 +70,7 @@ aa.renderItems = function (report, itemKeys) {
   });
 };
 
-aa.renderToc = function (report, group, element) {
+doc.renderToc = function (report, group, element) {
   var ul = $('<ul>');
   element.append(ul);
 
@@ -64,16 +89,16 @@ aa.renderToc = function (report, group, element) {
             if (a.data('rendered')) {
               a.nextAll().toggle();
             } else {
-              aa.renderToc(report, item, li);
+              doc.renderToc(report, item, li);
               a.data('rendered', true);
             }
           }
 
-          aa.renderItems(report, item.items);
+          doc.renderItems(report, item.items);
         });
       }
     });
   }
 };
 
-$(aa.loadReport);
+$(doc.load);
