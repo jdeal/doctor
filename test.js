@@ -18,8 +18,8 @@ x = 1;
 
 (a)(c,d);
 
-function foo(){
-  
+function foo(x){
+var y;
 }
 
 function bar(state, x){
