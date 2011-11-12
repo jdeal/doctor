@@ -1,8 +1,18 @@
+
+
+
 /**
  * hello
  * crazy
  *   monster
  */
+
+/* this
+     that */
+
+// what
+// the
+// heck?
 
 x = 1;
 
