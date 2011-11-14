@@ -1,7 +1,26 @@
 'use strict';
-/*global alert: false */
 
 var doc = {}; // namespace
+
+doc.addChild = function (parent, childName, text, cssClass) {
+  var child = $('<' + childName + '>');
+  if (text) {
+    child.text(text);
+  }
+  if (cssClass) {
+    child.addClass(cssClass);
+  }
+  parent.append(child);
+  return child;
+};
+
+doc.addDiv = function (parent, text, cssClass) {
+  return doc.addChild(parent, 'div', text, cssClass);
+};
+
+doc.addSpan = function (parent, text, cssClass) {
+  return doc.addChild(parent, 'span', text, cssClass);
+};
 
 doc.configure = function (config) {
   if (config.title) {
@@ -47,30 +66,45 @@ doc.render = function (report) {
   // Note that root is a "group".
   var root = report.items.root;
   doc.renderToc(report, root, $('#toc'));
+
+  // Expand the first group.
+  $('#toc a:first').click();
 };
 
-doc.renderItems = function (report, itemKeys) {
+doc.renderContent = function (report, item, nested) {
   var content = $('#content');
   content.html('');
+
+  if (!nested) {
+    return;
+  }
+
+  doc.addDiv(content, item.name, 'contentTitle');
+
+  var itemKeys = item.items;
+  if (!itemKeys || itemKeys.length === 0) {
+    doc.addDiv(content, 'defines no functions', 'missing');
+    return;
+  }
 
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
 
-    var div = $('<div id="' + itemKey + '" class="item">');
-    div.text(item.name);
-    content.append(div);
+    var args = item.args ? item.args.join(', ') : '';
+    var div = doc.addDiv(content, '', 'item');
+    doc.addSpan(div, item.name + '(', 'function');
+    doc.addSpan(div, args, 'arg');
+    doc.addSpan(div, ')', 'function');
 
     var type = item.type;
     if (!item.api) {
       type = 'private ' + type;
     }
-    div = $('<div class="type">');
-    div.text(type);
-    content.append(div);
+    doc.addDiv(content, type, 'type');
   });
 };
 
-doc.renderToc = function (report, group, element) {
+doc.renderToc = function (report, group, element, nested) {
   var ul = $('<ul>');
   element.append(ul);
 
@@ -89,12 +123,12 @@ doc.renderToc = function (report, group, element) {
             if (a.data('rendered')) {
               a.nextAll().toggle();
             } else {
-              doc.renderToc(report, item, li);
+              doc.renderToc(report, item, li, true);
               a.data('rendered', true);
             }
           }
 
-          doc.renderItems(report, item.items);
+          doc.renderContent(report, item, nested);
         });
       }
     });
