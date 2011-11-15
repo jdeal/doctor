@@ -90,10 +90,10 @@ doc.renderContent = function (report, item, nested) {
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
 
-    var args = item.args ? item.args.join(', ') : '';
+    var params = item.params ? item.params.join(', ') : '';
     var div = doc.addDiv(content, '', 'item');
     doc.addSpan(div, item.name + '(', 'function');
-    doc.addSpan(div, args, 'arg');
+    doc.addSpan(div, params, 'arg');
     doc.addSpan(div, ')', 'function');
 
     var type = item.type;

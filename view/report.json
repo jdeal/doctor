@@ -28,7 +28,33 @@
       "groups": [
         "modules"
       ],
-      "items": []
+      "items": [
+        "lib/AstNode.js.AstNode",
+        "lib/AstNode.js.getNodeItem"
+      ]
+    },
+    "lib/AstNode.js.AstNode": {
+      "type": "function",
+      "key": "lib/AstNode.js.AstNode",
+      "params": [
+        "node",
+        "parent"
+      ],
+      "groups": [
+        "lib/AstNode.js"
+      ],
+      "name": "AstNode"
+    },
+    "lib/AstNode.js.getNodeItem": {
+      "type": "function",
+      "key": "lib/AstNode.js.getNodeItem",
+      "params": [
+        "key"
+      ],
+      "groups": [
+        "lib/AstNode.js"
+      ],
+      "name": "getNodeItem"
     },
     "lib/cli.js": {
       "type": "module",
@@ -46,21 +72,34 @@
         "modules"
       ],
       "items": [
-        "lib/doctor.js.api.examine"
+        "lib/doctor.js.examine",
+        "lib/doctor.js.writeFile"
       ]
     },
-    "lib/doctor.js.api.examine": {
-      "key": "lib/doctor.js.api.examine",
+    "lib/doctor.js.examine": {
       "type": "function",
-      "name": "examine",
-      "args": [
+      "key": "lib/doctor.js.examine",
+      "params": [
         "options",
         "cb"
       ],
       "groups": [
         "lib/doctor.js"
       ],
+      "name": "examine",
       "api": true
+    },
+    "lib/doctor.js.writeFile": {
+      "type": "function",
+      "key": "lib/doctor.js.writeFile",
+      "params": [
+        "file",
+        "cb"
+      ],
+      "groups": [
+        "lib/doctor.js"
+      ],
+      "name": "writeFile"
     },
     "lib/nice-ast.js": {
       "type": "module",
@@ -70,19 +109,26 @@
         "modules"
       ],
       "items": [
-        "lib/nice-ast.js.api.walk",
-        "lib/nice-ast.js.api.walkEnd",
-        "lib/nice-ast.js.api.extendAst",
-        "lib/nice-ast.js.api.cleanAst",
-        "lib/nice-ast.js.api.astFromFile",
-        "lib/nice-ast.js.api.walkWithRules"
+        "lib/nice-ast.js.walk",
+        "lib/nice-ast.js.walkEnd",
+        "lib/nice-ast.js.extendAst",
+        "lib/nice-ast.js.cleanAst",
+        "lib/nice-ast.js.moveGapAfterComment",
+        "lib/nice-ast.js.moveGapsAfterComments",
+        "lib/nice-ast.js.simplifyFunction",
+        "lib/nice-ast.js.valueNode",
+        "lib/nice-ast.js.maybeValueName",
+        "lib/nice-ast.js.parseCommentNode",
+        "lib/nice-ast.js.simplifyArgs",
+        "lib/nice-ast.js.simplify",
+        "lib/nice-ast.js.astFromFile",
+        "lib/nice-ast.js.walkWithRules"
       ]
     },
-    "lib/nice-ast.js.api.walk": {
-      "key": "lib/nice-ast.js.api.walk",
+    "lib/nice-ast.js.walk": {
       "type": "function",
-      "name": "walk",
-      "args": [
+      "key": "lib/nice-ast.js.walk",
+      "params": [
         "node",
         "beforeCb",
         "afterCb"
@@ -90,51 +136,147 @@
       "groups": [
         "lib/nice-ast.js"
       ],
+      "name": "walk",
       "api": true
     },
-    "lib/nice-ast.js.api.walkEnd": {
-      "key": "lib/nice-ast.js.api.walkEnd",
+    "lib/nice-ast.js.walkEnd": {
       "type": "function",
-      "name": "walkEnd",
-      "args": [
+      "key": "lib/nice-ast.js.walkEnd",
+      "params": [
         "node",
         "cb"
       ],
       "groups": [
         "lib/nice-ast.js"
       ],
+      "name": "walkEnd",
       "api": true
     },
-    "lib/nice-ast.js.api.extendAst": {
-      "key": "lib/nice-ast.js.api.extendAst",
+    "lib/nice-ast.js.extendAst": {
       "type": "function",
-      "name": "extendAst",
-      "args": [
+      "key": "lib/nice-ast.js.extendAst",
+      "params": [
         "node",
         "parent"
       ],
       "groups": [
         "lib/nice-ast.js"
       ],
+      "name": "extendAst",
       "api": true
     },
-    "lib/nice-ast.js.api.cleanAst": {
-      "key": "lib/nice-ast.js.api.cleanAst",
+    "lib/nice-ast.js.cleanAst": {
       "type": "function",
-      "name": "cleanAst",
-      "args": [
+      "key": "lib/nice-ast.js.cleanAst",
+      "params": [
         "node"
       ],
       "groups": [
         "lib/nice-ast.js"
       ],
+      "name": "cleanAst",
       "api": true
     },
-    "lib/nice-ast.js.api.astFromFile": {
-      "key": "lib/nice-ast.js.api.astFromFile",
+    "lib/nice-ast.js.moveGapAfterComment": {
       "type": "function",
-      "name": "astFromFile",
-      "args": [
+      "key": "lib/nice-ast.js.moveGapAfterComment",
+      "params": [
+        "s",
+        "commentGroup",
+        "x",
+        "y",
+        "z",
+        "gap"
+      ],
+      "groups": [
+        "lib/nice-ast.js"
+      ],
+      "name": "moveGapAfterComment"
+    },
+    "lib/nice-ast.js.moveGapsAfterComments": {
+      "type": "function",
+      "key": "lib/nice-ast.js.moveGapsAfterComments",
+      "params": [
+        "source"
+      ],
+      "groups": [
+        "lib/nice-ast.js"
+      ],
+      "name": "moveGapsAfterComments"
+    },
+    "lib/nice-ast.js.simplifyFunction": {
+      "type": "function",
+      "key": "lib/nice-ast.js.simplifyFunction",
+      "params": [
+        "array",
+        "comments"
+      ],
+      "groups": [
+        "lib/nice-ast.js"
+      ],
+      "name": "simplifyFunction"
+    },
+    "lib/nice-ast.js.valueNode": {
+      "type": "function",
+      "key": "lib/nice-ast.js.valueNode",
+      "params": [
+        "node"
+      ],
+      "groups": [
+        "lib/nice-ast.js"
+      ],
+      "name": "valueNode"
+    },
+    "lib/nice-ast.js.maybeValueName": {
+      "type": "function",
+      "key": "lib/nice-ast.js.maybeValueName",
+      "params": [
+        "node"
+      ],
+      "groups": [
+        "lib/nice-ast.js"
+      ],
+      "name": "maybeValueName"
+    },
+    "lib/nice-ast.js.parseCommentNode": {
+      "type": "function",
+      "key": "lib/nice-ast.js.parseCommentNode",
+      "params": [
+        "node"
+      ],
+      "groups": [
+        "lib/nice-ast.js"
+      ],
+      "name": "parseCommentNode"
+    },
+    "lib/nice-ast.js.simplifyArgs": {
+      "type": "function",
+      "key": "lib/nice-ast.js.simplifyArgs",
+      "params": [
+        "nodes",
+        "type",
+        "comments"
+      ],
+      "groups": [
+        "lib/nice-ast.js"
+      ],
+      "name": "simplifyArgs"
+    },
+    "lib/nice-ast.js.simplify": {
+      "type": "function",
+      "key": "lib/nice-ast.js.simplify",
+      "params": [
+        "nodes"
+      ],
+      "groups": [
+        "lib/nice-ast.js"
+      ],
+      "name": "simplify"
+    },
+    "lib/nice-ast.js.astFromFile": {
+      "type": "function",
+      "key": "lib/nice-ast.js.astFromFile",
+      "params": [
         "options",
         "file",
         "cb"
@@ -142,13 +284,13 @@
       "groups": [
         "lib/nice-ast.js"
       ],
+      "name": "astFromFile",
       "api": true
     },
-    "lib/nice-ast.js.api.walkWithRules": {
-      "key": "lib/nice-ast.js.api.walkWithRules",
+    "lib/nice-ast.js.walkWithRules": {
       "type": "function",
-      "name": "walkWithRules",
-      "args": [
+      "key": "lib/nice-ast.js.walkWithRules",
+      "params": [
         "options",
         "defaultRules",
         "ast",
@@ -158,6 +300,7 @@
       "groups": [
         "lib/nice-ast.js"
       ],
+      "name": "walkWithRules",
       "api": true
     },
     "lib/report.js": {
@@ -167,7 +310,73 @@
       "groups": [
         "modules"
       ],
-      "items": []
+      "items": [
+        "lib/report.js.Report",
+        "lib/report.js.walk",
+        "lib/report.js.eachNode",
+        "lib/report.js.finishRules",
+        "lib/report.js.run"
+      ]
+    },
+    "lib/report.js.Report": {
+      "type": "function",
+      "key": "lib/report.js.Report",
+      "params": [
+        "options",
+        "ast"
+      ],
+      "groups": [
+        "lib/report.js"
+      ],
+      "name": "Report"
+    },
+    "lib/report.js.walk": {
+      "type": "function",
+      "key": "lib/report.js.walk",
+      "params": [
+        "node",
+        "cb"
+      ],
+      "groups": [
+        "lib/report.js"
+      ],
+      "name": "walk"
+    },
+    "lib/report.js.eachNode": {
+      "type": "function",
+      "key": "lib/report.js.eachNode",
+      "params": [
+        "node",
+        "rule"
+      ],
+      "groups": [
+        "lib/report.js"
+      ],
+      "name": "eachNode"
+    },
+    "lib/report.js.finishRules": {
+      "type": "function",
+      "key": "lib/report.js.finishRules",
+      "params": [
+        "err"
+      ],
+      "groups": [
+        "lib/report.js"
+      ],
+      "name": "finishRules"
+    },
+    "lib/report.js.run": {
+      "type": "function",
+      "key": "lib/report.js.run",
+      "params": [
+        "options",
+        "ast",
+        "cb"
+      ],
+      "groups": [
+        "lib/report.js"
+      ],
+      "name": "run"
     },
     "lib/server.js": {
       "type": "module",
@@ -184,7 +393,35 @@
       "groups": [
         "modules"
       ],
-      "items": []
+      "items": [
+        "lib/transform.js.transform",
+        "lib/transform.js.eachNode"
+      ]
+    },
+    "lib/transform.js.transform": {
+      "type": "function",
+      "key": "lib/transform.js.transform",
+      "params": [
+        "options",
+        "ast",
+        "cb"
+      ],
+      "groups": [
+        "lib/transform.js"
+      ],
+      "name": "transform"
+    },
+    "lib/transform.js.eachNode": {
+      "type": "function",
+      "key": "lib/transform.js.eachNode",
+      "params": [
+        "node",
+        "rule"
+      ],
+      "groups": [
+        "lib/transform.js"
+      ],
+      "name": "eachNode"
     },
     "lib/util.js": {
       "type": "module",
@@ -194,33 +431,45 @@
         "modules"
       ],
       "items": [
-        "lib/util.js.api.isArray",
-        "lib/util.js.api.findRules"
+        "lib/util.js.isArray",
+        "lib/util.js.requireMaybe",
+        "lib/util.js.findRules"
       ]
     },
-    "lib/util.js.api.isArray": {
-      "key": "lib/util.js.api.isArray",
+    "lib/util.js.isArray": {
       "type": "function",
-      "name": "isArray",
-      "args": [
+      "key": "lib/util.js.isArray",
+      "params": [
         "obj"
       ],
       "groups": [
         "lib/util.js"
       ],
+      "name": "isArray",
       "api": true
     },
-    "lib/util.js.api.findRules": {
-      "key": "lib/util.js.api.findRules",
+    "lib/util.js.requireMaybe": {
       "type": "function",
-      "name": "findRules",
-      "args": [
+      "key": "lib/util.js.requireMaybe",
+      "params": [
+        "moduleName"
+      ],
+      "groups": [
+        "lib/util.js"
+      ],
+      "name": "requireMaybe"
+    },
+    "lib/util.js.findRules": {
+      "type": "function",
+      "key": "lib/util.js.findRules",
+      "params": [
         "options",
         "defaultRules"
       ],
       "groups": [
         "lib/util.js"
       ],
+      "name": "findRules",
       "api": true
     }
   }
