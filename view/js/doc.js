@@ -68,7 +68,8 @@ doc.render = function (report) {
   doc.renderToc(report, root, $('#toc'));
 
   // Expand the first group.
-  $('#toc a:first').click();
+  var firstLink  = $('#toc a:first');
+  firstLink.click();
 };
 
 doc.renderContent = function (report, item, nested) {
@@ -119,6 +120,14 @@ doc.renderToc = function (report, group, element, nested) {
         li.append(a);
 
         a.click(function () {
+          if (nested) {
+            if (doc.selectedLink) {
+              doc.selectedLink.removeClass('selected');
+            }
+            a.addClass('selected');
+            doc.selectedLink = a;
+          }
+
           if (item.items) {
             if (a.data('rendered')) {
               a.nextAll().toggle();

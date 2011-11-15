@@ -50,6 +50,7 @@ header {
   @include panel;
   float: left;
   height: $centerHeight;
+  overflow: auto;
   padding-bottom: $space; /* to make panels same height */
   width: 70%;
 }
@@ -65,6 +66,7 @@ header {
   @include panel;
   float: left;
   height: $centerHeight;
+  overflow: auto;
   padding-top: $space;
   width: 20%;
 }
@@ -115,6 +117,10 @@ header {
   color: red;
   font-size: 14pt;
   padding-top: $space;
+}
+
+.selected {
+  font-weight: bold;
 }
 
 .type {
