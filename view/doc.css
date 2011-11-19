@@ -29,6 +29,7 @@ header {
   padding: 0 10px 0 10px;
   float: left;
   height: 500px;
+  overflow: auto;
   padding-bottom: 10px;
   /* to make panels same height */
   width: 70%; }
@@ -48,6 +49,7 @@ header {
   padding: 0 10px 0 10px;
   float: left;
   height: 500px;
+  overflow: auto;
   padding-top: 10px;
   width: 20%; }
 
@@ -89,6 +91,9 @@ header {
   color: red;
   font-size: 14pt;
   padding-top: 10px; }
+
+.selected {
+  font-weight: bold; }
 
 .type {
   color: black; }
