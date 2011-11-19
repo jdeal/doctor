@@ -13,10 +13,10 @@
     "node": ">= 0.4.12"
   },
   "dependencies": {
-    "uglify-js": ">= 1.1.1",
     "optimist": ">= 0.2.8",
     "async": ">= 0.1.9",
-    "ncp": ">= 0.2.1"
+    "ncp": ">= 0.2.1",
+    "pegjs": ">= 0.6.2"
   },
   "devDependencies": {},
   "bin": {

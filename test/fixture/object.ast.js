@@ -1,6 +1,7 @@
 module.exports = {
   "type": "file",
-  "path": "object.js",
+  "path": "
+  object.js",
   "nodes": [
     {
       "type": "var",
