@@ -32,6 +32,9 @@ doc.configure = function (config) {
       {id: 'logo', src: config.logo, alt: 'logo'});
     $('header').append(img);
   }
+  if (config.footer) {
+    $('footer').html(config.footer);
+  }
 };
 
 doc.load = function () {

@@ -13495,7 +13495,7 @@ module.exports = (function(){
           ? (function(name, value) {
                 return {
                   type: "var",
-                  nodes: [name, value !== "" ? value : null]
+                  nodes: [name, value !== "" ? value : undefinedNode()]
                 };
               })(result1[0], result1[2])
           : null;
@@ -13550,7 +13550,7 @@ module.exports = (function(){
           ? (function(name, value) {
                 return {
                   type: "var",
-                  nodes: [name, value !== "" ? value : null]
+                  nodes: [name, value !== "" ? value : undefinedNode()]
                 };
               })(result1[0], result1[2])
           : null;
@@ -13965,7 +13965,7 @@ module.exports = (function(){
           ? (function(condition, ifStatement, elseStatement) {
                 return {
                   type: "if",
-                  nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[3] : null]
+                  nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[3] : undefinedNode()]
                 };
               })(result1[4], result1[8], result1[9])
           : null;
@@ -14453,9 +14453,9 @@ module.exports = (function(){
                 return {
                   type: "for",
                   nodes: [
-                    initializer !== "" ? initializer : null,
-                    test !== "" ? test : null,
-                    counter !== "" ? counter : null,
+                    initializer !== "" ? initializer : undefinedNode(),
+                    test !== "" ? test : undefinedNode(),
+                    counter !== "" ? counter : undefinedNode(),
                     statement
                   ]
                 };
@@ -14723,7 +14723,7 @@ module.exports = (function(){
           ? (function(label) {
                 return {
                   type: "continue",
-                  nodes: [label !== "" ? label : null]
+                  nodes: [label !== "" ? label : undefinedNode()]
                 };
               })(result1[2])
           : null;
@@ -14820,7 +14820,7 @@ module.exports = (function(){
           ? (function(label) {
                 return {
                   type: "break",
-                  nodes: [label !== "" ? label : null]
+                  nodes: [label !== "" ? label : undefinedNode()]
                 };
               })(result1[2])
           : null;
@@ -14917,7 +14917,7 @@ module.exports = (function(){
           ? (function(value) {
                 return {
                   type: "return",
-                  nodes: [value !== "" ? value : null]
+                  nodes: [value !== "" ? value : undefinedNode()]
                 };
               })(result1[2])
           : null;
@@ -15747,7 +15747,7 @@ module.exports = (function(){
             ? (function(block, catch_) {
                   return {
                     type: "try",
-                    nodes: [block, catch_, null]
+                    nodes: [block, catch_, undefinedNode()]
                   };
                 })(result10[2], result10[4])
             : null;
@@ -15797,7 +15797,7 @@ module.exports = (function(){
               ? (function(block, finally_) {
                     return {
                       type: "try",
-                      nodes: [block, null, finally_]
+                      nodes: [block, undefinedNode(), finally_]
                     };
                   })(result2[2], result2[4])
               : null;
@@ -16326,7 +16326,7 @@ module.exports = (function(){
           ? (function(name, params, body) {
                 return {
                   type: "function",
-                  nodes: [name !== "" ? name : null, nodeList(params, 'parameters'), body]
+                  nodes: [name !== "" ? name : undefinedNode(), nodeList(params, 'parameters'), body]
                 };
               })(result1[2], result1[6], result1[12])
           : null;
@@ -16761,6 +16761,14 @@ module.exports = (function(){
       }
       
       return node;
+      
+    }
+      
+  
+      
+    var undefinedNode = function undefinedNode() {
+      
+      return {type: 'undefined'};
       
     }
       

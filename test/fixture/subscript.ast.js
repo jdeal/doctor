@@ -6,45 +6,66 @@ module.exports = {
       "type": "assign",
       "nodes": [
         {
+          "type": "operator",
+          "value": "=",
+          "comments": []
+        },
+        {
           "type": "subscript",
           "nodes": [
             {
               "type": "name",
-              "value": "a"
+              "value": "a",
+              "comments": []
             },
             {
               "type": "number",
-              "value": 0
+              "value": 0,
+              "comments": []
             }
-          ]
+          ],
+          "comments": []
         },
         {
           "type": "number",
-          "value": 1
+          "value": 1,
+          "comments": []
         }
-      ]
+      ],
+      "comments": []
     },
     {
       "type": "assign",
       "nodes": [
         {
+          "type": "operator",
+          "value": "=",
+          "comments": []
+        },
+        {
           "type": "subscript",
           "nodes": [
             {
               "type": "name",
-              "value": "a"
+              "value": "a",
+              "comments": []
             },
             {
               "type": "string",
-              "value": "x"
+              "value": "x",
+              "comments": []
             }
-          ]
+          ],
+          "comments": []
         },
         {
           "type": "string",
-          "value": "y"
+          "value": "y",
+          "comments": []
         }
-      ]
+      ],
+      "comments": []
     }
-  ]
+  ],
+  "comments": []
 };

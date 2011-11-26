@@ -3,41 +3,49 @@ module.exports = {
   "path": "define.js",
   "nodes": [
     {
-      "type": "define",
+      "type": "define-function",
       "nodes": [
         {
           "type": "name",
-          "value": "foo"
+          "value": "foo",
+          "comments": []
+        },
+        {
+          "type": "parameters",
+          "nodes": [],
+          "comments": []
         },
         {
           "type": "nodes",
-          "nodes": []
-        },
-        {
-          "type": "nodes",
-          "nodes": []
+          "nodes": [],
+          "comments": []
         }
-      ]
+      ],
+      "comments": []
     },
     {
-      "type": "define",
+      "type": "define-function",
       "nodes": [
         {
           "type": "name",
-          "value": "bar"
+          "value": "bar",
+          "comments": []
         },
         {
-          "type": "nodes",
+          "type": "parameters",
           "nodes": [
             {
               "type": "name",
-              "value": "x"
+              "value": "x",
+              "comments": []
             },
             {
               "type": "name",
-              "value": "y"
+              "value": "y",
+              "comments": []
             }
-          ]
+          ],
+          "comments": []
         },
         {
           "type": "nodes",
@@ -49,24 +57,32 @@ module.exports = {
                   "type": "binary",
                   "nodes": [
                     {
-                      "type": "string",
-                      "value": "*"
+                      "type": "operator",
+                      "value": "*",
+                      "comments": []
                     },
                     {
                       "type": "name",
-                      "value": "x"
+                      "value": "x",
+                      "comments": []
                     },
                     {
                       "type": "name",
-                      "value": "y"
+                      "value": "y",
+                      "comments": []
                     }
-                  ]
+                  ],
+                  "comments": []
                 }
-              ]
+              ],
+              "comments": []
             }
-          ]
+          ],
+          "comments": []
         }
-      ]
+      ],
+      "comments": []
     }
-  ]
+  ],
+  "comments": []
 };

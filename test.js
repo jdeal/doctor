@@ -1,9 +1,9 @@
 /*
-hello world
-*/
+ * hello world
+ */
 /*
-bye
-*/
+ * bye
+ */
 function hello(/* a */ x) {
   return x;
 }
@@ -45,8 +45,9 @@ sugar
 */
 /*
 this thing
+@param u hello
 */
-function t(){
+function t(u){
   
 }
 

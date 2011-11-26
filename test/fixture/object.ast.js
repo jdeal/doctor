@@ -1,60 +1,78 @@
 module.exports = {
   "type": "file",
-  "path": "
-  object.js",
+  "path": "object.js",
   "nodes": [
     {
-      "type": "var",
+      "type": "vars",
       "nodes": [
         {
-          "type": "name",
-          "value": "thing"
-        },
-        {
-          "type": "object",
+          "type": "var",
           "nodes": [
             {
-              "type": "field",
-              "nodes": [
-                {
-                  "type": "key",
-                  "value": "x"
-                },
-                {
-                  "type": "number",
-                  "value": 1
-                }
-              ]
+              "type": "name",
+              "value": "thing",
+              "comments": []
             },
             {
-              "type": "field",
+              "type": "object",
               "nodes": [
                 {
-                  "type": "key",
-                  "value": "y"
+                  "type": "property",
+                  "nodes": [
+                    {
+                      "type": "key",
+                      "value": "x",
+                      "comments": []
+                    },
+                    {
+                      "type": "number",
+                      "value": 1,
+                      "comments": []
+                    }
+                  ],
+                  "comments": []
                 },
                 {
-                  "type": "number",
-                  "value": 2
-                }
-              ]
-            },
-            {
-              "type": "field",
-              "nodes": [
-                {
-                  "type": "key",
-                  "value": "z"
+                  "type": "property",
+                  "nodes": [
+                    {
+                      "type": "key",
+                      "value": "y",
+                      "comments": []
+                    },
+                    {
+                      "type": "number",
+                      "value": 2,
+                      "comments": []
+                    }
+                  ],
+                  "comments": []
                 },
                 {
-                  "type": "number",
-                  "value": 3
+                  "type": "property",
+                  "nodes": [
+                    {
+                      "type": "key",
+                      "value": "z",
+                      "comments": []
+                    },
+                    {
+                      "type": "number",
+                      "value": 3,
+                      "comments": []
+                    }
+                  ],
+                  "comments": []
                 }
-              ]
+              ],
+              "comments": []
             }
-          ]
+          ],
+          "comments": []
         }
-      ]
+      ],
+      "comments": []
     }
-  ]
+  ],
+  "comments": []
 }

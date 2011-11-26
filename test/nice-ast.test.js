@@ -132,13 +132,13 @@ function testFixtureAst(sourceFile, t) {
   sourceFile = path.join(__dirname, 'fixture', sourceFile + '.js');
   var fixtureAst = require(fixtureAstFile);
   nast.astFromFile({}, sourceFile, function (err, ast) {
-    ast.path = ast.path.replace(path.join(__dirname, 'fixture') + '/', '');
-    t.deepEqual(ast, fixtureAst);
+    t.equal(ast.type, fixtureAst.type);
+    t.deepEqual(ast.nodes, fixtureAst.nodes);
   });
 }
 
 test('ast from file', function (t) {
-  t.plan(4 * 1);
+  t.plan(4 * 2);
   testFixtureAst('define', t);
   testFixtureAst('var-function', t);
   testFixtureAst('subscript', t);

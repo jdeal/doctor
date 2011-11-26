@@ -3,47 +3,62 @@ module.exports = {
   "path": "var-function.js",
   "nodes": [
     {
-      "type": "var",
+      "type": "vars",
       "nodes": [
         {
-          "type": "name",
-          "value": "f"
-        },
-        {
-          "type": "function",
+          "type": "var",
           "nodes": [
             {
-              "type": "undefined"
+              "type": "name",
+              "value": "f",
+              "comments": []
             },
             {
-              "type": "nodes",
+              "type": "function",
               "nodes": [
                 {
-                  "type": "name",
-                  "value": "x"
+                  "type": "undefined"
                 },
                 {
-                  "type": "name",
-                  "value": "y"
-                }
-              ]
-            },
-            {
-              "type": "nodes",
-              "nodes": [
-                {
-                  "type": "return",
+                  "type": "parameters",
                   "nodes": [
                     {
-                      "type": "undefined"
+                      "type": "name",
+                      "value": "x",
+                      "comments": []
+                    },
+                    {
+                      "type": "name",
+                      "value": "y",
+                      "comments": []
                     }
-                  ]
+                  ],
+                  "comments": []
+                },
+                {
+                  "type": "nodes",
+                  "nodes": [
+                    {
+                      "type": "return",
+                      "nodes": [
+                        {
+                          "type": "undefined"
+                        }
+                      ],
+                      "comments": []
+                    }
+                  ],
+                  "comments": []
                 }
-              ]
+              ],
+              "comments": []
             }
-          ]
+          ],
+          "comments": []
         }
-      ]
+      ],
+      "comments": []
     }
-  ]
+  ],
+  "comments": []
 }

@@ -70,6 +70,10 @@
     }
     return node;
   }
+
+  var undefinedNode = function undefinedNode() {
+    return {type: 'undefined'};
+  }
 }
 
 start
@@ -1196,7 +1200,7 @@ VariableDeclaration
   = name:Identifier __ value:Initialiser? {
       return {
         type: "var",
-        nodes: [name, value !== "" ? value : null]
+        nodes: [name, value !== "" ? value : undefinedNode()]
       };
     }
 
@@ -1204,7 +1208,7 @@ VariableDeclarationNoIn
   = name:Identifier __ value:InitialiserNoIn? {
       return {
         type: "var",
-        nodes: [name, value !== "" ? value : null]
+        nodes: [name, value !== "" ? value : undefinedNode()]
       };
     }
 
@@ -1227,7 +1231,7 @@ IfStatement
     elseStatement:(__ ElseToken __ Statement)? {
       return {
         type: "if",
-        nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[3] : null]
+        nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[3] : undefinedNode()]
       };
     }
 
@@ -1277,9 +1281,9 @@ ForStatement
       return {
         type: "for",
         nodes: [
-          initializer !== "" ? initializer : null,
-          test !== "" ? test : null,
-          counter !== "" ? counter : null,
+          initializer !== "" ? initializer : undefinedNode(),
+          test !== "" ? test : undefinedNode(),
+          counter !== "" ? counter : undefinedNode(),
           statement
         ]
       };
@@ -1311,7 +1315,7 @@ ContinueStatement
     ) {
       return {
         type: "continue",
-        nodes: [label !== "" ? label : null]
+        nodes: [label !== "" ? label : undefinedNode()]
       };
     }
 
@@ -1323,7 +1327,7 @@ BreakStatement
     ) {
       return {
         type: "break",
-        nodes: [label !== "" ? label : null]
+        nodes: [label !== "" ? label : undefinedNode()]
       };
     }
 
@@ -1335,7 +1339,7 @@ ReturnStatement
     ) {
       return {
         type: "return",
-        nodes: [value !== "" ? value : null]
+        nodes: [value !== "" ? value : undefinedNode()]
       };
     }
 
@@ -1427,13 +1431,13 @@ TryStatement
   / TryToken __ block:Block __ catch_:Catch {
       return {
         type: "try",
-        nodes: [block, catch_, null]
+        nodes: [block, catch_, undefinedNode()]
       };
     }
   / TryToken __ block:Block __ finally_:Finally {
       return {
         type: "try",
-        nodes: [block, null, finally_]
+        nodes: [block, undefinedNode(), finally_]
       };
     }
 
@@ -1474,7 +1478,7 @@ FunctionExpression
     "{" __ body:FunctionBody __ "}" {
       return {
         type: "function",
-        nodes: [name !== "" ? name : null, nodeList(params, 'parameters'), body]
+        nodes: [name !== "" ? name : undefinedNode(), nodeList(params, 'parameters'), body]
       };
     }
 
