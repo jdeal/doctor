@@ -60,6 +60,13 @@ different name:
 doctor myfile1.js myfile2.js -o output/myreport.json
 ```
 
+You can also pass package.json files to doctor. It will use the main property to
+find the source file:
+
+```
+doctor package.json
+```
+
 To output the default viewer along with your report:
 
 ```
