@@ -50,26 +50,57 @@ doctor myfile1.js myfile2.js
 To write out the report file, give it a directory:
 
 ```
-doctor myfile.js myfile2.js -o output
+doctor myfile1.js myfile2.js -o output
 ```
 
 And it will write the report to a file named report.json. If you prefer a
 different name:
 
 ```
-doctor myfile.js myfile2.js -o output/myreport.json
+doctor myfile1.js myfile2.js -o output/myreport.json
 ```
 
-
-
-
-This will 
-
-To generate a report.json file in the output subdirectory:
+To output the default viewer along with your report:
 
 ```
-doctor --debug myfile1.js myfile2.js
+doctor myfile1.js myfile2.js -o output -v default
 ```
+
+To merge in your own files into the view, pass multiple views:
+
+```
+doctor myfile1.js myfile2.js -o output -v default -v ~/my-view
+```
+
+You can override the grammar if you feel adenturous:
+
+```
+doctor myfile1.js myfile2.js --grammar ~/my-better-grammar.pegjs
+```
+
+You can add your own transform rules:
+
+```
+doctor myfile1.js myfile2.js -t default -t ~/more-tranform-rules.js
+```
+
+Or your own report rules:
+
+```
+doctor myfile1.js myfile2.js -r default -r ~/more-report-rules.js
+```
+
+You can use a renderer:
+
+```
+doctor myfile1.js myfile2.js --render render/markdown.js
+```
+
+## Programmatic usage
+
+
+
+## Misc
 
 To serve dynamically generated documentation:
 
