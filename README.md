@@ -115,6 +115,8 @@ doctor.examine(options, function (err, report) {
 });
 ```
 
+Note that the above options probably don't really make sense. The default viewer
+doesn't work with output from the markdown renderer.
 
 ## Misc
 
