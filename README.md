@@ -98,6 +98,24 @@ doctor myfile1.js myfile2.js --render render/markdown.js
 
 ## Programmatic usage
 
+All the same options are available programmatically.
+
+Create a report file and return in a callback:
+
+```js
+var doctor = require('doctor');
+var options = {
+  files: ['myfile1.js', 'myfile2.js'],
+  view: ['default', '~/my-view'],
+  grammar: '~/my-better-grammar.pegjs',
+  transform: ['default', '~/more-tranform-rules.js'],
+  report: ['default', '~/more-report-rules.js'],
+  render: 'render/markdown.js'
+};
+doctor.examine(options, function (err, report) {
+  // done
+});
+```
 
 
 ## Misc
