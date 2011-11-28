@@ -7,7 +7,7 @@ conventions so that comment tags are (mostly) not needed.
 
 Maybe a picture will help:
 
-![pipeline]()
+![pipeline](https://github.com/jdeal/doctor/raw/master/README/doctor-pipeline.png)
 
 ## Installation
 
