@@ -1,12 +1,51 @@
 # doctor
 
-Creates documentation from a JavaScript AST.
+Doctor converts JavaScript source to documentation, using rules to rely on
+conventions so that comment tags are (mostly) not needed.
+
+## Say what?
+
+Maybe a picture will help:
+
+![pipeline]()
 
 ## Installation
 
+```
 npm install doctor
+```
 
-## Usage
+or if you want the latest
+
+```
+npm install git:github.com/jdeal/doctor.git
+```
+
+## Command-line usage
+
+Dump a report file to the console:
+
+```
+doctor myfile1.js myfile2.js
+```
+
+To write out the report file, give it a directory:
+
+```
+doctor myfile.js myfile2.js -o output
+```
+
+And it will write the report to a file named report.json. If you prefer a
+different name:
+
+```
+doctor myfile.js myfile2.js -o output/myreport.json
+```
+
+
+
+
+This will 
 
 To generate a report.json file in the output subdirectory:
 
