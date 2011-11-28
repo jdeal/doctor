@@ -100,8 +100,6 @@ doctor myfile1.js myfile2.js --render render/markdown.js
 
 All the same options are available programmatically.
 
-Create a report file and return in a callback:
-
 ```js
 var doctor = require('doctor');
 var options = {
