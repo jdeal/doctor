@@ -64,7 +64,7 @@ You can also pass package.json files to doctor. It will use the main property to
 find the source file:
 
 ```
-doctor package.json
+doctor package.json -o output
 ```
 
 To output the default viewer along with your report:
