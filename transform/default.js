@@ -57,6 +57,18 @@ rules.push({
   }
 });
 
+var commentTagFunctions = {
+  "description": function (value, node) {
+    node.description = value.description;
+  },
+  "param": function (value, node) {
+    if (!node.paramTags) {
+      node.paramTags = {};
+    }
+    node.paramTags[value.name] = value;
+  }
+};
+
 /* parse tags from comments */
 rules.push({
   match: function (node) {
@@ -65,6 +77,11 @@ rules.push({
   transform: function (node, transform) {
     var tags = transform.options.commentParser.parse(node.commentText);
     node.commentTags = tags;
+    node.commentTags.forEach(function (tag, i) {
+      if (tag.name in commentTagFunctions) {
+        commentTagFunctions[tag.name](tag.value, node);
+      }
+    });
   }
 });
 
@@ -76,9 +93,20 @@ rules.push({
     node.name = nameNode.value;
     node.params = [];
     paramsNodes.forEach(function (paramNode, i) {
-      node.params.push({
+      var param = {
         name: paramNode.value
-      });
+      };
+      if (node.paramTags) {
+        if (node.paramTags[param.name]) {
+          var tagValue = node.paramTags[param.name];
+          Object.keys(tagValue).forEach(function (key, i) {
+            if (key !== 'name') {
+              param[key] = tagValue[key];
+            }
+          });
+        }
+      }
+      node.params.push(param);
     });
   }
 });

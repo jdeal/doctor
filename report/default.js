@@ -28,6 +28,7 @@ rules.push({
       type: 'function',
       key: node.item('module') + '.' + name,
       params: node.params,
+      description: node.description,
       groups: [node.item('module')],
       name: name
     };
