@@ -94,7 +94,10 @@ doc.renderContent = function (report, item, nested) {
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
 
-    var params = item.params ? item.params.join(', ') : '';
+    var paramNames = item.params ? item.params.map(function (param) {
+      return param.name;
+    }) : [];
+    var params = paramNames ? paramNames.join(', ') : '';
     var div = doc.addDiv(content, '', 'item');
     doc.addSpan(div, item.name + '(', 'function');
     doc.addSpan(div, params, 'arg');

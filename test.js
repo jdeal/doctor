@@ -45,7 +45,7 @@ sugar
 */
 /*
 this thing
-@param u hello
+@param {String|Number} [u] hello
 */
 function t(u){
   

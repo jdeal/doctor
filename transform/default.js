@@ -1,5 +1,6 @@
 var rules = [];
 
+/* merge and normalize comments */
 rules.push({
   match: function (node) {
     return typeof node.comments !== 'undefined' && node.comments.length > 0;
@@ -56,6 +57,7 @@ rules.push({
   }
 });
 
+/* parse tags from comments */
 rules.push({
   match: function (node) {
     return typeof node.commentText === 'string' && node.commentText !== '';
@@ -74,7 +76,9 @@ rules.push({
     node.name = nameNode.value;
     node.params = [];
     paramsNodes.forEach(function (paramNode, i) {
-      node.params.push(paramNode.value);
+      node.params.push({
+        name: paramNode.value
+      });
     });
   }
 });

@@ -36,8 +36,15 @@ Tag
     }
 
 ParamTag
-  = '@param' Blank name:Identifier Blank text:Description {
-    return {name: 'param', value: {name: name, description: text}};
+  = '@param' types:TypeList? Blank+ lbracket:("[" Blank*)? name:Identifier rbracket:(Blank* "]")? Blank+ text:Description {
+    var tag = {name: 'param', value: {name: name, description: text}};
+    if (types !== '') {
+      tag.value.types = types;
+    }
+    if (lbracket !== '') {
+      tag.value.optional = true;
+    }
+    return tag;
   }
 
 Identifier
@@ -52,6 +59,15 @@ _
   = (WhiteSpace)*
 __
   = (WhiteSpace / LineTerminatorSequence)*
+
+TypeList
+  = Blank+ "{" Blank* start:Identifier Blank* rest:("|" Blank* Identifier)* Blank* "}" {
+    var types = [start];
+    rest.forEach(function (item, i) {
+      types.push(item[2]);
+    });
+    return types;
+  }
 
 WhiteSpace "whitespace"
   = [\t\v\f \u00A0\uFEFF]
