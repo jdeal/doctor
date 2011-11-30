@@ -97,10 +97,10 @@ Or your own report rules:
 doctor myfile1.js myfile2.js -r default -r ~/more-report-rules.js
 ```
 
-You can use a renderer:
+You can use a custom renderer:
 
 ```
-doctor myfile1.js myfile2.js --render render/markdown.js
+doctor myfile1.js myfile2.js --render ~/my-render.js
 ```
 
 ## Programmatic usage
@@ -115,7 +115,7 @@ var options = {
   grammar: '~/my-better-grammar.pegjs',
   transform: ['default', '~/more-tranform-rules.js'],
   report: ['default', '~/more-report-rules.js'],
-  render: 'render/markdown.js'
+  render: 'markdown'
 };
 doctor.examine(options, function (err, report) {
   // done
