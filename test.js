@@ -52,3 +52,5 @@ function t(u){
 }
 
 exports.t = t;
+
+_(module).export({'hello': hello});

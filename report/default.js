@@ -35,6 +35,19 @@ rules.push({
   }
 });
 
+function exportFunction(node, report, name, exportName) {
+  exportName = exportName || name;
+  if (report.item(node.item('module') + '.' + name)) {
+    var functionItem = report.item(node.item('module') + '.' + name);
+    functionItem.api = true;
+    functionItem.name = exportName;
+  }
+}
+
+/*
+  exports.x = x;
+  module.exports.x = x;
+*/
 rules.push({
   type: 'assign',
   match: function (node) {
@@ -70,12 +83,29 @@ rules.push({
     }
     if (dotLeft.type === 'name' && dotRight.type === 'name' && dotLeft.value === 'exports') {
       var exportName = dotRight.value;
-      if (report.item(node.item('module') + '.' + name)) {
-        var functionItem = report.item(node.item('module') + '.' + name);
-        functionItem.api = true;
-        functionItem.name = exportName;
-      }
+      exportFunction(node, report, name, exportName);
     }
+  }
+});
+
+/*
+  _(module).export(...)
+*/
+rules.push({
+  match: function (node) {
+    return node.likeSource("_(module).export()");
+  },
+  report: function (node, report) {
+    var exportArgNodes = node.nodes[1].nodes;
+    exportArgNodes.forEach(function (argNode, i) {
+      if (argNode.type === 'name') {
+        exportFunction(node, report, argNode.value);
+      } else if (argNode.type === 'object') {
+        argNode.nodes.forEach(function (propertyNode, i) {
+          exportFunction(node, report, propertyNode.nodes[0].value, propertyNode.nodes[1].value);
+        });
+      }
+    });
   }
 });
 
