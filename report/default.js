@@ -15,7 +15,8 @@ rules.push({
       type: 'module',
       key: node.path,
       name: node.path,
-      groups: ['modules']
+      groups: ['modules'],
+      package: node.package
     };
   }
 });
