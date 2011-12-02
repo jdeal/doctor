@@ -96,7 +96,6 @@ rules.push({
     return node.likeSource("_(module).export()");
   },
   report: function (node, report) {
-    console.log(node.lispify());
 
     var exportArgNodes = node.nodes[1].nodes;
     exportArgNodes.forEach(function (argNode, i) {

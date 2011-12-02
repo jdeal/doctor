@@ -3780,7 +3780,7 @@ module.exports = (function(){
         }
         var result2 = result1 !== null
           ? (function(char_, chars) {
-                return char_ + chars;
+                return {type: 'string', value: char_ + chars};
               })(result1[0], result1[1])
           : null;
         if (result2 !== null) {
@@ -4278,7 +4278,7 @@ module.exports = (function(){
           var result3 = parse_IdentifierPart();
         }
         var result2 = result1 !== null
-          ? (function(parts) { return parts.join(""); })(result1)
+          ? (function(parts) { return {type: 'string', value: parts.join("")}; })(result1)
           : null;
         if (result2 !== null) {
           var result0 = result2;

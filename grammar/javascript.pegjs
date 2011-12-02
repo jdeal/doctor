@@ -356,7 +356,7 @@ RegularExpressionLiteral "regular expression"
 
 RegularExpressionBody
   = char_:RegularExpressionFirstChar chars:RegularExpressionChars {
-      return char_ + chars;
+      return {type: 'string', value: char_ + chars};
     }
 
 RegularExpressionChars
@@ -393,7 +393,7 @@ RegularExpressionClassChar
   / RegularExpressionBackslashSequence
 
 RegularExpressionFlags
-  = parts:IdentifierPart* { return parts.join(""); }
+  = parts:IdentifierPart* { return {type: 'string', value: parts.join("")}; }
 
 /* Tokens */
 
