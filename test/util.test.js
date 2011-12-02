@@ -1,6 +1,7 @@
 var test = require('tap').test;
 var util = require('../lib/util');
 var fs = require('fs');
+var path = require('path');
 
 test('toArray', function (t) {
   t.deepEqual(util.toArray([1, 2]), [1, 2]);
@@ -111,5 +112,23 @@ test('compareFileDates neither file exists', function (t) {
     t.equal(cmp, 0);
     t.end();
   });
+});
+
+test('findFunctions', function (t) {
+  var dir = 'render';
+  var functions = util.findFunctions(['default'], dir);
+  t.equal(functions.length, 1);
+  t.equal(functions[0].name, 'render');
+  t.end();
+});
+
+test('findRules', function (t) {
+  var dir = 'transform';
+  var rules = util.findRules(['default'], dir);
+
+  // TODO: brittle test
+  t.equal(rules.length, 3);
+
+  t.end();
 });
 
