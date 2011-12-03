@@ -1,3 +1,6 @@
+/*
+  foo description
+  */
 function foo(bar) {
   return bar * bar;
 }
