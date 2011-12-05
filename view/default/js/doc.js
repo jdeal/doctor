@@ -1,5 +1,11 @@
 'use strict';
 
+/*global alert: false */
+
+function capitalise(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 var doc = {}; // namespace
 
 doc.addChild = function (parent, childName, text, cssClass) {
@@ -29,7 +35,7 @@ doc.configure = function (config) {
   }
   if (config.logo) {
     var img = $('<img>',
-      {id: 'logo', src: config.logo, alt: 'logo'});
+                {id: 'logo', src: config.logo, alt: 'logo'});
     $('header').append(img);
   }
   if (config.footer) {
@@ -75,6 +81,27 @@ doc.render = function (report) {
   firstLink.click();
 };
 
+doc.renderFunction = function (item, parent) {
+  var paramNames = item.params ? item.params.map(function (param) {
+    return param.name;
+  }) : [];
+  var params = paramNames ? paramNames.join(', ') : '';
+  var nameDiv = doc.addDiv(parent, '', 'itemName');
+  
+  doc.addSpan(nameDiv, item.name + '(', 'function');
+  doc.addSpan(nameDiv, params, 'arg');
+  doc.addSpan(nameDiv, ')', 'function');
+
+  var type = item.type;
+  if (!item.api) {
+    type = 'private ' + type;
+  }
+  doc.addDiv(parent, type, 'itemType');
+
+  var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
+  $(descriptionDiv).append(item.description);
+};
+
 doc.renderContent = function (report, item, nested) {
   var content = $('#content');
   content.html('');
@@ -93,21 +120,11 @@ doc.renderContent = function (report, item, nested) {
 
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
+    var itemDiv = doc.addDiv(content, '', 'item');
 
-    var paramNames = item.params ? item.params.map(function (param) {
-      return param.name;
-    }) : [];
-    var params = paramNames ? paramNames.join(', ') : '';
-    var div = doc.addDiv(content, '', 'item');
-    doc.addSpan(div, item.name + '(', 'function');
-    doc.addSpan(div, params, 'arg');
-    doc.addSpan(div, ')', 'function');
-
-    var type = item.type;
-    if (!item.api) {
-      type = 'private ' + type;
-    }
-    doc.addDiv(content, type, 'type');
+    // poor man's polymorhpism:
+    var renderFn = 'render' + capitalise(item.type);
+    doc[renderFn](item, itemDiv);
   });
 };
 

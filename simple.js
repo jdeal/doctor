@@ -1,6 +1,9 @@
 /*
-  foo description
-  */
+  Salient points:
+    * one
+    * two
+    * three
+ */
 function foo(bar) {
   return bar * bar;
 }

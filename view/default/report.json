@@ -11,465 +11,48 @@
       "key": "modules",
       "name": "Modules",
       "items": [
-        "lib/AstNode.js",
-        "lib/cli.js",
-        "lib/doctor.js",
-        "lib/nice-ast.js",
-        "lib/report.js",
-        "lib/server.js",
-        "lib/transform.js",
-        "lib/util.js"
+        "simple.js"
       ]
     },
-    "lib/AstNode.js": {
+    "simple.js": {
       "type": "module",
-      "key": "lib/AstNode.js",
-      "name": "lib/AstNode.js",
+      "key": "simple.js",
+      "name": "simple.js",
       "groups": [
         "modules"
       ],
       "items": [
-        "lib/AstNode.js.AstNode",
-        "lib/AstNode.js.getNodeItem"
+        "simple.js.foo",
+        "simple.js.square"
       ]
     },
-    "lib/AstNode.js.AstNode": {
+    "simple.js.foo": {
       "type": "function",
-      "key": "lib/AstNode.js.AstNode",
+      "key": "simple.js.foo",
       "params": [
-        "node",
-        "parent"
+        {
+          "name": "bar"
+        }
       ],
+      "description": "<p>Salient points:</p>\n\n<pre><code>  one\n\n\n  two\n\n\n  three\n</code></pre>",
       "groups": [
-        "lib/AstNode.js"
+        "simple.js"
       ],
-      "name": "AstNode"
-    },
-    "lib/AstNode.js.getNodeItem": {
-      "type": "function",
-      "key": "lib/AstNode.js.getNodeItem",
-      "params": [
-        "key"
-      ],
-      "groups": [
-        "lib/AstNode.js"
-      ],
-      "name": "getNodeItem"
-    },
-    "lib/cli.js": {
-      "type": "module",
-      "key": "lib/cli.js",
-      "name": "lib/cli.js",
-      "groups": [
-        "modules"
-      ]
-    },
-    "lib/doctor.js": {
-      "type": "module",
-      "key": "lib/doctor.js",
-      "name": "lib/doctor.js",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "lib/doctor.js.examine",
-        "lib/doctor.js.writeFile"
-      ]
-    },
-    "lib/doctor.js.examine": {
-      "type": "function",
-      "key": "lib/doctor.js.examine",
-      "params": [
-        "options",
-        "cb"
-      ],
-      "groups": [
-        "lib/doctor.js"
-      ],
-      "name": "examine",
+      "name": "foo",
       "api": true
     },
-    "lib/doctor.js.writeFile": {
+    "simple.js.square": {
       "type": "function",
-      "key": "lib/doctor.js.writeFile",
+      "key": "simple.js.square",
       "params": [
-        "file",
-        "cb"
+        {
+          "name": "x"
+        }
       ],
       "groups": [
-        "lib/doctor.js"
+        "simple.js"
       ],
-      "name": "writeFile"
-    },
-    "lib/nice-ast.js": {
-      "type": "module",
-      "key": "lib/nice-ast.js",
-      "name": "lib/nice-ast.js",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "lib/nice-ast.js.walk",
-        "lib/nice-ast.js.walkEnd",
-        "lib/nice-ast.js.extendAst",
-        "lib/nice-ast.js.cleanAst",
-        "lib/nice-ast.js.moveGapAfterComment",
-        "lib/nice-ast.js.moveGapsAfterComments",
-        "lib/nice-ast.js.simplifyFunction",
-        "lib/nice-ast.js.valueNode",
-        "lib/nice-ast.js.maybeValueName",
-        "lib/nice-ast.js.parseCommentNode",
-        "lib/nice-ast.js.simplifyArgs",
-        "lib/nice-ast.js.simplify",
-        "lib/nice-ast.js.astFromFile",
-        "lib/nice-ast.js.walkWithRules"
-      ]
-    },
-    "lib/nice-ast.js.walk": {
-      "type": "function",
-      "key": "lib/nice-ast.js.walk",
-      "params": [
-        "node",
-        "beforeCb",
-        "afterCb"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "walk",
-      "api": true
-    },
-    "lib/nice-ast.js.walkEnd": {
-      "type": "function",
-      "key": "lib/nice-ast.js.walkEnd",
-      "params": [
-        "node",
-        "cb"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "walkEnd",
-      "api": true
-    },
-    "lib/nice-ast.js.extendAst": {
-      "type": "function",
-      "key": "lib/nice-ast.js.extendAst",
-      "params": [
-        "node",
-        "parent"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "extendAst",
-      "api": true
-    },
-    "lib/nice-ast.js.cleanAst": {
-      "type": "function",
-      "key": "lib/nice-ast.js.cleanAst",
-      "params": [
-        "node"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "cleanAst",
-      "api": true
-    },
-    "lib/nice-ast.js.moveGapAfterComment": {
-      "type": "function",
-      "key": "lib/nice-ast.js.moveGapAfterComment",
-      "params": [
-        "s",
-        "commentGroup",
-        "x",
-        "y",
-        "z",
-        "gap"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "moveGapAfterComment"
-    },
-    "lib/nice-ast.js.moveGapsAfterComments": {
-      "type": "function",
-      "key": "lib/nice-ast.js.moveGapsAfterComments",
-      "params": [
-        "source"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "moveGapsAfterComments"
-    },
-    "lib/nice-ast.js.simplifyFunction": {
-      "type": "function",
-      "key": "lib/nice-ast.js.simplifyFunction",
-      "params": [
-        "array",
-        "comments"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "simplifyFunction"
-    },
-    "lib/nice-ast.js.valueNode": {
-      "type": "function",
-      "key": "lib/nice-ast.js.valueNode",
-      "params": [
-        "node"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "valueNode"
-    },
-    "lib/nice-ast.js.maybeValueName": {
-      "type": "function",
-      "key": "lib/nice-ast.js.maybeValueName",
-      "params": [
-        "node"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "maybeValueName"
-    },
-    "lib/nice-ast.js.parseCommentNode": {
-      "type": "function",
-      "key": "lib/nice-ast.js.parseCommentNode",
-      "params": [
-        "node"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "parseCommentNode"
-    },
-    "lib/nice-ast.js.simplifyArgs": {
-      "type": "function",
-      "key": "lib/nice-ast.js.simplifyArgs",
-      "params": [
-        "nodes",
-        "type",
-        "comments"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "simplifyArgs"
-    },
-    "lib/nice-ast.js.simplify": {
-      "type": "function",
-      "key": "lib/nice-ast.js.simplify",
-      "params": [
-        "nodes"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "simplify"
-    },
-    "lib/nice-ast.js.astFromFile": {
-      "type": "function",
-      "key": "lib/nice-ast.js.astFromFile",
-      "params": [
-        "options",
-        "file",
-        "cb"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "astFromFile",
-      "api": true
-    },
-    "lib/nice-ast.js.walkWithRules": {
-      "type": "function",
-      "key": "lib/nice-ast.js.walkWithRules",
-      "params": [
-        "options",
-        "defaultRules",
-        "ast",
-        "nodeCb",
-        "finalCb"
-      ],
-      "groups": [
-        "lib/nice-ast.js"
-      ],
-      "name": "walkWithRules",
-      "api": true
-    },
-    "lib/report.js": {
-      "type": "module",
-      "key": "lib/report.js",
-      "name": "lib/report.js",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "lib/report.js.Report",
-        "lib/report.js.walk",
-        "lib/report.js.eachNode",
-        "lib/report.js.finishRules",
-        "lib/report.js.run"
-      ]
-    },
-    "lib/report.js.Report": {
-      "type": "function",
-      "key": "lib/report.js.Report",
-      "params": [
-        "options",
-        "ast"
-      ],
-      "groups": [
-        "lib/report.js"
-      ],
-      "name": "Report"
-    },
-    "lib/report.js.walk": {
-      "type": "function",
-      "key": "lib/report.js.walk",
-      "params": [
-        "node",
-        "cb"
-      ],
-      "groups": [
-        "lib/report.js"
-      ],
-      "name": "walk"
-    },
-    "lib/report.js.eachNode": {
-      "type": "function",
-      "key": "lib/report.js.eachNode",
-      "params": [
-        "node",
-        "rule"
-      ],
-      "groups": [
-        "lib/report.js"
-      ],
-      "name": "eachNode"
-    },
-    "lib/report.js.finishRules": {
-      "type": "function",
-      "key": "lib/report.js.finishRules",
-      "params": [
-        "err"
-      ],
-      "groups": [
-        "lib/report.js"
-      ],
-      "name": "finishRules"
-    },
-    "lib/report.js.run": {
-      "type": "function",
-      "key": "lib/report.js.run",
-      "params": [
-        "options",
-        "ast",
-        "cb"
-      ],
-      "groups": [
-        "lib/report.js"
-      ],
-      "name": "run"
-    },
-    "lib/server.js": {
-      "type": "module",
-      "key": "lib/server.js",
-      "name": "lib/server.js",
-      "groups": [
-        "modules"
-      ]
-    },
-    "lib/transform.js": {
-      "type": "module",
-      "key": "lib/transform.js",
-      "name": "lib/transform.js",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "lib/transform.js.transform",
-        "lib/transform.js.eachNode"
-      ]
-    },
-    "lib/transform.js.transform": {
-      "type": "function",
-      "key": "lib/transform.js.transform",
-      "params": [
-        "options",
-        "ast",
-        "cb"
-      ],
-      "groups": [
-        "lib/transform.js"
-      ],
-      "name": "transform"
-    },
-    "lib/transform.js.eachNode": {
-      "type": "function",
-      "key": "lib/transform.js.eachNode",
-      "params": [
-        "node",
-        "rule"
-      ],
-      "groups": [
-        "lib/transform.js"
-      ],
-      "name": "eachNode"
-    },
-    "lib/util.js": {
-      "type": "module",
-      "key": "lib/util.js",
-      "name": "lib/util.js",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "lib/util.js.isArray",
-        "lib/util.js.requireMaybe",
-        "lib/util.js.findRules"
-      ]
-    },
-    "lib/util.js.isArray": {
-      "type": "function",
-      "key": "lib/util.js.isArray",
-      "params": [
-        "obj"
-      ],
-      "groups": [
-        "lib/util.js"
-      ],
-      "name": "isArray",
-      "api": true
-    },
-    "lib/util.js.requireMaybe": {
-      "type": "function",
-      "key": "lib/util.js.requireMaybe",
-      "params": [
-        "moduleName"
-      ],
-      "groups": [
-        "lib/util.js"
-      ],
-      "name": "requireMaybe"
-    },
-    "lib/util.js.findRules": {
-      "type": "function",
-      "key": "lib/util.js.findRules",
-      "params": [
-        "options",
-        "defaultRules"
-      ],
-      "groups": [
-        "lib/util.js"
-      ],
-      "name": "findRules",
+      "name": "square",
       "api": true
     }
   }
