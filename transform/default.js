@@ -69,13 +69,27 @@ var commentTagFunctions = {
   }
 };
 
+function commentTransform(node, transform) {
+  try {
+    return transform.options.commentParser.parse(node.commentText);
+  } catch (e) {
+    var file = node.parent.path;
+    var comment = node.commentText;
+    var msg = 'Error parsing comment tag in file ' + file + ' - ' + e +
+        ', comment text: ' + comment;
+    console.error(msg);
+    // throw new Error(msg);
+    return [];
+  }
+}
+
 /* parse tags from comments */
 rules.push({
   match: function (node) {
     return typeof node.commentText === 'string' && node.commentText !== '';
   },
   transform: function (node, transform) {
-    var tags = transform.options.commentParser.parse(node.commentText);
+    var tags = commentTransform(node, transform);
     node.commentTags = tags;
     node.commentTags.forEach(function (tag, i) {
       if (tag.name in commentTagFunctions) {
