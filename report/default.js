@@ -168,6 +168,7 @@ rules.push({
 
 /*
   extendWithFunctions(obj, ...)
+  _.extendWithFunctions(obj, ...)
 */
 rules.push({
   type: 'call',
