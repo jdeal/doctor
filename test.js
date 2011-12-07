@@ -55,4 +55,15 @@ function t(u){
 
 //_(module).export({'hello': hello});
 
-module.exports = t
+//module.exports = t
+
+var core = {};
+
+extendWithFunctions(core,
+                    t,
+                    {"h": hello}
+                   );
+
+_.mixin(core);
+
+module.exports = _;
