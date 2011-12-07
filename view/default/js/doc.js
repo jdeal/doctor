@@ -110,7 +110,7 @@ doc.renderContent = function (report, item, nested) {
     return;
   }
 
-  doc.addDiv(content, item.name, 'contentTitle');
+  doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
 
   var itemKeys = item.items;
   if (!itemKeys || itemKeys.length === 0) {
@@ -128,6 +128,10 @@ doc.renderContent = function (report, item, nested) {
   });
 };
 
+doc.itemDisplayName = function (item) {
+  return item.package ? item.package.name : item.name;
+};
+
 doc.renderToc = function (report, group, element, nested) {
   var ul = $('<ul>');
   element.append(ul);
@@ -138,8 +142,8 @@ doc.renderToc = function (report, group, element, nested) {
       if (item.type !== 'function') {
         var li = $('<li>');
         ul.append(li);
-        //var a = $('<a href="javascript:void(0)">' + item.name + '</a>');
-        var a = $('<a href="#">' + item.name + '</a>');
+
+        var a = $('<a href="#">' + doc.itemDisplayName(item) + '</a>');
         li.append(a);
 
         a.click(function () {
