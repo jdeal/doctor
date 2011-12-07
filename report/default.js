@@ -172,7 +172,8 @@ rules.push({
 rules.push({
   type: 'call',
   match: function (node) {
-    return node.likeSource('extendWithFunctions(__name__)');
+    return node.likeSource('extendWithFunctions(__name__)') ||
+           node.likeSource('_.extendWithFunctions(__name__)');
   },
   report: function (node, report) {
     var argNodes = node.nodes[1].nodes;

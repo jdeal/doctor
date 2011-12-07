@@ -64,6 +64,4 @@ extendWithFunctions(core,
                     {"h": hello}
                    );
 
-_.mixin(core);
-
-module.exports = _;
+module.exports = core;
