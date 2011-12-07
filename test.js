@@ -51,6 +51,8 @@ function t(u){
   
 }
 
-exports.t = t;
+//exports.t = t;
 
-_(module).export({'hello': hello});
+//_(module).export({'hello': hello});
+
+module.exports = t

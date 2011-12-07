@@ -42,7 +42,9 @@ function exportFunction(node, report, name, exportName) {
     var functionItem = report.item(node.item('module') + '.' + name);
     functionItem.api = true;
     functionItem.name = exportName;
+    return functionItem;
   }
+  return null;
 }
 
 /*
@@ -93,6 +95,7 @@ rules.push({
   _(module).export(...)
 */
 rules.push({
+  type: 'call',
   match: function (node) {
     return node.likeSource("_(module).export()");
   },
@@ -120,6 +123,25 @@ rules.push({
         report.remove(key);
       }
     });
+  }
+});
+
+/*
+  module.export = ...
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.nodes[0].value === '=' && node.nodes[1].likeSource('module.exports');
+  },
+  report: function (node, report) {
+    if (node.nodes[2].type === 'name') {
+      var name = node.nodes[2].value;
+      var f = exportFunction(node, report, name, 'function');
+      if (f) {
+        f.type = 'module-function';
+      }
+    }
   }
 });
 
