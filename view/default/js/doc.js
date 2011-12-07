@@ -137,6 +137,8 @@ doc.renderToc = function (report, group, element, nested) {
   element.append(ul);
 
   if (group.items) {
+    group.items.sort();
+
     group.items.forEach(function (itemKey, i) {
       var item = report.items[itemKey];
       if (item.type !== 'function') {
