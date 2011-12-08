@@ -70,12 +70,12 @@ rules.push({
   },
   report: function (node, report) {
     /*
-    if (!report.item('functions')){
+      if (!report.item('functions')){
       report.add({key: 'functions', type: 'group'})
-    }
-    if (!report.item('craps')){
+      }
+      if (!report.item('craps')){
       report.add({key: 'craps', type: 'group', groups: ['functions']})
-    }
+      }
     */
     var name = node.nodes[2].value;
     var dotLeft = node.nodes[1].nodes[0];
@@ -118,11 +118,12 @@ rules.push({
 });
 
 /*
-  module.export = ...
+  module.exports = ...
 */
 rules.push({
   type: 'assign',
   match: function (node) {
+    var matched = node.nodes[0].value === '=' && node.nodes[1].likeSource('module.exports');
     return node.nodes[0].value === '=' && node.nodes[1].likeSource('module.exports');
   },
   report: function (node, report) {
@@ -142,6 +143,12 @@ rules.push({
         if (f) {
           f.type = 'module-function';
         }
+      }
+    } else if (node.nodes[2].type === 'new') {
+      var constructorName = node.nodes[2].nodes[0].value;
+      var o = exportFunction(node, report, constructorName, 'object');
+      if (o) {
+        o.type = 'module-object';
       }
     }
   }
@@ -174,7 +181,7 @@ rules.push({
   type: 'call',
   match: function (node) {
     return node.likeSource('extendWithFunctions(__name__)') ||
-           node.likeSource('_.extendWithFunctions(__name__)');
+        node.likeSource('_.extendWithFunctions(__name__)');
   },
   report: function (node, report) {
     var argNodes = node.nodes[1].nodes;
