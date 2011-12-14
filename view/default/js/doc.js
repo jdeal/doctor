@@ -129,7 +129,18 @@ doc.renderContent = function (report, item, nested) {
 };
 
 doc.itemDisplayName = function (item) {
-  return item.package ? item.package.name : item.name;
+  var name = item.package ? item.package.name : item.name;
+  return name;
+};
+
+doc.getItem = function (report, itemKey) {
+  var item = report.items[itemKey];
+  var subitem = report.items[item.items[0]];
+  if (item.items.length === 1 && subitem.type === 'module-function')  {
+    subitem.package = item.package;
+    return subitem;
+  }
+  return item;
 };
 
 doc.renderToc = function (report, group, element, nested) {
@@ -140,7 +151,8 @@ doc.renderToc = function (report, group, element, nested) {
     group.items.sort();
 
     group.items.forEach(function (itemKey, i) {
-      var item = report.items[itemKey];
+      // var item = report.items[itemKey];
+      var item = doc.getItem(report, itemKey);
       if (item.type !== 'function') {
         var li = $('<li>');
         ul.append(li);
