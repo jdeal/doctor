@@ -131,15 +131,3 @@ test('findRules', function (t) {
 
   t.end();
 });
-
-test('isCapitalized', function (t) {
-  t.ok(util.isCapitalized('Hello'));
-  t.ok(util.isCapitalized('H'));
-  t.notOk(util.isCapitalized('hello'));
-  t.notOk(util.isCapitalized(''));
-  t.notOk(util.isCapitalized(' '));
-  t.notOk(util.isCapitalized(null));
-  t.notOk(util.isCapitalized());
-
-  t.end();
-});

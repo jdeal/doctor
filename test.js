@@ -8,6 +8,8 @@ function hello(/* a */ x) {
   return x;
 }
 
+var undef;
+
 // a
 // b
 // c
