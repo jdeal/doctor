@@ -128,17 +128,27 @@ doc.renderContent = function (report, item, nested) {
   });
 };
 
+/*
+ Get the display name for an item.  Return the item package name
+ if the item is a package, else return the item name.
+*/
 doc.itemDisplayName = function (item) {
-  var name = item.package ? item.package.name : item.name;
-  return name;
+  return item.package ? item.package.name : item.name;
 };
 
+/*
+  Get the item to display for the given item key.  If the item is a module
+  that exports a single, unamed object or function, then return that unamed
+  sub-item.  This removes an uncessary level of nesting in the TOC.
+ */
 doc.getItem = function (report, itemKey) {
   var item = report.items[itemKey];
-  var subitem = report.items[item.items[0]];
-  if (item.items.length === 1 && subitem.type === 'module-function')  {
-    subitem.package = item.package;
-    return subitem;
+  if (item.items && item.items.length === 1) {
+    var subitem = report.items[item.items[0]];
+    if (subitem.type.match(/^module-/)) {
+      subitem.package = item.package;
+      return subitem;
+    }
   }
   return item;
 };
@@ -151,9 +161,8 @@ doc.renderToc = function (report, group, element, nested) {
     group.items.sort();
 
     group.items.forEach(function (itemKey, i) {
-      // var item = report.items[itemKey];
       var item = doc.getItem(report, itemKey);
-      if (item.type !== 'function') {
+      if (item.type !== 'function' && item.type !== 'method') {
         var li = $('<li>');
         ul.append(li);
 

@@ -99,30 +99,37 @@ rules.push({
   }
 });
 
+function transformFunction(node) {
+  var nameNode = node.nodes[0];
+  var paramsNodes = node.nodes[1] ? node.nodes[1].nodes : [];
+  node.name = nameNode.value;
+  node.params = [];
+  paramsNodes.forEach(function (paramNode, i) {
+    var param = {
+      name: paramNode.value
+    };
+    if (node.paramTags) {
+      if (node.paramTags[param.name]) {
+        var tagValue = node.paramTags[param.name];
+        Object.keys(tagValue).forEach(function (key, i) {
+          if (key !== 'name') {
+            param[key] = tagValue[key];
+          }
+        });
+      }
+    }
+    node.params.push(param);
+  });
+}
+
 rules.push({
   type: 'define-function',
-  transform: function (node) {
-    var nameNode = node.nodes[0];
-    var paramsNodes = node.nodes[1] ? node.nodes[1].nodes : [];
-    node.name = nameNode.value;
-    node.params = [];
-    paramsNodes.forEach(function (paramNode, i) {
-      var param = {
-        name: paramNode.value
-      };
-      if (node.paramTags) {
-        if (node.paramTags[param.name]) {
-          var tagValue = node.paramTags[param.name];
-          Object.keys(tagValue).forEach(function (key, i) {
-            if (key !== 'name') {
-              param[key] = tagValue[key];
-            }
-          });
-        }
-      }
-      node.params.push(param);
-    });
-  }
+  transform: transformFunction
+});
+
+rules.push({
+  type: 'function',
+  transform: transformFunction
 });
 
 module.exports = rules;

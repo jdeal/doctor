@@ -234,6 +234,35 @@ rules.push({
   }
 });
 
+/*
+ *.prototype.*
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource('__name__.prototype.__name__ = function () {}');
+  },
+  report: function (node, report) {
+    var methodName = node.nodes[1].nodes[1].value;
+    var className = node.nodes[1].nodes[0].nodes[0].value;
+    var params = node.nodes[2].params;
+    var key = node.item('module') + '.' + className + '.' + methodName;
+    var group = node.item('module') + '.' + className;
+
+    debugger;
+
+    return {
+      type: 'function',
+      method: true,
+      key: key,
+      params: params,
+      description: node.description,
+      groups: [group],
+      name: methodName
+    };
+  }
+});
+
 rules.push({
   type: 'end-files',
   report: function (node, report) {
