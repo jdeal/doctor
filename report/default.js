@@ -249,8 +249,6 @@ rules.push({
     var key = node.item('module') + '.' + className + '.' + methodName;
     var group = node.item('module') + '.' + className;
 
-    debugger;
-
     return {
       type: 'function',
       method: true,
