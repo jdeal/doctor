@@ -87,7 +87,7 @@ doc.renderFunction = function (item, parent) {
   }) : [];
   var params = paramNames ? paramNames.join(', ') : '';
   var nameDiv = doc.addDiv(parent, '', 'itemName');
-  
+
   doc.addSpan(nameDiv, item.name + '(', 'function');
   doc.addSpan(nameDiv, params, 'arg');
   doc.addSpan(nameDiv, ')', 'function');
@@ -129,8 +129,8 @@ doc.renderContent = function (report, item, nested) {
 };
 
 /*
- Get the display name for an item.  Return the item package name
- if the item is a package, else return the item name.
+  Get the display name for an item.  Return the item package name
+  if the item is a package, else return the item name.
 */
 doc.itemDisplayName = function (item) {
   return item.package ? item.package.name : item.name;
@@ -140,12 +140,15 @@ doc.itemDisplayName = function (item) {
   Get the item to display for the given item key.  If the item is a module
   that exports a single, unamed object or function, then return that unamed
   sub-item.  This removes an uncessary level of nesting in the TOC.
- */
+*/
 doc.getItem = function (report, itemKey) {
   var item = report.items[itemKey];
   if (item.items && item.items.length === 1) {
     var subitem = report.items[item.items[0]];
     if (subitem.type.match(/^module-/)) {
+      if (subitem.required) {
+        subitem = report.items[subitem.items[0]];
+      }
       subitem.package = item.package;
       return subitem;
     }

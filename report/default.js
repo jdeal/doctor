@@ -1,3 +1,4 @@
+var path = require('path');
 var _ = require('underscore');
 
 var rules = [];
@@ -158,6 +159,36 @@ rules.push({
         o.type = 'module-object';
       }
     }
+  }
+});
+
+/*
+ exports.x = require('...')
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource("exports.__name__ = require()");
+  },
+  report: function (node, report) {
+    var name = node.nodes[1].nodes[1].value;
+    var requiredFile = node.nodes[2].nodes[1].nodes[0].value;
+
+    var fullPath = path.join(path.dirname(node.parent.fullPath), requiredFile);
+    if (!fullPath.match(/\.js$/)) {
+      fullPath += '.js';
+    }
+
+    return {
+      type: 'module-function',
+      constructor: isCapitalized(name),
+      key: node.item('module') + '.' + name,
+      description: node.description,
+      groups: [node.item('module')],
+      required: true,
+      items: [ fullPath ],
+      name: name
+    };
   }
 });
 
