@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 var test = require('tap').test;
 var postProcessReport = require('../lib/post-process').postProcessReport;
@@ -115,103 +115,6 @@ var inputReport = {
   }
 };
 
-var expectedReport = {
-  "items": {
-    "root": {
-      "type": "group",
-      "items": [
-        "modules"
-      ]
-    },
-    "modules": {
-      "type": "group",
-      "key": "modules",
-      "name": "Modules",
-      "items": [
-        "index.js"
-      ]
-    },
-    "index.js": {
-      "type": "module",
-      "key": "index.js",
-      "name": "apto-collection",
-      "groups": [
-        "modules"
-      ],
-      "package": {
-        "name": "apto-collection"
-      },
-      "items": [
-        "lib/set.js.Set",
-        "lib/set.js.Set.add",
-        "lib/set.js.Set.clear",
-        "lib/set.js.Set.contains"
-      ]
-    },
-    "lib/set.js.Set": {
-      "type": "function",
-      "constructor": true,
-      "key": "index.js.Set",
-      "params": [],
-      "groups": [
-        "lib/set.js"
-      ],
-      "name": "Set",
-      "items": [
-      ],
-      "api": true,
-      "description": "creates a new Set"
-    },
-    "lib/set.js.Set.add": {
-      "type": "function",
-      "method": true,
-      "key": "lib/set.js.Set.add",
-      "params": [
-        {
-          "name": "value"
-        }
-      ],
-      "groups": [
-        "lib/set.js.Set"
-      ],
-      "name": "add",
-      "api": true,
-      "description": "add an item to set"
-    },
-    "lib/set.js.Set.clear": {
-      "type": "function",
-      "method": true,
-      "key": "lib/set.js.Set.clear",
-      "params": [],
-      "groups": [
-        "lib/set.js.Set"
-      ],
-      "name": "clear",
-      "description": "remove all items from set",
-      "api": true
-    },
-    "lib/set.js.Set.contains": {
-      "type": "function",
-      "method": true,
-      "key": "lib/set.js.Set.contains",
-      "params": [
-        {
-          "name": "value"
-        }
-      ],
-      "groups": [
-        "lib/set.js.Set"
-      ],
-      "name": "contains",
-      "api": true,
-      "description": "test to see if set contains value"
-    }
-  }
-};
-
-
-var util = require('util');
-
 test('postProcessReport', function (t) {
   var report = postProcessReport(inputReport);
   t.ok(report);
@@ -225,12 +128,7 @@ test('postProcessReport', function (t) {
   // hoists required items
   t.equal(items['index.js'].items[0], 'lib/set.js.Set');
 
-  
-
-  // t.deepEqual(report, expectedReport);
   t.end();
 });
 
-//debugger;
-//postProcessReport(inputReport);
 

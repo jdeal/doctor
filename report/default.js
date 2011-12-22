@@ -35,7 +35,7 @@ rules.push({
     var name = node.nodes[0].value;
     return {
       type: 'function',
-      constructor: isCapitalized(name),
+      constructorFunction: isCapitalized(name),
       key: node.item('module') + '.' + name,
       params: node.params,
       description: node.description,
@@ -51,7 +51,7 @@ function exportFunction(node, report, name, exportName) {
     var functionItem = report.item(node.item('module') + '.' + name);
     functionItem.api = true;
     functionItem.name = exportName;
-    functionItem.constructor = isCapitalized(name);
+    functionItem.constructorFunction = isCapitalized(name);
     return functionItem;
   }
   return null;
@@ -181,7 +181,7 @@ rules.push({
 
     return {
       type: 'module-function',
-      constructor: isCapitalized(name),
+      constructorFunction: isCapitalized(name),
       key: node.item('module') + '.' + name,
       description: node.description,
       groups: [node.item('module')],

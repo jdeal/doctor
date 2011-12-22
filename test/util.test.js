@@ -121,13 +121,3 @@ test('findFunctions', function (t) {
   t.equal(functions[0].name, 'render');
   t.end();
 });
-
-test('findRules', function (t) {
-  var dir = 'transform';
-  var rules = util.findRules(['default'], dir);
-
-  // TODO: brittle test
-  t.equal(rules.length, 3);
-
-  t.end();
-});

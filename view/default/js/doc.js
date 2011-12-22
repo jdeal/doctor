@@ -81,7 +81,17 @@ doc.render = function (report) {
   firstLink.click();
 };
 
-doc.renderFunction = function (item, parent) {
+doc.getDisplayType = function (item) {
+  if (item.method) {
+    return "method";
+  } else if (item.constructorFunction) {
+    return "constructor";
+  } else {
+    return item.type;
+  }
+};
+
+doc.renderFunction = function (report, item, parent) {
   var paramNames = item.params ? item.params.map(function (param) {
     return param.name;
   }) : [];
@@ -92,14 +102,26 @@ doc.renderFunction = function (item, parent) {
   doc.addSpan(nameDiv, params, 'arg');
   doc.addSpan(nameDiv, ')', 'function');
 
-  var type = item.type;
-  if (!item.api) {
+  var type = doc.getDisplayType(item);
+  if (doc.isPrivate(report, item)) {
     type = 'private ' + type;
   }
   doc.addDiv(parent, type, 'itemType');
 
   var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
   $(descriptionDiv).append(item.description);
+};
+
+doc.isPrivate = function (report, item) {
+  return !item.api && !doc.isPublicMethod(report, item);
+};
+
+doc.getParentItem = function (report, item) {
+  return report.items[item.groups[0]];
+};
+
+doc.isPublicMethod = function (report, item) {
+  return item.method === true && doc.getParentItem(report, item).api === true;
 };
 
 doc.renderContent = function (report, item, nested) {
@@ -111,11 +133,13 @@ doc.renderContent = function (report, item, nested) {
   }
 
   doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
-  if (item.constructor) {
-    doc.addDiv(content, item.description, 'itemDescription');
-  }
 
   var itemKeys = item.items;
+  
+  if (item.constructorFunction) {
+    itemKeys = [item.key].concat(itemKeys);
+  }
+
   if (!itemKeys || itemKeys.length === 0) {
     doc.addDiv(content, 'defines no functions', 'missing');
     return;
@@ -125,9 +149,10 @@ doc.renderContent = function (report, item, nested) {
     var item = report.items[itemKey];
     var itemDiv = doc.addDiv(content, '', 'item');
 
-    var renderFn = 'render' + capitalise(item.type);
-    doc[renderFn](item, itemDiv);
-//    doc.renderFunction(item, itemDiv);
+    if (item.type === 'function' || (item.constructorFunction && item.api)) {
+//    if (item.type === 'function') {
+      doc.renderFunction(report, item, itemDiv);
+    }
   });
 };
 
@@ -139,26 +164,6 @@ doc.itemDisplayName = function (item) {
   return item.package ? item.package.name : item.name;
 };
 
-/*
-  Get the item to display for the given item key.  If the item is a module
-  that exports a single, unamed object or function, then return that unamed
-  sub-item.  This removes an uncessary level of nesting in the TOC.
-*/
-doc.getItem = function (report, itemKey) {
-  var item = report.items[itemKey];
-  // if (item.items && item.items.length === 1) {
-  //   var subitem = report.items[item.items[0]];
-  //   if (subitem.type.match(/^module-/)) {
-  //     if (subitem.required) {
-  //       subitem = report.items[subitem.items[0]];
-  //     }
-  //     subitem.package = item.package;
-  //     return subitem;
-  //   }
-  // }
-  return item;
-};
-
 doc.renderToc = function (report, group, element, nested) {
   var ul = $('<ul>');
   element.append(ul);
@@ -167,7 +172,7 @@ doc.renderToc = function (report, group, element, nested) {
     group.items.sort();
 
     group.items.forEach(function (itemKey, i) {
-      var item = doc.getItem(report, itemKey);
+      var item = report.items[itemKey];
       if (item.type !== 'function' && item.type !== 'method') {
         var li = $('<li>');
         ul.append(li);
