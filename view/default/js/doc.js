@@ -111,6 +111,9 @@ doc.renderContent = function (report, item, nested) {
   }
 
   doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
+  if (item.constructor) {
+    doc.addDiv(content, item.description, 'itemDescription');
+  }
 
   var itemKeys = item.items;
   if (!itemKeys || itemKeys.length === 0) {
@@ -122,9 +125,9 @@ doc.renderContent = function (report, item, nested) {
     var item = report.items[itemKey];
     var itemDiv = doc.addDiv(content, '', 'item');
 
-    // poor man's polymorhpism:
     var renderFn = 'render' + capitalise(item.type);
     doc[renderFn](item, itemDiv);
+//    doc.renderFunction(item, itemDiv);
   });
 };
 
@@ -143,16 +146,16 @@ doc.itemDisplayName = function (item) {
 */
 doc.getItem = function (report, itemKey) {
   var item = report.items[itemKey];
-  if (item.items && item.items.length === 1) {
-    var subitem = report.items[item.items[0]];
-    if (subitem.type.match(/^module-/)) {
-      if (subitem.required) {
-        subitem = report.items[subitem.items[0]];
-      }
-      subitem.package = item.package;
-      return subitem;
-    }
-  }
+  // if (item.items && item.items.length === 1) {
+  //   var subitem = report.items[item.items[0]];
+  //   if (subitem.type.match(/^module-/)) {
+  //     if (subitem.required) {
+  //       subitem = report.items[subitem.items[0]];
+  //     }
+  //     subitem.package = item.package;
+  //     return subitem;
+  //   }
+  // }
   return item;
 };
 
