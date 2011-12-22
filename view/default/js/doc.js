@@ -145,12 +145,14 @@ doc.renderContent = function (report, item, nested) {
     return;
   }
 
+  var parentItem = item;
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
-    var itemDiv = doc.addDiv(content, '', 'item');
-
-    if (item.type === 'function' || (item.constructorFunction && item.api)) {
-//    if (item.type === 'function') {
+    var displayableConstructor =
+        item.constructorFunction && item.api && parentItem.type !== 'module';
+    
+    if (item.type === 'function' || displayableConstructor) {
+      var itemDiv = doc.addDiv(content, '', 'item');
       doc.renderFunction(report, item, itemDiv);
     }
   });
