@@ -91,6 +91,27 @@ doc.getDisplayType = function (item) {
   }
 };
 
+doc.renderItemTags = function (item, parent) {
+  var html = '<dl class="itemTags">';
+
+  if (item.params && item.params.length > 0) {
+    html += '<dt>Parameters:</dt><dd>';
+    item.params.forEach(function (param) {
+      html += '<p class="param"><span class="paramName">' + param.name + '</span> - ' +
+          param.description + '</p>';
+    });
+    html += '</dd>';
+  }
+
+  if (item.returnTag) {
+    html += '<dt>Returns:</dt><dd>' + item.returnTag.description + '</dd>';
+  }
+
+  html += '</dl>';
+
+  $(parent).append(html);
+};
+
 doc.renderFunction = function (report, item, parent) {
   var paramNames = item.params ? item.params.map(function (param) {
     return param.name;
@@ -110,6 +131,8 @@ doc.renderFunction = function (report, item, parent) {
 
   var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
   $(descriptionDiv).append(item.description);
+
+  doc.renderItemTags(item, parent);
 };
 
 doc.isPrivate = function (report, item) {

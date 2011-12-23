@@ -131,3 +131,44 @@ header {
   font-family: title, sans-serif;
   font-size: 48pt;
 }
+
+.itemType {
+  font-style: italic;
+}
+
+dl.itemTags > dt {
+  font-weight: bold;
+}
+
+$itemTopMargin: 10px;
+$itemLeftMargin: 30px;
+
+span.paramName {
+  font-family: "Courier New", "Courier", monospace;
+}
+
+div.itemType {
+  margin-left: $itemLeftMargin;
+}
+
+div.itemDescription {
+  margin-top: $itemTopMargin;
+  margin-left: $itemLeftMargin;
+}
+
+dl.itemTags {
+  margin-top: $itemTopMargin;
+  margin-bottom: $itemTopMargin;
+}
+
+dl.itemTags > dt {
+  margin-top: $itemTopMargin;
+  margin-left: $itemLeftMargin;
+}
+
+dl.itemTags > dd {
+  margin-left: 60px;
+}
+
+
+  
