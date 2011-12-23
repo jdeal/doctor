@@ -91,20 +91,42 @@ doc.getDisplayType = function (item) {
   }
 };
 
+doc.typesHtml = function (types) {
+  if (types && types.length > 0) {
+    return '<span class="types">{' + types.join(', ') + '}</span> ';
+  }
+  return '';
+};
+
+doc.paramHtml = function (param) {
+  var html = '<dl class="param"><dt>' + doc.typesHtml(param.types) +
+      '<span class="paramName">' + param.name + '</span>';
+
+  if (param.optional) {
+    html += ' Optional';
+  }
+  if (param.defaultValue) {
+    html += ', Default: ' + param.defaultValue;
+  }
+  
+  html += '</dt><dd>' + param.description + '</dd>';
+  return html;
+};
+
 doc.renderItemTags = function (item, parent) {
   var html = '<dl class="itemTags">';
 
   if (item.params && item.params.length > 0) {
     html += '<dt>Parameters:</dt><dd>';
     item.params.forEach(function (param) {
-      html += '<p class="param"><span class="paramName">' + param.name + '</span> - ' +
-          param.description + '</p>';
+      html += doc.paramHtml(param);
     });
     html += '</dd>';
   }
 
   if (item.returnTag) {
-    html += '<dt>Returns:</dt><dd>' + item.returnTag.description + '</dd>';
+    html += '<dt>Returns:</dt><dd>' + doc.typesHtml(item.returnTag.types) +
+        item.returnTag.description + '</dd>';
   }
 
   html += '</dl>';

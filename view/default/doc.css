@@ -110,7 +110,14 @@ dl.itemTags > dt {
   font-weight: bold; }
 
 span.paramName {
-  font-family: "Courier New", "Courier", monospace; }
+  font-weight: bold; }
+
+dl.param > dd {
+  margin-left: 30px; }
+
+span.types {
+  font-family: "Courier New", "Courier", monospace;
+  font-style: italic; }
 
 div.itemType {
   margin-left: 30px; }

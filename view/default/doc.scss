@@ -144,7 +144,16 @@ $itemTopMargin: 10px;
 $itemLeftMargin: 30px;
 
 span.paramName {
+  font-weight: bold;
+}
+
+dl.param > dd {
+  margin-left: $itemLeftMargin;
+}
+
+span.types {
   font-family: "Courier New", "Courier", monospace;
+  font-style: italic;  
 }
 
 div.itemType {
