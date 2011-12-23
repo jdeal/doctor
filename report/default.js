@@ -38,6 +38,7 @@ rules.push({
       constructorFunction: isCapitalized(name),
       key: node.item('module') + '.' + name,
       params: node.params,
+      returnTag: node.returnTag,
       description: node.description,
       groups: [node.item('module')],
       name: name
@@ -285,6 +286,7 @@ rules.push({
       method: true,
       key: key,
       params: params,
+      returnTag: node.returnTag,
       description: node.description,
       groups: [group],
       name: methodName

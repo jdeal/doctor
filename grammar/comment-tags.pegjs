@@ -30,7 +30,7 @@ TagList
 
 Tag
   = __ tag:
-    ( ParamTag
+    ( ParamTag / ReturnTag
     ) {
       return tag;
     }
@@ -45,6 +45,11 @@ ParamTag
       tag.value.optional = true;
     }
     return tag;
+  }
+
+ReturnTag
+  = '@return' Blank+ text:Description {
+    return {name: 'return', value: {description: text}};
   }
 
 Identifier
