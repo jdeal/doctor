@@ -109,7 +109,8 @@ doc.paramHtml = function (param) {
     html += ', Default: ' + param.defaultValue;
   }
   
-  html += '</dt><dd>' + param.description + '</dd>';
+  var description = param.description || '';
+  html += '</dt><dd>' + description + '</dd>';
   return html;
 };
 
@@ -132,6 +133,11 @@ doc.renderItemTags = function (item, parent) {
   html += '</dl>';
 
   $(parent).append(html);
+};
+
+doc.renderClassDescription = function (report, item, parent) {
+  var classDiv = doc.addDiv(parent, 'class description goes here', 'classDescription');
+  
 };
 
 doc.renderFunction = function (report, item, parent) {
@@ -195,7 +201,11 @@ doc.renderContent = function (report, item, nested) {
     var item = report.items[itemKey];
     var displayableConstructor =
         item.constructorFunction && item.api && parentItem.type !== 'module';
-    
+
+    if (displayableConstructor) {
+      doc.renderClassDescription(report, item, content);
+    }
+
     if (item.type === 'function' || displayableConstructor) {
       var itemDiv = doc.addDiv(content, '', 'item');
       doc.renderFunction(report, item, itemDiv);
@@ -220,7 +230,7 @@ doc.renderToc = function (report, group, element, nested) {
 
     group.items.forEach(function (itemKey, i) {
       var item = report.items[itemKey];
-      if (item.type !== 'function' && item.type !== 'method') {
+      if (item.type !== 'function' && item.name) {
         var li = $('<li>');
         ul.append(li);
 

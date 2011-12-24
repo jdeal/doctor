@@ -69,6 +69,9 @@ var commentTagFunctions = {
   },
   "return": function (value, node) {
     node.returnTag = value;
+  },
+  "classDescription": function (value, node) {
+    node.classDescription = value;
   }
 };
 

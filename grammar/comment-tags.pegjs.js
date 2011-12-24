@@ -11,6 +11,7 @@ module.exports = (function(){
     parse: function(input, startRule) {
       var parseFunctions = {
         "Blank": parse_Blank,
+        "ClassTag": parse_ClassTag,
         "DefaultValue": parse_DefaultValue,
         "Description": parse_Description,
         "DescriptionSpan": parse_DescriptionSpan,
@@ -491,15 +492,20 @@ module.exports = (function(){
         var savedPos1 = pos;
         var result3 = parse___();
         if (result3 !== null) {
-          var result6 = parse_ParamTag();
-          if (result6 !== null) {
-            var result4 = result6;
+          var result7 = parse_ParamTag();
+          if (result7 !== null) {
+            var result4 = result7;
           } else {
-            var result5 = parse_ReturnTag();
-            if (result5 !== null) {
-              var result4 = result5;
+            var result6 = parse_ReturnTag();
+            if (result6 !== null) {
+              var result4 = result6;
             } else {
-              var result4 = null;;
+              var result5 = parse_ClassTag();
+              if (result5 !== null) {
+                var result4 = result5;
+              } else {
+                var result4 = null;;
+              };
             };
           }
           if (result4 !== null) {
@@ -874,6 +880,74 @@ module.exports = (function(){
               }
               return tag;
             })(result1[1], result1[3])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_ClassTag() {
+        var cacheKey = 'ClassTag@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        if (input.substr(pos, 6) === "@class") {
+          var result3 = "@class";
+          pos += 6;
+        } else {
+          var result3 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"@class\"");
+          }
+        }
+        if (result3 !== null) {
+          var result6 = parse_Blank();
+          if (result6 !== null) {
+            var result4 = [];
+            while (result6 !== null) {
+              result4.push(result6);
+              var result6 = parse_Blank();
+            }
+          } else {
+            var result4 = null;
+          }
+          if (result4 !== null) {
+            var result5 = parse_Description();
+            if (result5 !== null) {
+              var result1 = [result3, result4, result5];
+            } else {
+              var result1 = null;
+              pos = savedPos1;
+            }
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(text) {
+              return {name: 'classDescription', value: {description: text}};
+            })(result1[2])
           : null;
         if (result2 !== null) {
           var result0 = result2;
