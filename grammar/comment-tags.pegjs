@@ -30,13 +30,18 @@ TagList
 
 Tag
   = __ tag:
-    ( ParamTag
+    ( ParamTag / ReturnTag / ClassTag
     ) {
       return tag;
     }
 
+DefaultValue 
+  = Blank* "=" Blank* chars:[^\]]+ {
+    return chars.join('');
+  }
+
 ParamTag
-  = '@param' types:TypeList? Blank+ lbracket:("[" Blank*)? name:Identifier rbracket:(Blank* "]")? Blank+ text:Description {
+  = '@param' types:TypeList? Blank+ lbracket:("[" Blank*)? name:Identifier defaultValue:DefaultValue? rbracket:(Blank* "]")? Blank+ text:Description {
     var tag = {name: 'param', value: {name: name, description: text}};
     if (types !== '') {
       tag.value.types = types;
@@ -44,7 +49,24 @@ ParamTag
     if (lbracket !== '') {
       tag.value.optional = true;
     }
+    if (defaultValue !== '') {
+        tag.value.defaultValue = defaultValue;
+    }
     return tag;
+  }
+
+ReturnTag
+  = '@return' types:TypeList? Blank+ text:Description {
+    var tag = {name: 'return', value: {description: text}};
+    if (types !== '') {
+      tag.value.types = types;
+    }
+    return tag;
+  }
+
+ClassTag
+ = '@class' Blank+ text:Description {
+    return {name: 'classDescription', value: {description: text}};
   }
 
 Identifier

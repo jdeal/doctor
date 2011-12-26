@@ -66,6 +66,12 @@ var commentTagFunctions = {
       node.paramTags = {};
     }
     node.paramTags[value.name] = value;
+  },
+  "return": function (value, node) {
+    node.returnTag = value;
+  },
+  "classDescription": function (value, node) {
+    node.classDescription = value;
   }
 };
 
@@ -99,30 +105,46 @@ rules.push({
   }
 });
 
+function transformFunction(node) {
+  var nameNode = node.nodes[0];
+  var paramsNodes = node.nodes[1] ? node.nodes[1].nodes : [];
+  node.name = nameNode.value;
+  node.params = [];
+
+  var paramTags = node.paramTags;
+  // for anonymous functions assigned to variables, paramTags are in parent --
+  // i.e. '/* @param a */ var parent = function (a) {}'
+  if (node.paramTags === undefined && node.name === undefined &&
+      node.parent && node.parent.type === 'assign') {
+    paramTags = node.parent.paramTags;
+  }
+
+  paramsNodes.forEach(function (paramNode, i) {
+    var param = {
+      name: paramNode.value
+    };
+    if (paramTags) {
+      if (paramTags[param.name]) {
+        var tagValue = paramTags[param.name];
+        Object.keys(tagValue).forEach(function (key, i) {
+          if (key !== 'name') {
+            param[key] = tagValue[key];
+          }
+        });
+      }
+    }
+    node.params.push(param);
+  });
+}
+
 rules.push({
   type: 'define-function',
-  transform: function (node) {
-    var nameNode = node.nodes[0];
-    var paramsNodes = node.nodes[1] ? node.nodes[1].nodes : [];
-    node.name = nameNode.value;
-    node.params = [];
-    paramsNodes.forEach(function (paramNode, i) {
-      var param = {
-        name: paramNode.value
-      };
-      if (node.paramTags) {
-        if (node.paramTags[param.name]) {
-          var tagValue = node.paramTags[param.name];
-          Object.keys(tagValue).forEach(function (key, i) {
-            if (key !== 'name') {
-              param[key] = tagValue[key];
-            }
-          });
-        }
-      }
-      node.params.push(param);
-    });
-  }
+  transform: transformFunction
+});
+
+rules.push({
+  type: 'function',
+  transform: transformFunction
 });
 
 module.exports = rules;

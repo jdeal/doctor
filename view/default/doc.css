@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @font-face {
   font-family: title;
   /*src: url('fonts/kulminoituva.ttf');*/
@@ -101,3 +102,37 @@ header {
 .title {
   font-family: title, sans-serif;
   font-size: 48pt; }
+
+.itemType {
+  font-style: italic; }
+
+dl.itemTags > dt {
+  font-weight: bold; }
+
+span.paramName {
+  font-weight: bold; }
+
+dl.param > dd {
+  margin-left: 30px; }
+
+span.types {
+  font-family: "Courier New", "Courier", monospace;
+  font-style: italic; }
+
+div.itemType {
+  margin-left: 30px; }
+
+div.itemDescription {
+  margin-top: 10px;
+  margin-left: 30px; }
+
+dl.itemTags {
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+dl.itemTags > dt {
+  margin-top: 10px;
+  margin-left: 30px; }
+
+dl.itemTags > dd {
+  margin-left: 60px; }

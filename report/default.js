@@ -1,6 +1,11 @@
+var path = require('path');
 var _ = require('underscore');
 
 var rules = [];
+
+function isCapitalized(string) {
+  return (string && string.match(/^[A-Z]/)) ? true : false;
+}
 
 rules.push({
   type: 'file',
@@ -30,8 +35,11 @@ rules.push({
     var name = node.nodes[0].value;
     return {
       type: 'function',
+      constructorFunction: isCapitalized(name),
       key: node.item('module') + '.' + name,
       params: node.params,
+      classDescription: node.classDescription,
+      returnTag: node.returnTag,
       description: node.description,
       groups: [node.item('module')],
       name: name
@@ -45,6 +53,7 @@ function exportFunction(node, report, name, exportName) {
     var functionItem = report.item(node.item('module') + '.' + name);
     functionItem.api = true;
     functionItem.name = exportName;
+    functionItem.constructorFunction = isCapitalized(name);
     return functionItem;
   }
   return null;
@@ -139,7 +148,8 @@ rules.push({
           }
         });
       } else {
-        var f = exportFunction(node, report, name, 'function');
+        var exportName = name ? name : 'function';
+        var f = exportFunction(node, report, name, exportName);
         if (f) {
           f.type = 'module-function';
         }
@@ -151,6 +161,36 @@ rules.push({
         o.type = 'module-object';
       }
     }
+  }
+});
+
+/*
+ exports.x = require('...')
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource("exports.__name__ = require()");
+  },
+  report: function (node, report) {
+    var name = node.nodes[1].nodes[1].value;
+    var requiredFile = node.nodes[2].nodes[1].nodes[0].value;
+
+    var fullPath = path.join(path.dirname(node.parent.fullPath), requiredFile);
+    if (!fullPath.match(/\.js$/)) {
+      fullPath += '.js';
+    }
+
+    return {
+      type: 'module-function',
+      constructorFunction: isCapitalized(name),
+      key: node.item('module') + '.' + name,
+      description: node.description,
+      groups: [node.item('module')],
+      required: true,
+      items: [ fullPath ],
+      name: name
+    };
   }
 });
 
@@ -224,6 +264,35 @@ rules.push({
     if (obj) {
       _.extend(node.item('object._'), obj);
     }
+  }
+});
+
+/*
+ *.prototype.*
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource('__name__.prototype.__name__ = function () {}');
+  },
+  report: function (node, report) {
+    var methodName = node.nodes[1].nodes[1].value;
+    var className = node.nodes[1].nodes[0].nodes[0].value;
+    var params = node.nodes[2].params;
+    var key = node.item('module') + '.' + className + '.' + methodName;
+    var group = node.item('module') + '.' + className;
+
+    return {
+      type: 'function',
+      method: true,
+      key: key,
+      params: params,
+      classDescription: node.classDescription,
+      returnTag: node.returnTag,
+      description: node.description,
+      groups: [group],
+      name: methodName
+    };
   }
 });
 
