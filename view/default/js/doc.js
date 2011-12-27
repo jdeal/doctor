@@ -135,6 +135,28 @@ doc.renderItemTags = function (item, parent) {
   $(parent).append(html);
 };
 
+doc.renderClassDescription = function (item, parent) {
+  $(parent).append('<span class="classLabel">class ' + item.name + '</span>');
+
+  var classDiv = doc.addDiv(parent, '', 'classDescription');
+
+  if (item.classDescription) {
+    $(classDiv).append(item.classDescription.description);
+  }
+
+  if (item.properties && item.properties.length > 0) {
+    var html = '<dl class="itemTags">';
+    html += '<dt>Properties:</dt><dd>';
+    item.properties.forEach(function (type) {
+      html += doc.paramHtml(type);
+    });
+    html += '</dd>';
+    html += '</dl>';
+
+    $(classDiv).append(html);
+  }
+};
+
 doc.renderFunction = function (report, item, parent) {
   var paramNames = item.params ? item.params.map(function (param) {
     return param.name;
@@ -195,14 +217,13 @@ doc.renderContent = function (report, item, nested) {
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
 
-    if (item.constructorFunction && item.api && item.classDescription) {
-      var classDiv = doc.addDiv(content, '', 'classDescription');
-      $(classDiv).append(item.classDescription.description);
+    if (item.constructorFunction && item.api) {
+      doc.renderClassDescription(item, content);
     }
 
     var displayableConstructor = item.constructorFunction && item.api &&
         parentItem.type !== 'module';
-        
+    
     if (item.type === 'function' && item.api) {
       var itemDiv = doc.addDiv(content, '', 'item');
       doc.renderFunction(report, item, itemDiv);
