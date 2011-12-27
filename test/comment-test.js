@@ -51,15 +51,17 @@ test('optional param tag', function (t) {
   t.end();
 });
 
-test('class description', function (t) {
-  var comment = "@class description";
-  var ast = parser.parse(comment);
+test('class and constructor description', function (t) {
+  var comment = "@class class description\n" +
+      "@constructor constructor description";
 
-  t.equal(ast.length, 1);
+  var ast = parser.parse(comment);
+  t.equal(ast.length, 2);
+
   var tag = ast[0];
 
   t.equal(tag.name, 'classDescription');
-  t.equal(tag.value.description, 'description');
+  t.equal(tag.value.description, 'class description');
 
   t.end();
 });

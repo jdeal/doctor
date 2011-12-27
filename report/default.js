@@ -40,6 +40,7 @@ rules.push({
       params: node.params,
       classDescription: node.classDescription,
       returnTag: node.returnTag,
+      constructorDescription: node.constructorDescription,
       description: node.description,
       groups: [node.item('module')],
       name: name
@@ -288,6 +289,7 @@ rules.push({
       key: key,
       params: params,
       classDescription: node.classDescription,
+      constructorDescription: node.constructorDescription,
       returnTag: node.returnTag,
       description: node.description,
       groups: [group],

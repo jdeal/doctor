@@ -72,6 +72,9 @@ var commentTagFunctions = {
   },
   "classDescription": function (value, node) {
     node.classDescription = value;
+  },
+  "constructor": function (value, node) {
+    node.constructorDescription = value;
   }
 };
 
@@ -98,6 +101,7 @@ rules.push({
     var tags = commentTransform(node, transform);
     node.commentTags = tags;
     node.commentTags.forEach(function (tag, i) {
+      debugger;
       if (tag.name in commentTagFunctions) {
         commentTagFunctions[tag.name](tag.value, node);
       }
