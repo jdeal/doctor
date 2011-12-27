@@ -135,11 +135,6 @@ doc.renderItemTags = function (item, parent) {
   $(parent).append(html);
 };
 
-doc.renderClassDescription = function (report, item, parent) {
-  var classDiv = doc.addDiv(parent, 'class description goes here', 'classDescription');
-  
-};
-
 doc.renderFunction = function (report, item, parent) {
   var paramNames = item.params ? item.params.map(function (param) {
     return param.name;
@@ -158,7 +153,7 @@ doc.renderFunction = function (report, item, parent) {
   doc.addDiv(parent, type, 'itemType');
 
   var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
-  $(descriptionDiv).append(item.description);
+  $(descriptionDiv).append(item.description || item.constructorDescription);
 
   doc.renderItemTags(item, parent);
 };
@@ -199,14 +194,16 @@ doc.renderContent = function (report, item, nested) {
   var parentItem = item;
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
-    var displayableConstructor =
-        item.constructorFunction && item.api && parentItem.type !== 'module';
 
-    if (displayableConstructor) {
-      doc.renderClassDescription(report, item, content);
+    if (item.constructorFunction && item.api && item.classDescription) {
+      var classDiv = doc.addDiv(content, '', 'classDescription');
+      $(classDiv).append(item.classDescription.description);
     }
 
-    if (item.type === 'function' || displayableConstructor) {
+    var displayableConstructor = item.constructorFunction && item.api &&
+        parentItem.type !== 'module';
+        
+    if (item.type === 'function' && item.api) {
       var itemDiv = doc.addDiv(content, '', 'item');
       doc.renderFunction(report, item, itemDiv);
     }
