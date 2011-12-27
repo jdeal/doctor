@@ -75,6 +75,10 @@ var commentTagFunctions = {
   },
   "constructor": function (value, node) {
     node.constructorDescription = value;
+  },
+  "property": function (value, node) {
+    node.properties = node.properties || [];
+    node.properties.push(value);
   }
 };
 

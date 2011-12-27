@@ -42,6 +42,7 @@ rules.push({
       returnTag: node.returnTag,
       constructorDescription: node.constructorDescription,
       description: node.description,
+      properties: node.properties,
       groups: [node.item('module')],
       name: name
     };
@@ -187,6 +188,7 @@ rules.push({
       constructorFunction: isCapitalized(name),
       key: node.item('module') + '.' + name,
       description: node.description,
+      properties: node.properties,
       groups: [node.item('module')],
       required: true,
       items: [ fullPath ],
@@ -292,6 +294,7 @@ rules.push({
       constructorDescription: node.constructorDescription,
       returnTag: node.returnTag,
       description: node.description,
+      properties: node.properties,
       groups: [group],
       name: methodName
     };
