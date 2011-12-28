@@ -135,9 +135,43 @@ doc.renderItemTags = function (item, parent) {
   $(parent).append(html);
 };
 
-doc.renderClassDescription = function (report, item, parent) {
-  var classDiv = doc.addDiv(parent, 'class description goes here', 'classDescription');
-  
+doc.renderExamples = function (item, parent) {
+  if (item.examples && item.examples.length > 0) {
+    var html = '<dl class="examples"><dt>Examples:</dt><dd>';
+
+    item.examples.forEach(function (example) {
+      example = '\n ' + example; // TODO - why the space?
+      html += '<code class="example">' + example + '</code>';
+    });
+
+    html += '</dd></dl>';
+
+    $(parent).append(html);
+  }
+};
+
+doc.renderClassDescription = function (item, parent) {
+  $(parent).append('<span class="classLabel">class ' + item.name + '</span>');
+
+  var classDiv = doc.addDiv(parent, '', 'classDescription');
+
+  if (item.classDescription) {
+    $(classDiv).append(item.classDescription.description);
+  }
+
+  if (item.properties && item.properties.length > 0) {
+    var html = '<dl class="itemTags">';
+    html += '<dt>Properties:</dt><dd>';
+    item.properties.forEach(function (type) {
+      html += doc.paramHtml(type);
+    });
+    html += '</dd>';
+    html += '</dl>';
+
+    $(classDiv).append(html);
+  }
+
+  doc.renderExamples(item, parent);
 };
 
 doc.renderFunction = function (report, item, parent) {
@@ -158,9 +192,10 @@ doc.renderFunction = function (report, item, parent) {
   doc.addDiv(parent, type, 'itemType');
 
   var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
-  $(descriptionDiv).append(item.description);
+  $(descriptionDiv).append(item.description || item.constructorDescription);
 
   doc.renderItemTags(item, parent);
+  doc.renderExamples(item, parent);
 };
 
 doc.isPrivate = function (report, item) {
@@ -199,16 +234,25 @@ doc.renderContent = function (report, item, nested) {
   var parentItem = item;
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
-    var displayableConstructor =
-        item.constructorFunction && item.api && parentItem.type !== 'module';
 
-    if (displayableConstructor) {
-      doc.renderClassDescription(report, item, content);
+    if (item.constructorFunction && item.api) {
+      doc.renderClassDescription(item, content);
     }
 
-    if (item.type === 'function' || displayableConstructor) {
+    var displayableConstructor = item.constructorFunction && item.api &&
+        parentItem.type !== 'module';
+    
+    if (item.type === 'function' && item.api || displayableConstructor) {
       var itemDiv = doc.addDiv(content, '', 'item');
       doc.renderFunction(report, item, itemDiv);
+    }
+
+    if (displayableConstructor && item.items) {
+      item.items.forEach(function (subItemKey) {
+        var subItemDiv = doc.addDiv(content, '', 'item');
+        var subItem = report.items[subItemKey];
+        doc.renderFunction(report, subItem, subItemDiv);
+      });
     }
   });
 };

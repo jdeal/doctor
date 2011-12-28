@@ -109,6 +109,10 @@ header {
   font-weight: bold;
 }
 
+span.label {
+  font-weight: bold;
+}
+
 .item {
   padding-top: $space;
 }
@@ -179,5 +183,33 @@ dl.itemTags > dd {
   margin-left: 60px;
 }
 
+span.classLabel {
+  color: $textColor;
+  font-family: monospace;
+  font-size: 18pt;
+  font-weight: bold;
+  margin-top: 10px;  
+  display: block;
+}
 
+.classDescription {
+  margin-left: $itemLeftMargin;  
+}
+
+.properties {
+  margin-top: 10px;
+}
   
+dl.examples {
+  margin-left: $itemLeftMargin;
+}
+
+dl.examples > dt {
+  font-weight: bold;
+  margin-left: $itemLeftMargin;  
+}
+
+code {
+  font-family: "Courier New", "Courier", monospace;
+  white-space: pre;
+}

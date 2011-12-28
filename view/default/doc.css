@@ -85,6 +85,9 @@ header {
   font-size: 18pt;
   font-weight: bold; }
 
+span.label {
+  font-weight: bold; }
+
 .item {
   padding-top: 10px; }
 
@@ -136,3 +139,28 @@ dl.itemTags > dt {
 
 dl.itemTags > dd {
   margin-left: 60px; }
+
+span.classLabel {
+  color: #2e7db2;
+  font-family: monospace;
+  font-size: 18pt;
+  font-weight: bold;
+  margin-top: 10px;
+  display: block; }
+
+.classDescription {
+  margin-left: 30px; }
+
+.properties {
+  margin-top: 10px; }
+
+dl.examples {
+  margin-left: 30px; }
+
+dl.examples > dt {
+  font-weight: bold;
+  margin-left: 30px; }
+
+code {
+  font-family: "Courier New", "Courier", monospace;
+  white-space: pre; }
