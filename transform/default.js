@@ -11,12 +11,14 @@ rules.push({
     var commentText = "";
 
     comments.forEach(function (comment, i) {
+      debugger;
       var text;
       if (comment.indexOf('/*') === 0) {
         text = '  ' + comment.substr(2, comment.length - 4);
         text = text.replace(/^[\s\*]*(\r\n|\n|\r)/, '');
         text = text.replace(/(\r\n|\n|\r)[\s\*]*$/, '');
-        var lines = text.split(/(\r\n|\n|\r)/);
+        // var lines = text.split(/(\r\n|\n|\r)/);
+        var lines = text.split(/\r\n|\n|\r/);
         lines.forEach(function (line, i) {
           var padMatch = line.match(/^\s*\*/);
           if (padMatch) {
@@ -31,6 +33,7 @@ rules.push({
         text = '\n' + text;
       }
       commentText += text;
+      debugger;
     });
 
     var lines = commentText.split(/\n/);
@@ -53,6 +56,7 @@ rules.push({
       });
     }
 
+    debugger;
     node.commentText = lines.join('\n');
   }
 });
@@ -79,6 +83,10 @@ var commentTagFunctions = {
   "property": function (value, node) {
     node.properties = node.properties || [];
     node.properties.push(value);
+  },
+  "example": function (value, node) {
+    node.examples = node.examples || [];
+    node.examples.push(value);
   }
 };
 

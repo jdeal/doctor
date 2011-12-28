@@ -200,3 +200,16 @@ span.classLabel {
   margin-top: 10px;
 }
   
+dl.examples {
+  margin-left: $itemLeftMargin;
+}
+
+dl.examples > dt {
+  font-weight: bold;
+  margin-left: $itemLeftMargin;  
+}
+
+code {
+  font-family: "Courier New", "Courier", monospace;
+  white-space: pre;
+}

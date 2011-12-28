@@ -30,7 +30,7 @@ TagList
 
 Tag
   = __ tag:
-    ( ParamTag / ReturnTag / ClassTag / ConstructorTag / PropertyTag
+    ( ParamTag / ReturnTag / ClassTag / ConstructorTag / PropertyTag / ExampleTag
     ) {
       return tag;
     }
@@ -77,6 +77,11 @@ ConstructorTag
 PropertyTag
   = '@property' types:TypeList? Blank+ name:Identifier Blank+ text:Description {
     return {name: 'property', value: {name: name, description: text, types: types}};
+  }
+
+ExampleTag
+  = '@example' text:Description {
+    return {name: 'example', value: text};
   }
 
 Identifier

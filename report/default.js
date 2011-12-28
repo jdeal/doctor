@@ -43,6 +43,7 @@ rules.push({
       constructorDescription: node.constructorDescription,
       description: node.description,
       properties: node.properties,
+      examples: node.examples,
       groups: [node.item('module')],
       name: name
     };
@@ -189,6 +190,7 @@ rules.push({
       key: node.item('module') + '.' + name,
       description: node.description,
       properties: node.properties,
+      examples: node.examples,
       groups: [node.item('module')],
       required: true,
       items: [ fullPath ],
@@ -295,6 +297,7 @@ rules.push({
       returnTag: node.returnTag,
       description: node.description,
       properties: node.properties,
+      examples: node.examples,
       groups: [group],
       name: methodName
     };

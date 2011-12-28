@@ -135,6 +135,21 @@ doc.renderItemTags = function (item, parent) {
   $(parent).append(html);
 };
 
+doc.renderExamples = function (item, parent) {
+  if (item.examples && item.examples.length > 0) {
+    var html = '<dl class="examples"><dt>Examples:</dt><dd>';
+
+    item.examples.forEach(function (example) {
+      example = '\n ' + example; // TODO - why the space?
+      html += '<code class="example">' + example + '</code>';
+    });
+
+    html += '</dd></dl>';
+
+    $(parent).append(html);
+  }
+};
+
 doc.renderClassDescription = function (item, parent) {
   $(parent).append('<span class="classLabel">class ' + item.name + '</span>');
 
@@ -155,6 +170,8 @@ doc.renderClassDescription = function (item, parent) {
 
     $(classDiv).append(html);
   }
+
+  doc.renderExamples(item, parent);
 };
 
 doc.renderFunction = function (report, item, parent) {
@@ -178,6 +195,7 @@ doc.renderFunction = function (report, item, parent) {
   $(descriptionDiv).append(item.description || item.constructorDescription);
 
   doc.renderItemTags(item, parent);
+  doc.renderExamples(item, parent);
 };
 
 doc.isPrivate = function (report, item) {
@@ -224,9 +242,17 @@ doc.renderContent = function (report, item, nested) {
     var displayableConstructor = item.constructorFunction && item.api &&
         parentItem.type !== 'module';
     
-    if (item.type === 'function' && item.api) {
+    if (item.type === 'function' && item.api || displayableConstructor) {
       var itemDiv = doc.addDiv(content, '', 'item');
       doc.renderFunction(report, item, itemDiv);
+    }
+
+    if (displayableConstructor && item.items) {
+      item.items.forEach(function (subItemKey) {
+        var subItemDiv = doc.addDiv(content, '', 'item');
+        var subItem = report.items[subItemKey];
+        doc.renderFunction(report, subItem, subItemDiv);
+      });
     }
   });
 };

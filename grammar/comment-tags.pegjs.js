@@ -16,6 +16,7 @@ module.exports = (function(){
         "DefaultValue": parse_DefaultValue,
         "Description": parse_Description,
         "DescriptionSpan": parse_DescriptionSpan,
+        "ExampleTag": parse_ExampleTag,
         "Identifier": parse_Identifier,
         "IdentifierChar": parse_IdentifierChar,
         "IdentifierStart": parse_IdentifierStart,
@@ -494,27 +495,32 @@ module.exports = (function(){
         var savedPos1 = pos;
         var result3 = parse___();
         if (result3 !== null) {
-          var result9 = parse_ParamTag();
-          if (result9 !== null) {
-            var result4 = result9;
+          var result10 = parse_ParamTag();
+          if (result10 !== null) {
+            var result4 = result10;
           } else {
-            var result8 = parse_ReturnTag();
-            if (result8 !== null) {
-              var result4 = result8;
+            var result9 = parse_ReturnTag();
+            if (result9 !== null) {
+              var result4 = result9;
             } else {
-              var result7 = parse_ClassTag();
-              if (result7 !== null) {
-                var result4 = result7;
+              var result8 = parse_ClassTag();
+              if (result8 !== null) {
+                var result4 = result8;
               } else {
-                var result6 = parse_ConstructorTag();
-                if (result6 !== null) {
-                  var result4 = result6;
+                var result7 = parse_ConstructorTag();
+                if (result7 !== null) {
+                  var result4 = result7;
                 } else {
-                  var result5 = parse_PropertyTag();
-                  if (result5 !== null) {
-                    var result4 = result5;
+                  var result6 = parse_PropertyTag();
+                  if (result6 !== null) {
+                    var result4 = result6;
                   } else {
-                    var result4 = null;;
+                    var result5 = parse_ExampleTag();
+                    if (result5 !== null) {
+                      var result4 = result5;
+                    } else {
+                      var result4 = null;;
+                    };
                   };
                 };
               };
@@ -1124,6 +1130,59 @@ module.exports = (function(){
           ? (function(types, name, text) {
               return {name: 'property', value: {name: name, description: text, types: types}};
             })(result1[1], result1[3], result1[5])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_ExampleTag() {
+        var cacheKey = 'ExampleTag@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        if (input.substr(pos, 8) === "@example") {
+          var result3 = "@example";
+          pos += 8;
+        } else {
+          var result3 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"@example\"");
+          }
+        }
+        if (result3 !== null) {
+          var result4 = parse_Description();
+          if (result4 !== null) {
+            var result1 = [result3, result4];
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(text) {
+              return {name: 'example', value: text};
+            })(result1[1])
           : null;
         if (result2 !== null) {
           var result0 = result2;

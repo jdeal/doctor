@@ -66,8 +66,6 @@ test('class and constructor description', function (t) {
   t.end();
 });
 
-var util = require('util');
-
 test('properties', function (t) {
   var comment = "@property propOne property one description\n" +
       "@property {String} propTwo property two description";
@@ -76,7 +74,6 @@ test('properties', function (t) {
   t.equal(ast.length, 2);
 
   var prop1 = ast[0];
-  console.log(util.inspect(prop1));
   t.equal(prop1.name, 'property');
   t.equal(prop1.value.name, 'propOne');
   t.equal(prop1.value.description, 'property one description');
@@ -88,6 +85,21 @@ test('properties', function (t) {
   t.equal(prop2.value.description, 'property two description');
   t.equal(prop2.value.types.length, 1);
   t.equal(prop2.value.types[0], 'String');
+
+  t.end();
+});
+
+test('example', function (t) {
+  var comment = '@example\n' +
+      'var x = 3;\n' +
+      'var y = 4;';
+  
+  var ast = parser.parse(comment);
+  t.equal(ast.length, 1);
+
+  var example = ast[0];
+  t.equal(example.name, 'example');
+  t.equal(example.value, 'var x = 3;\nvar y = 4;');
 
   t.end();
 });
