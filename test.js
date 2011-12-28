@@ -1,3 +1,4 @@
+var t;
 /*
  * hello world
  */
