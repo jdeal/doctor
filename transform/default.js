@@ -11,7 +11,6 @@ rules.push({
     var commentText = "";
 
     comments.forEach(function (comment, i) {
-      debugger;
       var text;
       if (comment.indexOf('/*') === 0) {
         text = '  ' + comment.substr(2, comment.length - 4);
@@ -33,7 +32,6 @@ rules.push({
         text = '\n' + text;
       }
       commentText += text;
-      debugger;
     });
 
     var lines = commentText.split(/\n/);
@@ -56,7 +54,6 @@ rules.push({
       });
     }
 
-    debugger;
     node.commentText = lines.join('\n');
   }
 });
@@ -87,6 +84,12 @@ var commentTagFunctions = {
   "example": function (value, node) {
     node.examples = node.examples || [];
     node.examples.push(value);
+  },
+  "visibility": function (value, node) {
+    node.visibility = value;
+  },
+  "extends": function (value, node) {
+    node.extends = value;
   }
 };
 
@@ -113,7 +116,6 @@ rules.push({
     var tags = commentTransform(node, transform);
     node.commentTags = tags;
     node.commentTags.forEach(function (tag, i) {
-      debugger;
       if (tag.name in commentTagFunctions) {
         commentTagFunctions[tag.name](tag.value, node);
       }

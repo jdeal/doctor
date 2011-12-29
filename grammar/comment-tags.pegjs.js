@@ -17,6 +17,7 @@ module.exports = (function(){
         "Description": parse_Description,
         "DescriptionSpan": parse_DescriptionSpan,
         "ExampleTag": parse_ExampleTag,
+        "ExtendsTag": parse_ExtendsTag,
         "Identifier": parse_Identifier,
         "IdentifierChar": parse_IdentifierChar,
         "IdentifierStart": parse_IdentifierStart,
@@ -28,6 +29,7 @@ module.exports = (function(){
         "Tag": parse_Tag,
         "TagList": parse_TagList,
         "TypeList": parse_TypeList,
+        "VisibilityTag": parse_VisibilityTag,
         "WhiteSpace": parse_WhiteSpace,
         "Zs": parse_Zs,
         "_": parse__,
@@ -495,31 +497,41 @@ module.exports = (function(){
         var savedPos1 = pos;
         var result3 = parse___();
         if (result3 !== null) {
-          var result10 = parse_ParamTag();
-          if (result10 !== null) {
-            var result4 = result10;
+          var result12 = parse_ParamTag();
+          if (result12 !== null) {
+            var result4 = result12;
           } else {
-            var result9 = parse_ReturnTag();
-            if (result9 !== null) {
-              var result4 = result9;
+            var result11 = parse_ReturnTag();
+            if (result11 !== null) {
+              var result4 = result11;
             } else {
-              var result8 = parse_ClassTag();
-              if (result8 !== null) {
-                var result4 = result8;
+              var result10 = parse_ClassTag();
+              if (result10 !== null) {
+                var result4 = result10;
               } else {
-                var result7 = parse_ConstructorTag();
-                if (result7 !== null) {
-                  var result4 = result7;
+                var result9 = parse_ConstructorTag();
+                if (result9 !== null) {
+                  var result4 = result9;
                 } else {
-                  var result6 = parse_PropertyTag();
-                  if (result6 !== null) {
-                    var result4 = result6;
+                  var result8 = parse_PropertyTag();
+                  if (result8 !== null) {
+                    var result4 = result8;
                   } else {
-                    var result5 = parse_ExampleTag();
-                    if (result5 !== null) {
-                      var result4 = result5;
+                    var result7 = parse_ExampleTag();
+                    if (result7 !== null) {
+                      var result4 = result7;
                     } else {
-                      var result4 = null;;
+                      var result6 = parse_VisibilityTag();
+                      if (result6 !== null) {
+                        var result4 = result6;
+                      } else {
+                        var result5 = parse_ExtendsTag();
+                        if (result5 !== null) {
+                          var result4 = result5;
+                        } else {
+                          var result4 = null;;
+                        };
+                      };
                     };
                   };
                 };
@@ -538,7 +550,7 @@ module.exports = (function(){
         }
         var result2 = result1 !== null
           ? (function(tag) {
-                return tag;
+                return tag
               })(result1[1])
           : null;
         if (result2 !== null) {
@@ -1183,6 +1195,132 @@ module.exports = (function(){
           ? (function(text) {
               return {name: 'example', value: text};
             })(result1[1])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_VisibilityTag() {
+        var cacheKey = 'VisibilityTag@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        if (input.substr(pos, 7) === "@public") {
+          var result4 = "@public";
+          pos += 7;
+        } else {
+          var result4 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"@public\"");
+          }
+        }
+        if (result4 !== null) {
+          var result1 = result4;
+        } else {
+          if (input.substr(pos, 8) === "@private") {
+            var result3 = "@private";
+            pos += 8;
+          } else {
+            var result3 = null;
+            if (reportMatchFailures) {
+              matchFailed("\"@private\"");
+            }
+          }
+          if (result3 !== null) {
+            var result1 = result3;
+          } else {
+            var result1 = null;;
+          };
+        }
+        var result2 = result1 !== null
+          ? (function(visibility) {
+              return {name: 'visibility', value: visibility.substring(1)};
+            })(result1)
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_ExtendsTag() {
+        var cacheKey = 'ExtendsTag@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        if (input.substr(pos, 8) === "@extends") {
+          var result3 = "@extends";
+          pos += 8;
+        } else {
+          var result3 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"@extends\"");
+          }
+        }
+        if (result3 !== null) {
+          var result6 = parse_Blank();
+          if (result6 !== null) {
+            var result4 = [];
+            while (result6 !== null) {
+              result4.push(result6);
+              var result6 = parse_Blank();
+            }
+          } else {
+            var result4 = null;
+          }
+          if (result4 !== null) {
+            var result5 = parse_Identifier();
+            if (result5 !== null) {
+              var result1 = [result3, result4, result5];
+            } else {
+              var result1 = null;
+              pos = savedPos1;
+            }
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(super) {
+              return {name: 'extends', value: super};
+            })(result1[2])
           : null;
         if (result2 !== null) {
           var result0 = result2;

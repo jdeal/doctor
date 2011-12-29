@@ -174,6 +174,17 @@ doc.renderClassDescription = function (item, parent) {
   doc.renderExamples(item, parent);
 };
 
+doc.itemDescription = function (item) {
+  var description = '';
+  if (item.description) {
+    description += item.description;
+  }
+  if (item.constructorDescription && item.constructorDescription.description) {
+    description += item.constructorDescription.description;
+  }
+  return description;
+};
+
 doc.renderFunction = function (report, item, parent) {
   var paramNames = item.params ? item.params.map(function (param) {
     return param.name;
@@ -192,14 +203,16 @@ doc.renderFunction = function (report, item, parent) {
   doc.addDiv(parent, type, 'itemType');
 
   var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
-  $(descriptionDiv).append(item.description || item.constructorDescription);
+
+  var description = doc.itemDescription(item);
+  $(descriptionDiv).append(description);
 
   doc.renderItemTags(item, parent);
   doc.renderExamples(item, parent);
 };
 
 doc.isPrivate = function (report, item) {
-  return !item.api && !doc.isPublicMethod(report, item);
+  return !doc.isVisible(item) && !doc.isPublicMethod(report, item);
 };
 
 doc.getParentItem = function (report, item) {
@@ -207,7 +220,34 @@ doc.getParentItem = function (report, item) {
 };
 
 doc.isPublicMethod = function (report, item) {
-  return item.method === true && doc.getParentItem(report, item).api === true;
+  return item.method && item.visibility === 'public' ||
+      doc.isVisible(doc.getParentItem(report, item));
+};
+
+doc.isVisible = function (item) {
+  return item.api || item.visibility === 'public';
+};
+
+doc.hasVisibleChildren = function (report, item) {
+  var result = false;
+
+  if (item.items) {
+    item.items.forEach(function (subItemKey) {
+      var subItem = report.items[subItemKey];
+      if (doc.isVisible(subItem)) {
+        result = true;
+      }
+    });
+  }
+
+  return result;
+};
+
+doc.showClass = function (report, item) {
+  if (item.constructorFunction) {
+    return doc.isVisible(item) || doc.hasVisibleChildren(report, item);
+  }
+  return false;
 };
 
 doc.renderContent = function (report, item, nested) {
@@ -222,7 +262,7 @@ doc.renderContent = function (report, item, nested) {
 
   var itemKeys = item.items;
   
-  if (item.constructorFunction) {
+  if (item.constructorFunction || item.type === 'module-function') {
     itemKeys = [item.key].concat(itemKeys);
   }
 
@@ -234,24 +274,25 @@ doc.renderContent = function (report, item, nested) {
   var parentItem = item;
   itemKeys.forEach(function (itemKey) {
     var item = report.items[itemKey];
+    var visible = doc.isVisible(item);
+    var showClass = doc.showClass(report, item);
 
-    if (item.constructorFunction && item.api) {
+    if (showClass) {
       doc.renderClassDescription(item, content);
     }
 
-    var displayableConstructor = item.constructorFunction && item.api &&
-        parentItem.type !== 'module';
-    
-    if (item.type === 'function' && item.api || displayableConstructor) {
+    if (visible) {
       var itemDiv = doc.addDiv(content, '', 'item');
       doc.renderFunction(report, item, itemDiv);
     }
 
-    if (displayableConstructor && item.items) {
+    if (showClass) {
       item.items.forEach(function (subItemKey) {
         var subItemDiv = doc.addDiv(content, '', 'item');
         var subItem = report.items[subItemKey];
-        doc.renderFunction(report, subItem, subItemDiv);
+        if (doc.isPublicMethod(report, subItem)) {
+          doc.renderFunction(report, subItem, subItemDiv);
+        }
       });
     }
   });

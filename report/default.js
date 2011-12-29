@@ -44,6 +44,8 @@ rules.push({
       description: node.description,
       properties: node.properties,
       examples: node.examples,
+      visibility: node.visibility,
+      extends: node.extends,
       groups: [node.item('module')],
       name: name
     };
@@ -115,7 +117,6 @@ rules.push({
     return node.likeSource("_(module).export()");
   },
   report: function (node, report) {
-
     var exportArgNodes = node.nodes[1].nodes;
     exportArgNodes.forEach(function (argNode, i) {
       if (argNode.type === 'name') {
@@ -139,7 +140,10 @@ rules.push({
     return node.nodes[0].value === '=' && node.nodes[1].likeSource('module.exports');
   },
   report: function (node, report) {
-    if (node.nodes[2].type === 'name') {
+    var typeNode = node.nodes[2];
+    var type = typeNode.type;
+
+    if (type === 'name') {
       var name = node.nodes[2].value;
       var obj = node.item('object.' + name);
       if (obj) {
@@ -157,18 +161,32 @@ rules.push({
           f.type = 'module-function';
         }
       }
-    } else if (node.nodes[2].type === 'new') {
+    } else if (type === 'new') {
       var constructorName = node.nodes[2].nodes[0].value;
       var o = exportFunction(node, report, constructorName, 'object');
       if (o) {
         o.type = 'module-object';
       }
+    } else if (type === 'function') {
+      var key = node.item('module') +  '.anonymous';
+      return {
+        type: 'function',
+        key: key,
+        params: typeNode.params,
+        returnTag: node.returnTag,
+        description: node.description,
+        examples: node.examples,
+        visibility: node.visibility,
+        api: true,
+        groups: [node.item('module')],
+        name: 'anonymous'
+      };
     }
   }
 });
 
 /*
- exports.x = require('...')
+  exports.x = require('...')
 */
 rules.push({
   type: 'assign',
@@ -191,6 +209,8 @@ rules.push({
       description: node.description,
       properties: node.properties,
       examples: node.examples,
+      visibility: node.visibility,
+      extends: node.extends,
       groups: [node.item('module')],
       required: true,
       items: [ fullPath ],
@@ -274,7 +294,7 @@ rules.push({
 
 /*
  *.prototype.*
-*/
+ */
 rules.push({
   type: 'assign',
   match: function (node) {
@@ -298,6 +318,8 @@ rules.push({
       description: node.description,
       properties: node.properties,
       examples: node.examples,
+      visibility: node.visibility,
+      extends: node.extends,
       groups: [group],
       name: methodName
     };
