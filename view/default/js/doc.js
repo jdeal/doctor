@@ -153,6 +153,10 @@ doc.renderExamples = function (item, parent) {
 doc.renderClassDescription = function (item, parent) {
   $(parent).append('<span class="classLabel">class ' + item.name + '</span>');
 
+  if (item.extends) {
+    doc.addDiv(parent, 'extends ' + item.extends, 'itemType');
+  }
+
   var classDiv = doc.addDiv(parent, '', 'classDescription');
 
   if (item.classDescription) {
