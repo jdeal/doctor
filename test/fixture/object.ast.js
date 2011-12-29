@@ -11,6 +11,9 @@ module.exports = {
             {
               "type": "name",
               "value": "thing",
+              "pos": 4,
+              "line": 1,
+              "column": 5,
               "comments": []
             },
             {
@@ -22,14 +25,23 @@ module.exports = {
                     {
                       "type": "key",
                       "value": "x",
+                      "pos": 16,
+                      "line": 2,
+                      "column": 3,
                       "comments": []
                     },
                     {
                       "type": "number",
                       "value": 1,
+                      "pos": 19,
+                      "line": 2,
+                      "column": 6,
                       "comments": []
                     }
                   ],
+                  "pos": 16,
+                  "line": 2,
+                  "column": 3,
                   "comments": []
                 },
                 {
@@ -38,14 +50,23 @@ module.exports = {
                     {
                       "type": "key",
                       "value": "y",
+                      "pos": 24,
+                      "line": 3,
+                      "column": 3,
                       "comments": []
                     },
                     {
                       "type": "number",
                       "value": 2,
+                      "pos": 29,
+                      "line": 3,
+                      "column": 8,
                       "comments": []
                     }
                   ],
+                  "pos": 24,
+                  "line": 3,
+                  "column": 3,
                   "comments": []
                 },
                 {
@@ -54,24 +75,42 @@ module.exports = {
                     {
                       "type": "key",
                       "value": "z",
+                      "pos": 34,
+                      "line": 4,
+                      "column": 3,
                       "comments": []
                     },
                     {
                       "type": "number",
                       "value": 3,
+                      "pos": 39,
+                      "line": 4,
+                      "column": 8,
                       "comments": []
                     }
                   ],
+                  "pos": 34,
+                  "line": 4,
+                  "column": 3,
                   "comments": []
                 }
               ],
+              "pos": 12,
+              "line": 1,
+              "column": 13,
               "comments": []
             }
           ],
+          "pos": 4,
+          "line": 1,
+          "column": 5,
           "comments": []
         }
       ],
-      "comments": []
+      "pos": 0,
+      "comments": [],
+      "line": 1,
+      "column": 1
     }
   ],
   "comments": []
