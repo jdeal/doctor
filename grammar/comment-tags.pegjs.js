@@ -10,6 +10,7 @@ module.exports = (function(){
      */
     parse: function(input, startRule) {
       var parseFunctions = {
+        "AbstractTag": parse_AbstractTag,
         "Blank": parse_Blank,
         "ClassTag": parse_ClassTag,
         "ConstructorTag": parse_ConstructorTag,
@@ -497,39 +498,44 @@ module.exports = (function(){
         var savedPos1 = pos;
         var result3 = parse___();
         if (result3 !== null) {
-          var result12 = parse_ParamTag();
-          if (result12 !== null) {
-            var result4 = result12;
+          var result13 = parse_ParamTag();
+          if (result13 !== null) {
+            var result4 = result13;
           } else {
-            var result11 = parse_ReturnTag();
-            if (result11 !== null) {
-              var result4 = result11;
+            var result12 = parse_ReturnTag();
+            if (result12 !== null) {
+              var result4 = result12;
             } else {
-              var result10 = parse_ClassTag();
-              if (result10 !== null) {
-                var result4 = result10;
+              var result11 = parse_ClassTag();
+              if (result11 !== null) {
+                var result4 = result11;
               } else {
-                var result9 = parse_ConstructorTag();
-                if (result9 !== null) {
-                  var result4 = result9;
+                var result10 = parse_ConstructorTag();
+                if (result10 !== null) {
+                  var result4 = result10;
                 } else {
-                  var result8 = parse_PropertyTag();
-                  if (result8 !== null) {
-                    var result4 = result8;
+                  var result9 = parse_PropertyTag();
+                  if (result9 !== null) {
+                    var result4 = result9;
                   } else {
-                    var result7 = parse_ExampleTag();
-                    if (result7 !== null) {
-                      var result4 = result7;
+                    var result8 = parse_ExampleTag();
+                    if (result8 !== null) {
+                      var result4 = result8;
                     } else {
-                      var result6 = parse_VisibilityTag();
-                      if (result6 !== null) {
-                        var result4 = result6;
+                      var result7 = parse_VisibilityTag();
+                      if (result7 !== null) {
+                        var result4 = result7;
                       } else {
-                        var result5 = parse_ExtendsTag();
-                        if (result5 !== null) {
-                          var result4 = result5;
+                        var result6 = parse_AbstractTag();
+                        if (result6 !== null) {
+                          var result4 = result6;
                         } else {
-                          var result4 = null;;
+                          var result5 = parse_ExtendsTag();
+                          if (result5 !== null) {
+                            var result4 = result5;
+                          } else {
+                            var result4 = null;;
+                          };
                         };
                       };
                     };
@@ -1252,6 +1258,46 @@ module.exports = (function(){
         var result2 = result1 !== null
           ? (function(visibility) {
               return {name: 'visibility', value: visibility.substring(1)};
+            })(result1)
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_AbstractTag() {
+        var cacheKey = 'AbstractTag@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        if (input.substr(pos, 9) === "@abstract") {
+          var result1 = "@abstract";
+          pos += 9;
+        } else {
+          var result1 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"@abstract\"");
+          }
+        }
+        var result2 = result1 !== null
+          ? (function(visibility) {
+              return {name: 'visibility', value: true};
             })(result1)
           : null;
         if (result2 !== null) {

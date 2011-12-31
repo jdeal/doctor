@@ -275,23 +275,39 @@ doc.renderContent = function (report, item, nested) {
     return;
   }
 
+  var items = [];
+  itemKeys.forEach(function (key) {
+    items.push(report.items[key]);
+  });
+
+  items.sort(function (a, b) {
+    var nameA = doc.itemDisplayName(a);
+    var nameB = doc.itemDisplayName(b);
+    if (nameA < nameB) {
+      return -1;
+    } else if (nameA > nameB) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
   var parentItem = item;
-  itemKeys.forEach(function (itemKey) {
-    var item = report.items[itemKey];
-    var visible = doc.isVisible(item);
-    var showClass = doc.showClass(report, item);
+  items.forEach(function (contentItem) {
+    var visible = doc.isVisible(contentItem);
+    var showClass = doc.showClass(report, contentItem);
 
     if (showClass) {
-      doc.renderClassDescription(item, content);
+      doc.renderClassDescription(contentItem, content);
     }
 
     if (visible) {
       var itemDiv = doc.addDiv(content, '', 'item');
-      doc.renderFunction(report, item, itemDiv);
+      doc.renderFunction(report, contentItem, itemDiv);
     }
 
-    if (showClass) {
-      item.items.forEach(function (subItemKey) {
+    if (showClass && contentItem.items) {
+      contentItem.items.forEach(function (subItemKey) {
         var subItemDiv = doc.addDiv(content, '', 'item');
         var subItem = report.items[subItemKey];
         if (doc.isPublicMethod(report, subItem)) {
@@ -310,6 +326,11 @@ doc.itemDisplayName = function (item) {
   return item.package ? item.package.name : item.name;
 };
 
+doc.isTocItem = function (item) {
+  var isModulesGroup = item.type === 'group' && item.name === 'Modules';
+  return isModulesGroup || item.type === 'module';
+};
+
 doc.renderToc = function (report, group, element, nested) {
   var ul = $('<ul>');
   element.append(ul);
@@ -319,7 +340,7 @@ doc.renderToc = function (report, group, element, nested) {
 
     group.items.forEach(function (itemKey, i) {
       var item = report.items[itemKey];
-      if (item.type !== 'function' && item.name) {
+      if (doc.isTocItem(item)) {
         var li = $('<li>');
         ul.append(li);
 

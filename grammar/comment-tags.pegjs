@@ -31,7 +31,7 @@ TagList
 Tag
   = __ tag:
     ( ParamTag / ReturnTag / ClassTag / ConstructorTag / PropertyTag /
-      ExampleTag / VisibilityTag / ExtendsTag
+      ExampleTag / VisibilityTag / AbstractTag / ExtendsTag 
     ) {
       return tag
     }
@@ -88,6 +88,11 @@ ExampleTag
 VisibilityTag
   = visibility:('@public' / '@private') {
     return {name: 'visibility', value: visibility.substring(1)};
+  }
+
+AbstractTag
+  = visibility:'@abstract' {
+    return {name: 'visibility', value: true};
   }
 
 ExtendsTag 

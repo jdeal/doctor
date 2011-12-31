@@ -90,6 +90,9 @@ var commentTagFunctions = {
   },
   "extends": function (value, node) {
     node.extends = value;
+  },
+  "abstract": function (value, node) {
+    node.abstract = true;
   }
 };
 
@@ -99,11 +102,16 @@ function commentTransform(node, transform) {
   } catch (e) {
     var file = node.parent.path;
     var comment = node.commentText;
-    var msg = 'Error parsing comment tag in file ' + file + ' - ' + e +
+    var msg = 'Error parsing comment tag in file ' + file + ':' + node.line + ' - ' + e +
         ', comment text: ' + comment;
-    console.error(msg);
-    // throw new Error(msg);
-    return [];
+
+
+    if (process.env.DEBUG) {
+      console.error(msg);
+      return [];
+    } else {
+      throw new Error(msg);
+    }
   }
 }
 

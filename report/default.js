@@ -83,14 +83,6 @@ rules.push({
     return false;
   },
   report: function (node, report) {
-    /*
-      if (!report.item('functions')){
-      report.add({key: 'functions', type: 'group'})
-      }
-      if (!report.item('craps')){
-      report.add({key: 'craps', type: 'group', groups: ['functions']})
-      }
-    */
     var name = node.nodes[2].value;
     var dotLeft = node.nodes[1].nodes[0];
     var dotRight = node.nodes[1].nodes[1];
@@ -103,7 +95,52 @@ rules.push({
     }
     if (dotLeft.type === 'name' && dotRight.type === 'name' && dotLeft.value === 'exports') {
       var exportName = dotRight.value;
-      exportFunction(node, report, name, exportName);
+      var f = exportFunction(node, report, name, exportName);
+      if (!f) {
+        // whatever else it is, it's exported so show it's name and comment tags at least:
+        return {
+          type: 'var',
+          key: node.item('module') + '.' + exportName,
+          groups: [node.item('module')],
+          name: exportName,
+          api: true,
+          description: node.description,
+          examples: node.examples,
+        }
+      }
+    }
+  }
+});
+
+/*
+  module.exports.x = y.z;
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource('module.exports.__name__ = __name__.__name__') ||
+        node.likeSource('exports.__name__ = __name__.__name__');
+  },
+  report: function (node, report) {
+    var exportName = node.nodes[1].nodes[1].value;
+    var localName = node.nodes[2].nodes[0].value + '.' + node.nodes[2].nodes[1].value;
+    var key = node.item('module') + '.' + localName;
+    var item = report.item(key);
+    if (item) {
+      item.api = true;
+      item.name = exportName;
+      item.constructorFunction = isCapitalized(exportName);
+    } else {
+      // misc export
+      return {
+        type: 'var',
+        key: node.item('module') + '.' + exportName,
+        groups: [node.item('module')],
+        name: exportName,
+        api: true,
+        description: node.description,
+        examples: node.examples,
+      }
     }
   }
 });
@@ -136,7 +173,6 @@ rules.push({
 rules.push({
   type: 'assign',
   match: function (node) {
-    var matched = node.nodes[0].value === '=' && node.nodes[1].likeSource('module.exports');
     return node.nodes[0].value === '=' && node.nodes[1].likeSource('module.exports');
   },
   report: function (node, report) {
@@ -185,6 +221,14 @@ rules.push({
   }
 });
 
+
+function getFullPath(node, requiredFile) {
+  var fullPath = path.join(path.dirname(node.parent.fullPath), requiredFile);
+  if (!fullPath.match(/\.js$/)) {
+    fullPath += '.js';
+  }
+  return fullPath;
+}
 /*
   exports.x = require('...')
 */
@@ -196,11 +240,7 @@ rules.push({
   report: function (node, report) {
     var name = node.nodes[1].nodes[1].value;
     var requiredFile = node.nodes[2].nodes[1].nodes[0].value;
-
-    var fullPath = path.join(path.dirname(node.parent.fullPath), requiredFile);
-    if (!fullPath.match(/\.js$/)) {
-      fullPath += '.js';
-    }
+    var fullPath = getFullPath(node, requiredFile);
 
     return {
       type: 'module-function',
@@ -215,6 +255,33 @@ rules.push({
       required: true,
       items: [ fullPath ],
       name: name
+    };
+  }
+});
+
+/*
+ public requires
+*/
+rules.push({
+  type: 'call',
+  match: function (node) {
+    return node.likeSource("require()") && node.visibility === 'public';
+  },
+  report: function (node, report) {
+    var requiredFile = node.nodes[1].nodes[0].value;
+    var fullPath = getFullPath(node, requiredFile);
+
+    return {
+      type: 'module',
+      key: node.item('module') + '.' + requiredFile,
+      description: node.description,
+      properties: node.properties,
+      examples: node.examples,
+      visibility: node.visibility,
+      groups: [node.item('module')],
+      required: true,
+      items: [ fullPath ],
+      name: 'anonymous require'
     };
   }
 });
@@ -235,6 +302,46 @@ rules.push({
     _(props).each(function (prop) {
       // need to get functions here
     });
+
+    var moduleName = node.item('module');
+    var key = moduleName + '.' + name;
+
+    if (!report.item(key)) {
+      return {
+        type: 'var',
+        key: key,
+        groups: [moduleName],
+        name: name
+      };
+    }
+  }
+});
+
+/*
+  obj.x = function
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource('__name__.__name__ = function() {}');
+  },
+  report: function (node, report) {
+    var objName = node.nodes[1].nodes[0].value;
+    var propName = node.nodes[1].nodes[1].value;
+    var key = node.item('module') + '.' + objName + '.' + propName;
+    var params = node.nodes[2].params;
+
+    return {
+      type: 'function',
+      key: key,
+      params: params,
+      returnTag: node.returnTag,
+      description: node.description,
+      examples: node.examples,
+      visibility: node.visibility,
+      groups: [node.item('module')],
+      name: propName
+    };
   }
 });
 
@@ -322,6 +429,35 @@ rules.push({
       extends: node.extends,
       groups: [group],
       name: methodName
+    };
+  }
+});
+
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource('__name__.__name__ = pcodeDefine()') ||
+        node.likeSource('__name__.__name__ = selectFirstDefine()');
+  },
+  report: function (node, report) {
+    var name = node.nodes[1].nodes[0].value + '.' + node.nodes[1].nodes[1].value;
+    var args = node.nodes[2].nodes[1].nodes[0].value.split(/,\s*/);
+    var params = _(args).map(function (arg) {
+      return {name: arg};
+    });
+    var moduleName = node.item('module');
+    var key = moduleName + '.' + name;
+
+    return {
+      type: 'function',
+      key: key,
+      params: params,
+      returnTag: node.returnTag,
+      description: node.description,
+      examples: node.examples,
+      visibility: node.visibility,
+      groups: [moduleName],
+      name: name
     };
   }
 });
