@@ -11,7 +11,6 @@ rules.push({
     var commentText = "";
 
     comments.forEach(function (comment, i) {
-      debugger;
       var text;
       if (comment.indexOf('/*') === 0) {
         text = '  ' + comment.substr(2, comment.length - 4);
@@ -33,7 +32,6 @@ rules.push({
         text = '\n' + text;
       }
       commentText += text;
-      debugger;
     });
 
     var lines = commentText.split(/\n/);
@@ -56,7 +54,6 @@ rules.push({
       });
     }
 
-    debugger;
     node.commentText = lines.join('\n');
   }
 });
@@ -87,6 +84,15 @@ var commentTagFunctions = {
   "example": function (value, node) {
     node.examples = node.examples || [];
     node.examples.push(value);
+  },
+  "visibility": function (value, node) {
+    node.visibility = value;
+  },
+  "extends": function (value, node) {
+    node.extends = value;
+  },
+  "abstract": function (value, node) {
+    node.abstract = true;
   }
 };
 
@@ -96,11 +102,16 @@ function commentTransform(node, transform) {
   } catch (e) {
     var file = node.parent.path;
     var comment = node.commentText;
-    var msg = 'Error parsing comment tag in file ' + file + ' - ' + e +
+    var msg = 'Error parsing comment tag in file ' + file + ':' + node.line + ' - ' + e +
         ', comment text: ' + comment;
-    console.error(msg);
-    // throw new Error(msg);
-    return [];
+
+
+    if (process.env.DEBUG) {
+      console.error(msg);
+      return [];
+    } else {
+      throw new Error(msg);
+    }
   }
 }
 
@@ -113,7 +124,6 @@ rules.push({
     var tags = commentTransform(node, transform);
     node.commentTags = tags;
     node.commentTags.forEach(function (tag, i) {
-      debugger;
       if (tag.name in commentTagFunctions) {
         commentTagFunctions[tag.name](tag.value, node);
       }

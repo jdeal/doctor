@@ -103,3 +103,29 @@ test('example', function (t) {
 
   t.end();
 });
+
+test('visibility', function (t) {
+  var comment = '@public';
+
+  var ast = parser.parse(comment);
+  t.equal(ast.length, 1);
+  
+  var tag = ast[0];
+  t.equal(tag.name, 'visibility');
+  t.equal(tag.value, 'public');
+
+  t.end();
+});
+
+test('extends', function (t) {
+  var comment = '@extends SuperClass';
+
+  var ast = parser.parse(comment);
+  t.equal(ast.length, 1);
+  
+  var tag = ast[0];
+  t.equal(tag.name, 'extends');
+  t.equal(tag.value, 'SuperClass');
+
+  t.end();
+});

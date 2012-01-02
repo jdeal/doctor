@@ -30,9 +30,10 @@ TagList
 
 Tag
   = __ tag:
-    ( ParamTag / ReturnTag / ClassTag / ConstructorTag / PropertyTag / ExampleTag
+    ( ParamTag / ReturnTag / ClassTag / ConstructorTag / PropertyTag /
+      ExampleTag / VisibilityTag / AbstractTag / ExtendsTag 
     ) {
-      return tag;
+      return tag
     }
 
 DefaultValue 
@@ -82,6 +83,21 @@ PropertyTag
 ExampleTag
   = '@example' text:Description {
     return {name: 'example', value: text};
+  }
+
+VisibilityTag
+  = visibility:('@public' / '@private') {
+    return {name: 'visibility', value: visibility.substring(1)};
+  }
+
+AbstractTag
+  = visibility:'@abstract' {
+    return {name: 'visibility', value: true};
+  }
+
+ExtendsTag 
+  = '@extends' Blank+ super:Identifier {
+    return {name: 'extends', value: super};
   }
 
 Identifier
