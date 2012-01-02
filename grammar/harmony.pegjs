@@ -46,7 +46,7 @@
  */
 
 {
-  var nodeList = function nodeList(nodes, type) {
+  var nodeList = function nodeList(nodes, position, type) {
     type = type || 'nodes';
     if (nodes.type) {
       nodes.type = type;
@@ -54,7 +54,8 @@
     }
     return {
       type: type,
-      nodes: nodes !== '' ? nodes : []
+      nodes: nodes !== '' ? nodes : [],
+      pos: position
     }
   }
 
@@ -71,13 +72,18 @@
     return node;
   }
 
-  var undefinedNode = function undefinedNode() {
-    return {type: 'undefined'};
+  var undefinedNode = function undefinedNode(position) {
+    return {type: 'undefined', pos: position};
   }
 }
 
 start
   = program:Program __ { return program; }
+
+Pos
+  = {
+    return pos;
+  }
 
 /* ===== A.1 Lexical Grammar ===== */
 
@@ -118,7 +124,7 @@ NodeComment
   = (SingleLineCommentGroup / MultiLineComment) WhiteSpace* LineTerminator? WhiteSpace*
 
 Identifier "identifier"
-  = !ReservedWord name:IdentifierName { return {type: 'name', value: name}; }
+  = p:Pos !ReservedWord name:IdentifierName { return {type: 'name', value: name, pos: p}; }
 
 IdentifierName "identifier"
   = start:IdentifierStart parts:IdentifierPart* {
@@ -213,26 +219,28 @@ FutureReservedWord
 Literal
   = NullLiteral
   / BooleanLiteral
-  / value:NumericLiteral {
+  / p:Pos value:NumericLiteral {
       return {
         type: "number",
-        value: value
+        value: value,
+        pos: p
       };
     }
-  / value:StringLiteral {
+  / p:Pos value:StringLiteral {
       return {
         type: "string",
-        value: value
+        value: value,
+        pos: p
       };
     }
   / RegularExpressionLiteral
 
 NullLiteral
-  = NullToken { return { type: 'null', value: null }; }
+  = p:Pos NullToken { return { type: 'null', value: null, pos: p }; }
 
 BooleanLiteral
-  = TrueToken { return { type: 'boolean', value: true }; }
-  / FalseToken { return { type: 'boolean', value: false }; }
+  = p:Pos TrueToken { return { type: 'boolean', value: true, pos: p }; }
+  / p:Pos FalseToken { return { type: 'boolean', value: false, pos: p }; }
 
 NumericLiteral "number"
   = literal:(HexIntegerLiteral / DecimalLiteral) !IdentifierStart {
@@ -347,16 +355,17 @@ UnicodeEscapeSequence
     }
 
 RegularExpressionLiteral "regular expression"
-  = "/" body:RegularExpressionBody "/" flags:RegularExpressionFlags {
+  = p:Pos "/" body:RegularExpressionBody "/" flags:RegularExpressionFlags {
       return {
         type: "regex",
-        nodes: [body, flags]
+        nodes: [body, flags],
+        pos: p
       };
     }
 
 RegularExpressionBody
-  = char_:RegularExpressionFirstChar chars:RegularExpressionChars {
-      return {type: 'string', value: char_ + chars};
+  = p:Pos char_:RegularExpressionFirstChar chars:RegularExpressionChars {
+      return {type: 'regex-body', value: char_ + chars, pos: p};
     }
 
 RegularExpressionChars
@@ -393,7 +402,7 @@ RegularExpressionClassChar
   / RegularExpressionBackslashSequence
 
 RegularExpressionFlags
-  = parts:IdentifierPart* { return {type: 'string', value: parts.join("")}; }
+  = p:Pos parts:IdentifierPart* { return {type: 'regex-flags', value: parts.join(""), pos: p}; }
 
 /* Tokens */
 
@@ -515,7 +524,7 @@ __empty
 /* ===== A.3 Expressions ===== */
 
 PrimaryExpression
-  = ThisToken { return { type: "this", value: "this" }; }
+  = p:Pos ThisToken { return { type: "this", value: "this", pos: p }; }
   / name:Identifier { return name; }
   / Literal
   / ArrayLiteral
@@ -523,8 +532,8 @@ PrimaryExpression
   / "(" __ expression:Expression __ ")" { return expression; }
 
 ArrayLiteral
-  = "[" __ elements:ElementList? __ (Elision __)? "]" {
-      return nodeList(elements, 'array');
+  = p:Pos "[" __ elements:ElementList? __ (Elision __)? "]" {
+      return nodeList(elements, p, 'array');
     }
 
 ElementList
@@ -542,10 +551,11 @@ Elision
   = "," (__ ",")*
 
 ObjectLiteral
-  = "{" __ properties:(PropertyNameAndValueList __ ("," __)?)? "}" {
+  = p:Pos "{" __ properties:(PropertyNameAndValueList __ ("," __)?)? "}" {
       return {
         type: "object",
-        nodes: properties !== "" ? properties[0] : []
+        nodes: properties !== "" ? properties[0] : [],
+        pos: p
       };
     }
 
@@ -559,26 +569,29 @@ PropertyNameAndValueList
     }
 
 PropertyAssignment
-  = name:PropertyName __ ":" __ value:AssignmentExpression {
+  = p:Pos name:PropertyName __ ":" __ value:AssignmentExpression {
       return {
         type: "property",
-        nodes: [{type: 'key', value: name}, value]
+        nodes: [{type: 'key', value: name, pos: p}, value],
+        pos: p
       };
     }
-  / GetToken __ name:PropertyName __
+  / p:Pos GetToken __ name:PropertyName __
     "(" __ ")" __
     "{" __ body:FunctionBody __ "}" {
       return {
         type: "get",
-        nodes: [{type: 'name', value: name}, body]
+        nodes: [{type: 'name', value: name}, body],
+        pos: p
       };
     }
-  / SetToken __ name:PropertyName __
+  / p:Pos SetToken __ name:PropertyName __
     "(" __ param:PropertySetParameterList __ ")" __
     "{" __ body:FunctionBody __ "}" {
       return {
         type: "set",
-        nodes: [{type: 'name', value: name}, param, body]
+        nodes: [{type: 'name', value: name}, param, body],
+        pos: p
       };
     }
 
@@ -594,16 +607,17 @@ MemberExpression
   = base:(
         PrimaryExpression
       / FunctionExpression
-      / NewToken __ constructor:MemberExpression __ arguments:Arguments {
+      / p:Pos NewToken __ constructor:MemberExpression __ arguments:Arguments {
           return {
             type: "new",
-            nodes: [constructor, arguments]
+            nodes: [constructor, arguments],
+            pos: p
           };
         }
     )
     accessors:(
         __ selector:"[" __ name:Expression __ "]" { return name; }
-      / __ selector:"." __ name:IdentifierName { return {type: 'dot-name', value: name}; }
+      / __ p:Pos selector:"." __ name:IdentifierName { return {type: 'dot-name', value: name, p: pos}; }
     )* {
       var result = base;
       for (var i = 0; i < accessors.length; i++) {
@@ -622,39 +636,44 @@ MemberExpression
 
 NewExpression
   = MemberExpression
-  / NewToken __ constructor:NewExpression {
+  / p:Pos NewToken __ constructor:NewExpression {
       return {
         type: "new",
-        nodes: [constructor, arguments]
+        nodes: [constructor, arguments],
+        pos: p
       };
     }
 
 CallExpression
   = base:(
-      name:MemberExpression __ arguments:Arguments {
+      p:Pos name:MemberExpression __ arguments:Arguments {
         return {
           type: "call",
-          nodes: [name, arguments]
+          nodes: [name, arguments],
+          pos: p
         };
       }
     )
     argumentsOrAccessors:(
-        __ arguments:Arguments {
+        __ p:Pos arguments:Arguments {
           return {
             type: "FunctionCallArguments",
-            arguments: arguments
+            arguments: arguments,
+            pos: p
           };
         }
-      / __ "[" __ name:Expression __ "]" {
+      / __ p:Pos "[" __ name:Expression __ "]" {
           return {
             type: 'subscript',
-            name: name
+            name: name,
+            pos: p
           };
         }
-      / __ "." __ name:IdentifierName {
+      / __ p:Pos "." __ name:IdentifierName {
           return {
             type: 'dot',
-            name: name
+            name: name,
+            pos: p
           };
         }
     )* {
@@ -689,8 +708,8 @@ CallExpression
     }
 
 Arguments
-  = "(" __ arguments:ArgumentList? __ ")" {
-    return nodeList(arguments, 'arguments');
+  = p:Pos "(" __ arguments:ArgumentList? __ ")" {
+    return nodeList(arguments, p, 'arguments');
   }
 
 ArgumentList
@@ -707,34 +726,37 @@ LeftHandSideExpression
   / NewExpression
 
 PostfixExpression
-  = expression:LeftHandSideExpression _ operator:PostfixOperator {
+  = p:Pos expression:LeftHandSideExpression _ operator:PostfixOperator {
       return {
         type: "postfix",
-        nodes: [operator, expression]
+        nodes: [operator, expression],
+        pos: p
       };
     }
   / LeftHandSideExpression
 
 PostfixOperator
-  = op:("++"
+  = p:Pos op:("++"
       / "--") {
     return {
       type: 'operator',
-      value: op
+      value: op,
+      pos: p
     }
   }
 
 UnaryExpression
   = PostfixExpression
-  / operator:UnaryOperator __ expression:UnaryExpression {
+  / p:Pos operator:UnaryOperator __ expression:UnaryExpression {
       return {
         type: "unary",
-        nodes: [operator, expression]
+        nodes: [operator, expression],
+        pos: p
       };
     }
 
 UnaryOperator
-  = op:( DeleteToken
+  = p:Pos op:( DeleteToken
        / VoidToken
        / TypeofToken
        / "++"
@@ -745,7 +767,8 @@ UnaryOperator
        / "!" ) {
          return {
            type: 'operator',
-           value: op
+           value: op,
+           pos: p
          }
        }
 
@@ -756,14 +779,15 @@ MultiplicativeExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 MultiplicativeOperator
-  = operator:("*" / "/" / "%") !"=" { return {type: 'operator', value: operator}; }
+  = p:Pos operator:("*" / "/" / "%") !"=" { return {type: 'operator', value: operator, pos: p}; }
 
 AdditiveExpression
   = head:MultiplicativeExpression
@@ -772,15 +796,16 @@ AdditiveExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 AdditiveOperator
-  = "+" !("+" / "=") { return {type: 'operator', value: "+"}; }
-  / "-" !("-" / "=") { return {type: 'operator', value: "-"}; }
+  = p:Pos "+" !("+" / "=") { return {type: 'operator', value: "+", pos: p}; }
+  / p:Pos "-" !("-" / "=") { return {type: 'operator', value: "-", pos: p}; }
 
 ShiftExpression
   = head:AdditiveExpression
@@ -789,17 +814,18 @@ ShiftExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 ShiftOperator
-  = op:("<<"
+  = p:Pos op:("<<"
       / ">>>"
       / ">>") {
-        return {type: 'operator', value: op};
+        return {type: 'operator', value: op, pos: p};
       }
 
 RelationalExpression
@@ -809,21 +835,22 @@ RelationalExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 RelationalOperator
-  = op:("<="
+  = p:Pos op:("<="
       / ">="
       / "<"
       / ">"
       / InstanceofToken
       / InToken) {
         return {
-          type: 'operator', value: op
+          type: 'operator', value: op, pos: p
         }
       }
 
@@ -834,20 +861,21 @@ RelationalExpressionNoIn
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 RelationalOperatorNoIn
-  = op:("<="
+  = p:Pos op:("<="
       / ">="
       / "<"
       / ">"
       / InstanceofToken) {
         return {
-          type: 'operator', value: op
+          type: 'operator', value: op, pos: p
         }
       }
 
@@ -858,7 +886,8 @@ EqualityExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
@@ -871,19 +900,20 @@ EqualityExpressionNoIn
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 EqualityOperator
-  = op:("==="
+  = p:Pos op:("==="
       / "!=="
       / "=="
       / "!=") {
         return {
-          type: 'operator', value: op
+          type: 'operator', value: op, pos: p
         }
       }
 
@@ -894,7 +924,8 @@ BitwiseANDExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
@@ -907,14 +938,15 @@ BitwiseANDExpressionNoIn
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 BitwiseANDOperator
-  = "&" !("&" / "=") { return {type: 'operator', value: "&"}; }
+  = p:Pos "&" !("&" / "=") { return {type: 'operator', value: "&", pos: p}; }
 
 BitwiseXORExpression
   = head:BitwiseANDExpression
@@ -923,7 +955,8 @@ BitwiseXORExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
@@ -936,14 +969,15 @@ BitwiseXORExpressionNoIn
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 BitwiseXOROperator
-  = "^" !("^" / "=") { return {type: 'operator', value: "^"}; }
+  = p:Pos "^" !("^" / "=") { return {type: 'operator', value: "^", pos: p}; }
 
 BitwiseORExpression
   = head:BitwiseXORExpression
@@ -952,7 +986,8 @@ BitwiseORExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
@@ -965,14 +1000,15 @@ BitwiseORExpressionNoIn
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 BitwiseOROperator
-  = "|" !("|" / "=") { return {type: 'operator', value: "|"}; }
+  = p:Pos "|" !("|" / "=") { return {type: 'operator', value: "|", pos: p}; }
 
 LogicalANDExpression
   = head:BitwiseORExpression
@@ -981,7 +1017,8 @@ LogicalANDExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
@@ -994,14 +1031,15 @@ LogicalANDExpressionNoIn
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 LogicalANDOperator
-  = "&&" !"=" { return {type: 'operator', value: "&&"}; }
+  = p:Pos "&&" !"=" { return {type: 'operator', value: "&&", pos: p}; }
 
 LogicalORExpression
   = head:LogicalANDExpression
@@ -1010,7 +1048,8 @@ LogicalORExpression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
@@ -1023,61 +1062,66 @@ LogicalORExpressionNoIn
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
     }
 
 LogicalOROperator
-  = "||" !"=" { return {type: 'operator', value: "||"}; }
+  = p:Pos "||" !"=" { return {type: 'operator', value: "||", pos: p}; }
 
 ConditionalExpression
-  = condition:LogicalORExpression __
+  = p:Pos condition:LogicalORExpression __
     "?" __ trueExpression:AssignmentExpression __
     ":" __ falseExpression:AssignmentExpression {
       return {
         type: "conditional",
-        nodes: [condition, trueExpression, falseExpression]
+        nodes: [condition, trueExpression, falseExpression],
+        pos: p
       };
     }
   / LogicalORExpression
 
 ConditionalExpressionNoIn
-  = condition:LogicalORExpressionNoIn __
+  = p:Pos condition:LogicalORExpressionNoIn __
     "?" __ trueExpression:AssignmentExpressionNoIn __
     ":" __ falseExpression:AssignmentExpressionNoIn {
       return {
         type: "conditional",
-        nodes: [condition, trueExpression, falseExpression]
+        nodes: [condition, trueExpression, falseExpression],
+        pos: p
       };
     }
   / LogicalORExpressionNoIn
 
 AssignmentExpression
-  = left:LeftHandSideExpression __
+  = p:Pos left:LeftHandSideExpression __
     operator:AssignmentOperator __
     right:AssignmentExpression {
       return {
         type: "assign",
-        nodes: [operator, left, right]
+        nodes: [operator, left, right],
+        pos: p
       };
     }
   / ConditionalExpression
 
 AssignmentExpressionNoIn
-  = left:LeftHandSideExpression __
+  = p:Pos left:LeftHandSideExpression __
     operator:AssignmentOperator __
     right:AssignmentExpressionNoIn {
       return {
         type: "assign",
-        nodes: [operator, left, right]
+        nodes: [operator, left, right],
+        pos: p
       };
     }
   / ConditionalExpressionNoIn
 
 AssignmentOperator
-  = op:("=" (!"=") { return "="; }
+  = p:Pos op:("=" (!"=") { return "="; }
       / "*="
       / "/="
       / "%="
@@ -1089,7 +1133,7 @@ AssignmentOperator
       / "&="
       / "^="
       / "|=") {
-        return {type: 'operator', value: op};
+        return {type: 'operator', value: op, pos: p};
       }
 
 Expression
@@ -1099,7 +1143,8 @@ Expression
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
@@ -1112,7 +1157,8 @@ ExpressionNoIn
       for (var i = 0; i < tail.length; i++) {
         result = {
           type: "binary",
-          nodes: [tail[i][1], result, tail[i][3]]
+          nodes: [tail[i][1], result, tail[i][3]],
+          pos: head.pos
         };
       }
       return result;
@@ -1150,13 +1196,13 @@ CommentedStatement
   }
 
 Block
-  = "{" statements:StatementList? __? "}" {
-    return nodeList(statements, 'block');
+  = p:Pos "{" statements:StatementList? __? "}" {
+    return nodeList(statements, p, 'block');
   }
 
 StatementList
-  = statements:CommentedStatement* {
-    return nodeList(statements);
+  = p:Pos statements:CommentedStatement* {
+    return nodeList(statements, p);
   }
 
 /*
@@ -1171,10 +1217,11 @@ StatementList
 */
 
 VariableStatement
-  = VarToken __ declarations:VariableDeclarationList EOS {
+  = p:Pos VarToken __ declarations:VariableDeclarationList EOS {
       return {
         type: "vars",
-        nodes: declarations
+        nodes: declarations,
+        pos: p
       };
     }
 
@@ -1197,18 +1244,20 @@ VariableDeclarationListNoIn
     }
 
 VariableDeclaration
-  = name:Identifier __ value:Initialiser? {
+  = p:Pos name:Identifier __ value:Initialiser? {
       return {
         type: "var",
-        nodes: [name, value !== "" ? value : undefinedNode()]
+        nodes: [name, value !== "" ? value : undefinedNode(p)],
+        pos: p
       };
     }
 
 VariableDeclarationNoIn
-  = name:Identifier __ value:InitialiserNoIn? {
+  = p:Pos name:Identifier __ value:InitialiserNoIn? {
       return {
         type: "var",
-        nodes: [name, value !== "" ? value : undefinedNode()]
+        nodes: [name, value !== "" ? value : undefinedNode(p)],
+        pos: p
       };
     }
 
@@ -1219,19 +1268,20 @@ InitialiserNoIn
   = "=" (!"=") __ expression:AssignmentExpressionNoIn { return expression; }
 
 EmptyStatement
-  = ";" { return { type: "empty" }; }
+  = p:Pos ";" { return { type: "empty", pos: p }; }
 
 ExpressionStatement
   = !("{" / FunctionToken) expression:Expression EOS { return expression; }
 
 IfStatement
-  = IfToken __
+  = p:Pos IfToken __
     "(" __ condition:Expression __ ")" __
     ifStatement:Statement
     elseStatement:(__ ElseToken __ Statement)? {
       return {
         type: "if",
-        nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[3] : undefinedNode()]
+        nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[3] : undefinedNode(p)],
+        pos: p
       };
     }
 
@@ -1242,31 +1292,34 @@ IterationStatement
   / ForInStatement
 
 DoWhileStatement
-  = DoToken __
+  = p:Pos DoToken __
     statement:Statement __
     WhileToken __ "(" __ condition:Expression __ ")" EOS {
       return {
         type: "while",
-        nodes: [condition, statement]
+        nodes: [condition, statement],
+        pos: p
       };
     }
 
 WhileStatement
-  = WhileToken __ "(" __ condition:Expression __ ")" __ statement:Statement {
+  = p:Pos WhileToken __ "(" __ condition:Expression __ ")" __ statement:Statement {
       return {
         type: "while",
-        nodes: [condition, statement]
+        nodes: [condition, statement],
+        pos: p
       };
     }
 
 ForStatement
-  = ForToken __
+  = p:Pos ForToken __
     "(" __
     initializer:(
-        VarToken __ declarations:VariableDeclarationListNoIn {
+        p:Pos VarToken __ declarations:VariableDeclarationListNoIn {
           return {
-            type: "var",
-            nodes: declarations
+            type: "vars",
+            nodes: declarations,
+            pos: p
           };
         }
       / ExpressionNoIn?
@@ -1281,16 +1334,17 @@ ForStatement
       return {
         type: "for",
         nodes: [
-          initializer !== "" ? initializer : undefinedNode(),
-          test !== "" ? test : undefinedNode(),
-          counter !== "" ? counter : undefinedNode(),
+          initializer !== "" ? initializer : undefinedNode(p),
+          test !== "" ? test : undefinedNode(p),
+          counter !== "" ? counter : undefinedNode(p),
           statement
-        ]
+        ],
+        pos: p
       };
     }
 
 ForInStatement
-  = ForToken __
+  = p:Pos ForToken __
     "(" __
     iterator:(
         VarToken __ declaration:VariableDeclarationNoIn { return declaration; }
@@ -1303,64 +1357,70 @@ ForInStatement
     {
       return {
         type: 'for-in',
-        nodes: [iterator, collection, statement]
+        nodes: [iterator, collection, statement],
+        pos: p
       }
     }
 
 ContinueStatement
-  = ContinueToken _
+  = p:Pos ContinueToken _
     label:(
         identifier:Identifier EOS { return identifier; }
       / EOSNoLineTerminator { return ""; }
     ) {
       return {
         type: "continue",
-        nodes: [label !== "" ? label : undefinedNode()]
+        nodes: [label !== "" ? label : undefinedNode(p)],
+        pos: p
       };
     }
 
 BreakStatement
-  = BreakToken _
+  = p:Pos BreakToken _
     label:(
         identifier:Identifier EOS { return identifier; }
       / EOSNoLineTerminator { return ""; }
     ) {
       return {
         type: "break",
-        nodes: [label !== "" ? label : undefinedNode()]
+        nodes: [label !== "" ? label : undefinedNode(p)],
+        pos: p
       };
     }
 
 ReturnStatement
-  = ReturnToken _
+  = p:Pos ReturnToken _
     value:(
         expression:Expression EOS { return expression; }
       / EOSNoLineTerminator { return ""; }
     ) {
       return {
         type: "return",
-        nodes: [value !== "" ? value : undefinedNode()]
+        nodes: [value !== "" ? value : undefinedNode(p)],
+        pos: p
       };
     }
 
 WithStatement
-  = WithToken __ "(" __ environment:Expression __ ")" __ statement:Statement {
+  = p:Pos WithToken __ "(" __ environment:Expression __ ")" __ statement:Statement {
       return {
         type: "with",
-        nodes: [environment, statement]
+        nodes: [environment, statement],
+        pos: p
       };
     }
 
 SwitchStatement
-  = SwitchToken __ "(" __ expression:Expression __ ")" __ clauses:CaseBlock {
+  = p:Pos SwitchToken __ "(" __ expression:Expression __ ")" __ clauses:CaseBlock {
       return {
         type: "switch",
-        nodes: [expression, clauses]
+        nodes: [expression, clauses],
+        pos: p
       };
     }
 
 CaseBlock
-  = "{" __
+  = p:Pos "{" __
     before:CaseClauses?
     defaultAndAfter:(__ DefaultClause __ CaseClauses?)? __
     "}" {
@@ -1375,7 +1435,7 @@ CaseBlock
         var clausesAfter = [];
       }
 
-      return {type: 'nodes', nodes: (defaultClause ? before.concat(defaultClause) : before).concat(clausesAfter)};
+      return {type: 'nodes', nodes: (defaultClause ? before.concat(defaultClause) : before).concat(clausesAfter), pos: p};
     }
 
 CaseClauses
@@ -1388,139 +1448,153 @@ CaseClauses
     }
 
 CaseClause
-  = CaseToken __ selector:Expression __ ":" statements:StatementList? {
+  = p:Pos CaseToken __ selector:Expression __ ":" statements:StatementList? {
       return {
         type: "case",
-        nodes: [selector, nodeList(statements)]
+        nodes: [selector, nodeList(statements, p)],
+        pos: p
       };
     }
 
 DefaultClause
-  = DefaultToken __ ":" statements:StatementList? {
-      return nodeList(statements, 'default');
+  = p:Pos DefaultToken __ ":" statements:StatementList? {
+      return nodeList(statements, p, 'default');
       /*
       return {
         type: "default",
-        nodes: statements !== "" ? statements[1] : []
+        nodes: statements !== "" ? statements[1] : [],
+        pos: p
       };*/
     }
 
 LabelledStatement
-  = label:Identifier __ ":" __ statement:Statement {
+  = p:Pos label:Identifier __ ":" __ statement:Statement {
       return {
         type: "labeled-statement",
-        nodes: [label, statement]
+        nodes: [label, statement],
+        pos: p
       };
     }
 
 ThrowStatement
-  = ThrowToken _ exception:Expression EOSNoLineTerminator {
+  = p:Pos ThrowToken _ exception:Expression EOSNoLineTerminator {
       return {
         type: "throw",
-        nodes: [exception]
+        nodes: [exception],
+        pos: p
       };
     }
 
 TryStatement
-  = TryToken __ block:Block __ catch_:Catch __ finally_:Finally {
+  = p:Pos TryToken __ block:Block __ catch_:Catch __ finally_:Finally {
       return {
         type: "try",
-        nodes: [block, catch_, finally_]
+        nodes: [block, catch_, finally_],
+        pos: p
       };
     }
-  / TryToken __ block:Block __ catch_:Catch {
+  / p:Pos TryToken __ block:Block __ catch_:Catch {
       return {
         type: "try",
-        nodes: [block, catch_, undefinedNode()]
+        nodes: [block, catch_, undefinedNode(p)],
+        pos: p
       };
     }
-  / TryToken __ block:Block __ finally_:Finally {
+  / p:Pos TryToken __ block:Block __ finally_:Finally {
       return {
         type: "try",
-        nodes: [block, undefinedNode(), finally_]
+        nodes: [block, undefinedNode(p), finally_],
+        pos: p
       };
     }
 
 Catch
-  = CatchToken __ "(" __ identifier:Identifier __ ")" __ block:Block {
+  = p:Pos CatchToken __ "(" __ identifier:Identifier __ ")" __ block:Block {
       return {
         type: "catch",
-        nodes: [identifier, block]
+        nodes: [identifier, block],
+        pos: p
       };
     }
 
 Finally
-  = FinallyToken __ block:Block {
+  = p:Pos FinallyToken __ block:Block {
       return {
         type: "finally",
-        nodes: [block]
+        nodes: [block],
+        pos: p
       };
     }
 
 DebuggerStatement
-  = DebuggerToken EOS { return { type: "debug" }; }
+  = p:Pos DebuggerToken EOS { return { type: "debug", pos: p }; }
 
 /* ===== A.5 Functions and Programs ===== */
-
-FunctionDeclaration
-  = FunctionToken __ name:Identifier __
-    "(" __ params:FormalParameterList? __ ")" __
-    "{" __ body:FunctionBody __ "}" {
-      return {
-        type: 'define-function',
-        nodes: [name, nodeList(params, 'parameters'), body]
-      };
-    }
-
-FunctionExpression
-  = FunctionToken __ name:Identifier? __
-    "(" __ params:FormalParameterList? __ ")" __
-    "{" __ body:FunctionBody __ "}" {
-      return {
-        type: "function",
-        nodes: [name !== "" ? name : undefinedNode(), nodeList(params, 'parameters'), body]
-      };
-    }
-
-FunctionParameter
-  = name:Identifier __ value:Initialiser? {
-    if (value === '') {
-      return name;
-    } else {
-      return {type: 'name-value', nodes:[name, value]};
-    }
-  }
-
-FormalParameterList
-  = head:FunctionParameter tail:(__ "," __ FunctionParameter)* {
-      var result = [head];
-      for (var i = 0; i < tail.length; i++) {
-        result.push(tail[i][3]);
-      }
-      return {type: 'parameters', nodes: result};
-    }
 
 FunctionBody
   = elements:SourceElements? { return nodeList(elements); }
 
+FunctionDeclaration
+  = p:Pos FunctionToken __ name:Identifier __
+    "(" __ pp:Pos params:FormalParameterList? __ ")" __
+    "{" __ body:FunctionBody __ "}" {
+      return {
+        type: 'define-function',
+        nodes: [name, nodeList(params, pp, 'parameters'), body],
+        pos: p
+      };
+    }
+
+FunctionExpression
+  = p:Pos FunctionToken __ name:Identifier? __
+    "(" __ params:FormalParameterList? __ ")" __
+    "{" __ body:FunctionBody __ "}" {
+      return {
+        type: "function",
+        nodes: [name !== "" ? name : undefinedNode(p), nodeList(params, p, 'parameters'), body],
+        pos: p
+      };
+    }
+
+FunctionParameter
+  = p:Pos name:Identifier __ value:Initialiser? {
+    if (value === '') {
+      return name;
+    } else {
+      return {type: 'name-value', nodes:[name, value], pos: p};
+    }
+  }
+
+FormalParameterList
+  = p:Pos head:FunctionParameter tail:(__ "," __ FunctionParameter)* {
+      var result = [head];
+      for (var i = 0; i < tail.length; i++) {
+        result.push(tail[i][3]);
+      }
+      return {type: 'parameters', nodes: result, pos: p};
+    }
+
+FunctionBody
+  = p:Pos elements:SourceElements? { return nodeList(elements, p); }
+
 Program
-  = elements:SourceElements? {
-      return nodeList(elements, 'program');
+  = p:Pos elements:SourceElements? {
+      return nodeList(elements, p, 'program');
     }
 
 SourceElements
-  = elements:SourceElement* {
-    return nodeList(elements);
+  = p:Pos elements:SourceElement* {
+    return nodeList(elements, p);
   }
 /*
-  = head:SourceElement tail:(SourceElement)* {
+  = p:Pos head:SourceElement tail:(SourceElement)* {
       var result = [head];
       for (var i = 0; i < tail.length; i++) {
       console.log(tail[i])
         var node = tail[i][0];
         result.push(node);
       }
-      return {type: 'nodes', nodes: result};
+      return {type: 'nodes', nodes: result, pos: p};
     }
 */
 

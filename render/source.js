@@ -1,7 +1,5 @@
 var _ = require('underscore');
 
-var source;
-
 function comma(buffer, i) {
   if (i > 0) {
     buffer.push(', ');
@@ -10,24 +8,25 @@ function comma(buffer, i) {
 
 var sourceRules = {
   file: function (node) {
-    return source(node.nodes);
+    return this.source(node.nodes);
   },
   'define-function': function (node) {
-    return 'function ' + source(node.nodes);
+    return 'function ' + this.source(node.nodes);
   },
   name: function (node) {
     return node.value;
   },
   parameters: function (node) {
+    var self = this;
     var buffer = [];
     node.nodes.forEach(function (paramNode, i) {
       comma(buffer, i);
-      buffer.push(source(paramNode));
+      buffer.push(self.source(paramNode));
     });
     return '(' + buffer.join('') + ')';
   },
   nodes: function (node) {
-    return '{' + source(node.nodes) + '}';
+    return '{' + this.source(node.nodes) + '}';
     // var buffer = [];
     // node.nodes.forEach(function (childNode, i) {
     //   buffer.push(source(p))
@@ -36,68 +35,77 @@ var sourceRules = {
   },
   'return': function (node) {
     if (node.nodes[0].type !== 'undefined') {
-      return 'return ' + source(node.nodes[0]);
+      return 'return ' + this.source(node.nodes[0]) + ';';
     }
-    return 'return';
+    return 'return;';
   },
   vars: function (node) {
+    var self = this;
     var buffer = ['var '];
     node.nodes.forEach(function (varNode, i) {
       comma(buffer, i);
-      buffer.push(source(varNode));
+      buffer.push(self.source(varNode));
     });
-    return buffer.join('');
+    return buffer.join('') + ';';
   },
   'var': function (node) {
     var buffer = [node.nodes[0].value];
+    console.log(node)
     if (node.nodes[1].type !== 'undefined') {
-      buffer.push(' = ' + source(node.nodes[1]));
+      buffer.push(' = ' + this.source(node.nodes[1]));
     }
     return buffer.join('');
   },
   call: function (node) {
-    return source(node.nodes[0]) + '(' + source(node.nodes[1]) + ')';
+    return this.source(node.nodes[0]) + '(' + this.source(node.nodes[1]) + ')';
   },
   dot: function (node) {
-    return source(node.nodes[0]) + '.' + source(node.nodes[1]);
+    return this.source(node.nodes[0]) + '.' + this.source(node.nodes[1]);
   },
   subscript: function (node) {
-    return source(node.nodes[0]) + '[' + source(node.nodes[1]) + ']';
+    return this.source(node.nodes[0]) + '[' + this.source(node.nodes[1]) + ']';
   },
   arguments: function (node) {
+    var self = this;
     var buffer = [];
     node.nodes.forEach(function (argNode, i) {
       comma(buffer, i);
-      buffer.push(source(argNode));
+      buffer.push(self.source(argNode));
     });
     return buffer.join('');
   },
   assign: function (node) {
-    return source(node.nodes[1]) + ' ' + source(node.nodes[0]) + ' ' + source(node.nodes[2]);
+    return this.source(node.nodes[1]) + ' ' + this.source(node.nodes[0]) + ' ' + this.source(node.nodes[2]) + ';';
   },
   operator: function (node) {
     return node.value;
   },
   'new': function (node) {
-    return 'new ' + node.nodes[0].value + '(' + source(node.nodes[1]) + ')';
+    return 'new ' + node.nodes[0].value + '(' + this.source(node.nodes[1]) + ')';
   },
   postfix: function (node) {
-    return source(node.nodes[1]) + node.nodes[0].value;
+    return this.source(node.nodes[1]) + node.nodes[0].value;
   },
   unary: function (node) {
-    return source(node.nodes[0]) + node.nodes[1].value;
+    return this.source(node.nodes[0]) + node.nodes[1].value;
   },
   'switch': function (node) {
-    return 'switch (' + source(node.nodes[0]) + ') {' + source(node.nodes[1].nodes) + '}';
+    return 'switch (' + this.source(node.nodes[0]) + ') {' + this.source(node.nodes[1].nodes) + '}';
   },
   'case': function (node) {
-    return 'case ' + source(node.nodes[0]) + ': ' + source(node.nodes[1].nodes);
+    return 'case ' + this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1].nodes);
   },
   block: function (node) {
-    return '{' + source(node.nodes) + '}';
+    return '{' + this.source(node.nodes) + '}';
   },
   regex: function (node) {
-    return '/' + node.nodes[0].value + '/' + node.nodes[1].value;
+    return '/' + this.source(node.nodes[0]) + '/' + this.source(node.nodes[1]);
+  },
+  'regex-body': function (node) {
+    return node.value;
+  },
+  'regex-flags': function (node) {
+    return node.value;
   },
   string: function (node) {
     return '"' + node.value.replace('"', '\\"') + '"';
@@ -106,36 +114,141 @@ var sourceRules = {
     return node.value;
   },
   object: function (node) {
+    var self = this;
     var buffer = ['{'];
     node.nodes.forEach(function (propNode, i) {
       if (i > 0) {
         buffer.push(', ');
       }
-      buffer.push(source(propNode));
+      buffer.push(self.source(propNode));
     });
     buffer.push('}');
     return buffer.join('');
   },
   property: function (node) {
-    return source(node.nodes[0]) + ': ' + source(node.nodes[1]);
+    return this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1]);
   },
   key: function (node) {
     return node.value;
   },
   binary: function (node) {
-    return source(node.nodes[1]) + ' ' + node.nodes[0].value + ' ' + source(node.nodes[2]);
+    return this.source(node.nodes[1]) + ' ' + this.source(node.nodes[0]) + ' ' + this.source(node.nodes[2]);
+  },
+  array: function (node) {
+    var self = this;
+    var buffer = ['['];
+    node.nodes.forEach(function (itemNode, i) {
+      if (i > 0) {
+        buffer.push(', ');
+      }
+      buffer.push(self.source(itemNode));
+    });
+    buffer.push(']');
+    return buffer.join('');
+  },
+  'default': function (node) {
+    return 'default: ' + this.source(node.nodes[0]);
+  },
+  'undefined': function (node) {
+    return '';
+  },
+  'null': function (node) {
+    return 'null';
+  },
+  'boolean': function (node) {
+    return node.value;
+  },
+  'this': function (node) {
+    return 'this';
+  },
+  'get': function (node) {
+    return 'get ' + this.source(node.nodes[0]) + '()' + this.source(node.nodes[1]);
+  },
+  'set': function (node) {
+    return 'set ' + this.source(node.nodes[0]) + '(' + this.source(node.nodes[1]) + ')' + this.source(node.nodes[2]);
+  },
+  'conditional': function (node) {
+    return this.source(node.nodes[0]) + ' ? ' + this.source(node.nodes[1]) + ' : ' + this.source(node.nodes[2]);
+  },
+  'empty': function (node) {
+        
+  },
+  'if': function (node) {
+    return 'if (' + this.source(node.nodes[0]) + ') ' + this.source(node.nodes[1]) +
+      (node.nodes[2].type === 'undefined' ? '' : ' else ' + this.source(node.nodes[2]));
+  },
+  'while': function (node) {
+    return 'while (' + this.source(node.nodes[0]) + ') ' + this.source(node.nodes[1]);
+  },
+  'for': function (node) {
+    console.log(node)
+    return 'for (' +
+      this.source(node.nodes[0]) + ';' +
+      this.source(node.nodes[1]) + ';' +
+      this.source(node.nodes[2]) + ') ' +
+      this.source(node.nodes[3]);
+  },
+  'for-in': function (node) {
+    return 'for (' + this.soure(node.nodes[0]) + ' in ' + this.source(node.nodes[1]) +
+      ') ' + this.source(node.nodes[2]);
+  },
+  'continue': function (node) {
+    return 'continue' +
+      (this.nodes[1].type === 'undefined' ? '' : ' ' + this.source(node.nodes[2])) +
+      ';';
+  },
+  'break': function (node) {
+    return 'break' +
+      (this.nodes[1].type === 'undefined' ? '' : ' ' + this.source(node.nodes[2])) +
+      ';';
+  },
+  'with': function (node) {
+    return 'with (' + this.source(node.nodes[0]) + ') ' + this.source(node.nodes[1]);
+  },
+  'labeled-statement': function (node) {
+    return this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1]);
+  },
+  'throw': function (node) {
+    return 'throw ' + this.source(node.nodes) + ';';
+  },
+  'try': function (node) {
+    return 'try ' + this.source(node.nodes);
+  },
+  'catch': function (node) {
+    return 'catch (' + this.source(node.nodes[0]) + ')' + this.source(node.nodes[1]);
+  },
+  'finally': function (node) {
+    return 'finally ' + this.source(node.nodes);
+  },
+  'debug': function (node) {
+    return 'debug;';
+  },
+  'function': function (node) {
+    return 'function ' + this.source(node.nodes);
   }
 };
 
+function lines(node, lastLine) {
+  if (node.line && lastLine && node.line > lastLine) {
+    return (new Array(node.line - lastLine + 1)).join('\n');
+  }
+  return "";
+}
+
 function source(ast) {
+  var self = this;
   if (ast.type) {
-    return sourceRules[ast.type](ast);
+    var gap = lines(ast, self.line);
+    if (ast.line && ast.line > self.line) {
+      self.line = ast.line;
+    }
+    return gap + sourceRules[ast.type].call(self, ast);
   } else {
     var sources = [];
     _(ast).each(function (node) {
-      sources.push(source(node));
+      sources.push(self.source(node));
     });
-    return sources.join('\n');
+    return sources.join('');
   }
 }
 
@@ -145,7 +258,8 @@ module.exports = function render(options, files, cb) {
     if (report.items) {
       _(report.items).each(function (item, key) {
         if (item.ast) {
-          sourceFiles[key] = source(item.ast);
+          var context = {source: source, line: 1};
+          sourceFiles[key] = context.source(item.ast);
         }
       });
     }

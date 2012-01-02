@@ -60,7 +60,28 @@ function t(u){
 
 //module.exports = t
 
+var c = true ? true : false;
+
 var core = {};
+
+var fn = function myFn(x) {
+  return "fn" + x;
+}
+
+if (true) {
+  console.log('true');
+}
+
+if (false) {
+  console.log('false');
+} else {
+  console.log('true');
+}
+
+for (var i = 0; i < 10; i++) {
+  console.log(i);
+}
+
 
 extendWithFunctions(core,
                     t,

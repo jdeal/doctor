@@ -365,7 +365,7 @@ RegularExpressionLiteral "regular expression"
 
 RegularExpressionBody
   = p:Pos char_:RegularExpressionFirstChar chars:RegularExpressionChars {
-      return {type: 'string', value: char_ + chars, pos: p};
+      return {type: 'regex-body', value: char_ + chars, pos: p};
     }
 
 RegularExpressionChars
@@ -402,7 +402,7 @@ RegularExpressionClassChar
   / RegularExpressionBackslashSequence
 
 RegularExpressionFlags
-  = p:Pos parts:IdentifierPart* { return {type: 'string', value: parts.join(""), pos: p}; }
+  = p:Pos parts:IdentifierPart* { return {type: 'regex-flags', value: parts.join(""), pos: p}; }
 
 /* Tokens */
 
@@ -1317,7 +1317,7 @@ ForStatement
     initializer:(
         p:Pos VarToken __ declarations:VariableDeclarationListNoIn {
           return {
-            type: "var",
+            type: "vars",
             nodes: declarations,
             pos: p
           };
