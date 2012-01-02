@@ -3900,7 +3900,7 @@ module.exports = (function(){
         }
         var result2 = result1 !== null
           ? (function(p, char_, chars) {
-                return {type: 'string', value: char_ + chars, pos: p};
+                return {type: 'regex-body', value: char_ + chars, pos: p};
               })(result1[0], result1[1], result1[2])
           : null;
         if (result2 !== null) {
@@ -4411,7 +4411,7 @@ module.exports = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(p, parts) { return {type: 'string', value: parts.join(""), pos: p}; })(result1[0], result1[1])
+          ? (function(p, parts) { return {type: 'regex-flags', value: parts.join(""), pos: p}; })(result1[0], result1[1])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -14851,7 +14851,7 @@ module.exports = (function(){
                   var result27 = result26 !== null
                     ? (function(p, declarations) {
                               return {
-                                type: "var",
+                                type: "vars",
                                 nodes: declarations,
                                 pos: p
                               };
