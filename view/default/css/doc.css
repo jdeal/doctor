@@ -1,39 +1,30 @@
 @charset 'UTF-8';
+
+div.container {
+  padding-top: 30px;
+}
+
 @font-face {
   font-family: title;
-/*src: url('fonts/kulminoituva.ttf');*/
-  src: url("fonts/plexifont.ttf");
+/*src: url('fonts/kulminoituva.ttf');
+  src: url("fonts/plexifont.ttf");*/
 }
 * {
   font-family: Arial, sans-serif;
   margin: 0;
 }
 body {
-  background-color: #000;
-  color: #fff;
+
 }
 footer {
-  border-bottom: solid #2e7db2 1px;
-  clear: left;
+
   padding: 10px;
 }
 header {
-  padding-left: 10px;
-  padding-top: 10px;
+
 }
 #content {
-  border: solid #000 1px;
-  border-radius: 15px;
-  background-color: #fff;
-  color: #000;
-  margin: 0 0 10px 1%;
-  padding: 0 10px 0 10px;
-  float: left;
-  height: 500px;
-  overflow: auto;
-  padding-bottom: 10px;
-/* to make panels same height */
-  width: 70%;
+
 }
 #logo {
   height: 50px;
@@ -42,17 +33,7 @@ header {
   margin-left: 10px;
 }
 #toc {
-  border: solid #000 1px;
-  border-radius: 15px;
-  background-color: #fff;
-  color: #000;
-  margin: 0 0 10px 1%;
-  padding: 0 10px 0 10px;
-  float: left;
-  height: 500px;
-  overflow: auto;
-  padding-top: 10px;
-  width: 20%;
+
 }
 #toc a {
   color: #2e7db2;
@@ -104,7 +85,7 @@ span.label {
 }
 .title {
   font-family: title, sans-serif;
-  font-size: 48pt;
+  font-size: 24pt;
 }
 .itemType {
   font-style: italic;
