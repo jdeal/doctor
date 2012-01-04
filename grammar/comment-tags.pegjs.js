@@ -1364,8 +1364,8 @@ module.exports = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(super) {
-              return {name: 'extends', value: super};
+          ? (function(superClass) {
+              return {name: 'extends', value: superClass};
             })(result1[2])
           : null;
         if (result2 !== null) {

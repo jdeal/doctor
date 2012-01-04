@@ -31,7 +31,7 @@ TagList
 Tag
   = __ tag:
     ( ParamTag / ReturnTag / ClassTag / ConstructorTag / PropertyTag /
-      ExampleTag / VisibilityTag / AbstractTag / ExtendsTag 
+      ExampleTag / VisibilityTag / AbstractTag / ExtendsTag
     ) {
       return tag
     }
@@ -96,8 +96,8 @@ AbstractTag
   }
 
 ExtendsTag 
-  = '@extends' Blank+ super:Identifier {
-    return {name: 'extends', value: super};
+  = '@extends' Blank+ superClass:Identifier {
+    return {name: 'extends', value: superClass};
   }
 
 Identifier
