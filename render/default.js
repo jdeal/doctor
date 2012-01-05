@@ -1,7 +1,10 @@
 'use strict';
 
-var ghm = require("github-flavored-markdown");
+var ghm = require('github-flavored-markdown');
+var Showdown = require('showdown').Showdown;
 var _ = require('underscore');
+
+var converter = new Showdown.converter();
 
 function stripParagraphTag(text) {
   /*jshint regexp: false */
@@ -11,7 +14,7 @@ function stripParagraphTag(text) {
 function markdownToHtml(nodes) {
   if (nodes instanceof Object) {
     if (nodes.description) {
-      nodes.description = stripParagraphTag(ghm.parse(nodes.description));
+      nodes.description = stripParagraphTag(converter.makeHtml(nodes.description));
     }
 
     _(nodes).each(function (value) {

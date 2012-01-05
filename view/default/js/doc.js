@@ -254,6 +254,22 @@ doc.showClass = function (report, item) {
   return false;
 };
 
+doc.togglePrivate = function () {
+  var privateShow = $('#privateShow');
+  var privateHide = $('#privateHide');
+  if (!privateShow.is(':visible') && !privateHide.is(':visible')) {
+    privateShow.show();
+  } else if (privateShow.is(':visible')) {
+    privateShow.hide();
+    privateHide.show();
+    $(".privateProperty").show();
+  } else {
+    privateHide.hide();
+    privateShow.show();
+    $(".privateProperty").hide();
+  }
+};
+
 doc.renderContent = function (report, item, nested) {
   var content = $('#content');
   content.html('');
@@ -263,6 +279,14 @@ doc.renderContent = function (report, item, nested) {
   }
 
   doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
+  var privateShow = $('<a href="#" id="privateShow">[show private]</a>');
+  privateShow.hide();
+  privateShow.click(doc.togglePrivate);
+  var privateHide = $('<a href="#" id="privateHide">[hide private]</a>');
+  privateHide.hide();
+  privateHide.click(doc.togglePrivate);
+  content.append(privateShow);
+  content.append(privateHide);
 
   var itemKeys = item.items;
   
@@ -293,6 +317,7 @@ doc.renderContent = function (report, item, nested) {
   });
 
   var parentItem = item;
+  var showPrivateToggle = false;
   items.forEach(function (contentItem) {
     var visible = doc.isVisible(contentItem);
     var showClass = doc.showClass(report, contentItem);
@@ -301,10 +326,15 @@ doc.renderContent = function (report, item, nested) {
       doc.renderClassDescription(contentItem, content);
     }
 
-    if (visible) {
+    //if (visible) {
       var itemDiv = doc.addDiv(content, '', 'item');
+      if (!visible) {
+        itemDiv.hide();
+        itemDiv.addClass('privateProperty');
+        showPrivateToggle = true;
+      }
       doc.renderFunction(report, contentItem, itemDiv);
-    }
+    //}
 
     if (showClass && contentItem.items) {
       contentItem.items.forEach(function (subItemKey) {
@@ -316,6 +346,9 @@ doc.renderContent = function (report, item, nested) {
       });
     }
   });
+  if (showPrivateToggle) {
+    privateShow.show();
+  }
 };
 
 /*

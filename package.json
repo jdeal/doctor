@@ -20,7 +20,8 @@
     "handlebars": ">= 1.0.0",
     "github-flavored-markdown": ">= 1.0.0",
     "underscore": ">= 1.2.2",
-    "mkdirp": ">= 0.2.1"
+    "mkdirp": ">= 0.2.1",
+    "showdown": ">= 0.0.1"
   },
   "devDependencies": {
     "tap": ">=0.1.0",

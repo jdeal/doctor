@@ -16,6 +16,7 @@ rules.push({
         text = '  ' + comment.substr(2, comment.length - 4);
         text = text.replace(/^[\s\*]*(\r\n|\n|\r)/, '');
         text = text.replace(/(\r\n|\n|\r)[\s\*]*$/, '');
+        text = text.replace(/\s+$/, '');
         // var lines = text.split(/(\r\n|\n|\r)/);
         var lines = text.split(/\r\n|\n|\r/);
         lines.forEach(function (line, i) {
