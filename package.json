@@ -29,5 +29,8 @@
   },
   "bin": {
     "doctor": "bin/doctor"
+  },
+  "scripts": {
+    "test": "./node_modules/tapr/bin/tapr.js test/*.js"
   }
 }
