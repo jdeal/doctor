@@ -1,5 +1,7 @@
 # doctor
 
+[![Build Status](https://secure.travis-ci.org/jdeal/doctor.png)](http://travis-ci.org/jdeal/doctor)
+
 __Doctor is still under development, so be careful.__
 
 ![pinch](https://github.com/jdeal/doctor/raw/master/README/pinch-points-warning-143.png)
