@@ -1,5 +1,7 @@
 # doctor
 
+![pinch](https://github.com/jdeal/doctor/raw/master/README/pinch-points-warning.jpg)
+
 Doctor converts JavaScript source to documentation, using rules to rely on
 conventions so that comment tags are (mostly) not needed.
 
