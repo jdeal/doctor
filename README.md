@@ -133,20 +133,3 @@ doctor.examine(options, function (err, report) {
 
 Note that the above options probably don't really make sense. The default viewer
 doesn't work with output from the markdown renderer.
-
-## Misc
-
-To serve dynamically generated documentation:
-
-```
-cp output/report.json view
-node lib/server.js
-open http://localhost:3000
-```
-
-To automatically generate doc.css when doc.scss is modified:
-
-```
-cd view
-sass --watch .:.
-```
