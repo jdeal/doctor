@@ -39,7 +39,7 @@ rules.push({
       key: node.item('module') + '.' + name,
       params: node.params,
       classDescription: node.classDescription,
-      returnTag: node.returnTag,
+      returns: node.returns,
       constructorDescription: node.constructorDescription,
       description: node.description,
       properties: node.properties,
@@ -209,7 +209,7 @@ rules.push({
         type: 'function',
         key: key,
         params: typeNode.params,
-        returnTag: node.returnTag,
+        returns: node.returns,
         description: node.description,
         examples: node.examples,
         visibility: node.visibility,
@@ -335,7 +335,7 @@ rules.push({
       type: 'function',
       key: key,
       params: params,
-      returnTag: node.returnTag,
+      returns: node.returns,
       description: node.description,
       examples: node.examples,
       visibility: node.visibility,
@@ -421,7 +421,7 @@ rules.push({
       params: params,
       classDescription: node.classDescription,
       constructorDescription: node.constructorDescription,
-      returnTag: node.returnTag,
+      returns: node.returns,
       description: node.description,
       properties: node.properties,
       examples: node.examples,
@@ -452,7 +452,7 @@ rules.push({
       type: 'function',
       key: key,
       params: params,
-      returnTag: node.returnTag,
+      returns: node.returns,
       description: node.description,
       examples: node.examples,
       visibility: node.visibility,
@@ -461,6 +461,23 @@ rules.push({
     };
   }
 });
+
+function inFunction(node) {
+  return node.parent.parent.type === 'function' ||
+    node.parent.parent.type === 'define-function';
+}
+/*
+rules.push({
+  type: 'if',
+  match: function (node) {
+    return inFunction(node) &&
+      node.likeSource("if (typeof __name__ === 'undefined') {return __name__()}");
+  },
+  report: function (node, report) {
+    console.log(node.lispify())
+  }
+});
+*/
 
 rules.push({
   type: 'end-files',

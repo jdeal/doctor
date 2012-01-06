@@ -69,8 +69,9 @@ var commentTagFunctions = {
     }
     node.paramTags[value.name] = value;
   },
-  "return": function (value, node) {
+  "returns": function (value, node) {
     node.returnTag = value;
+    node.returns = value;
   },
   "classDescription": function (value, node) {
     node.classDescription = value;

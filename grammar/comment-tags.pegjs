@@ -57,8 +57,8 @@ ParamTag
   }
 
 ReturnTag
-  = '@return' types:TypeList? Blank+ text:Description {
-    var tag = {name: 'return', value: {description: text}};
+  = ('@returns' / '@return') types:TypeList? text:Description? {
+    var tag = {name: 'returns', value: {description: text}};
     if (types !== '') {
       tag.value.types = types;
     }

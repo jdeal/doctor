@@ -6,27 +6,27 @@ var fs = require('fs');
 var grammar = fs.readFileSync('../grammar/comment-tags.pegjs', 'utf8');
 var parser = peg.buildParser(grammar);
 
-test('simple return tag', function (t) {
-  var comment = "@return description";
+test('simple returns tag', function (t) {
+  var comment = "@returns description";
   var ast = parser.parse(comment);
 
   t.equal(ast.length, 1);
 
   var tag = ast[0];
-  t.equal(tag.name, 'return');
+  t.equal(tag.name, 'returns');
   t.deepEqual(tag.value, { description: 'description'});
 
   t.end();
 });
 
-test('return tag with type', function (t) {
-  var comment = "@return {String} description";
+test('returns tag with type', function (t) {
+  var comment = "@returns {String} description";
   var ast = parser.parse(comment);
 
   t.equal(ast.length, 1);
 
   var tag = ast[0];
-  t.equal(tag.name, 'return');
+  t.equal(tag.name, 'returns');
   t.equal(tag.value.description, 'description');
   t.equal(tag.value.types.length, 1);
   t.equal(tag.value.types[0], 'String');

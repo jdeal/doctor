@@ -48,6 +48,18 @@ or if you want the latest
 npm install git:github.com/jdeal/doctor.git
 ```
 
+## Examples, please!
+
+This is how doctor documents itself from the command-line:
+
+```
+doctor lib/*.js --view default --output doc
+```
+
+You can see its documentation here:
+
+![docs](https://github.com/jdeal/doctor/raw/master/doc/index.html)
+
 ## Command-line usage
 
 Dump a report file to the console:
