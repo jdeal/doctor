@@ -56,9 +56,7 @@ This is how doctor documents itself from the command-line:
 doctor lib/*.js --view default --output doc
 ```
 
-You can see its documentation here:
-
-![docs](https://github.com/jdeal/doctor/raw/master/doc/index.html)
+You can see its documentation [here](https://github.com/jdeal/doctor/raw/master/doc/index.html).
 
 ## Command-line usage
 
