@@ -1,0 +1,155 @@
+@charset 'UTF-8';
+
+div.container {
+  padding-top: 30px;
+}
+
+@font-face {
+  font-family: title;
+/*src: url('fonts/kulminoituva.ttf');
+  src: url("fonts/plexifont.ttf");*/
+}
+* {
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+body {
+
+}
+footer {
+
+  padding: 10px;
+}
+header {
+
+}
+#content {
+
+}
+#logo {
+  height: 50px;
+/*float: right;*/
+/*margin-right: $space;*/
+  margin-left: 10px;
+}
+#toc {
+
+}
+#toc a {
+  color: #2e7db2;
+  font-size: 14pt;
+  text-decoration: none;
+}
+#toc a:hover {
+/*color: $hoverColor;*/
+  text-decoration: underline;
+}
+#toc ul {
+  list-style-type: disc;
+}
+#toc > ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+.arg {
+  font-family: monospace;
+  font-size: 14pt;
+}
+.contentTitle {
+  font-family: sans-serif;
+  font-size: 24pt;
+  padding-top: 10px;
+}
+.function {
+  color: #2e7db2;
+  font-family: monospace;
+  font-size: 18pt;
+  font-weight: bold;
+}
+.var {
+  color: #2e7db2;
+  font-family: monospace;
+  font-size: 18pt;
+  font-weight: bold;
+}
+span.label {
+  font-weight: bold;
+}
+.item {
+  padding-top: 10px;
+}
+.missing {
+  color: #f00;
+  font-size: 14pt;
+  padding-top: 10px;
+}
+.selected {
+  font-weight: bold;
+}
+.type {
+  color: #000;
+}
+.title {
+  font-family: title, sans-serif;
+  font-size: 24pt;
+}
+.itemType {
+  font-style: italic;
+}
+dl.itemTags > dt {
+  font-weight: bold;
+}
+span.paramName {
+  font-weight: bold;
+}
+dl.param > dd {
+  margin-left: 30px;
+}
+span.types {
+  font-family: "Courier New", "Courier", monospace;
+  font-style: italic;
+}
+div.itemType {
+  margin-left: 30px;
+}
+div.itemDescription {
+  margin-top: 10px;
+  margin-left: 30px;
+}
+dl.itemTags {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+dl.itemTags > dt {
+  margin-top: 10px;
+  margin-left: 30px;
+}
+dl.itemTags > dd {
+  margin-left: 60px;
+}
+span.classLabel {
+  color: #2e7db2;
+  font-family: monospace;
+  font-size: 18pt;
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+}
+.classDescription {
+  margin-left: 30px;
+}
+.properties {
+  margin-top: 10px;
+}
+dl.examples {
+  margin-left: 30px;
+}
+dl.examples > dt {
+  font-weight: bold;
+  margin-left: 30px;
+}
+code {
+  font-family: "Courier New", "Courier", monospace;
+  white-space: pre;
+}
+
