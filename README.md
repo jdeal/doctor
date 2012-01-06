@@ -1,5 +1,7 @@
 # doctor
 
+__Doctor is still under development, so be careful.__
+
 ![pinch](https://github.com/jdeal/doctor/raw/master/README/pinch-points-warning-143.png)
 
 Doctor converts JavaScript source to documentation, using rules to rely on
@@ -28,6 +30,9 @@ As a service, doctor also takes a number of view directories and merges them
 together into a single output directory, along with the report file(s). If the
 default single-file JSON is used, the view will be a JavaScript-based viewer
 that converts the report items into HTML.
+
+Because of its modular and somewhat pluggable design, you can hack in your own
+grammars, rules, etc. and use it as a general-purpose AST analysis tool.
 
 ## Installation
 
