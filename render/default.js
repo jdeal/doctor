@@ -16,7 +16,6 @@ function markdownToHtml(nodes) {
     if (nodes.description) {
       nodes.description = stripParagraphTag(converter.makeHtml(nodes.description));
     }
-
     _(nodes).each(function (value) {
       markdownToHtml(value);
     });
@@ -24,6 +23,10 @@ function markdownToHtml(nodes) {
 }
 
 module.exports = function render(options, files, cb) {
-  markdownToHtml(files);
-  cb(null, files);
+  try {
+    markdownToHtml(files);
+    cb(null, files);
+  } catch (e) {
+    cb(e);
+  }
 };

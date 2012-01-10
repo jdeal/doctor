@@ -1275,12 +1275,12 @@ ExpressionStatement
 
 IfStatement
   = p:Pos IfToken __
-    "(" __ condition:Expression __ ")" __
-    ifStatement:Statement
-    elseStatement:(__ ElseToken __ Statement)? {
+    "(" __ condition:Expression __ ")"
+    ifStatement:CommentedStatement
+    elseStatement:(__ ElseToken CommentedStatement)? {
       return {
         type: "if",
-        nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[3] : undefinedNode(p)],
+        nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[2] : undefinedNode(p)],
         pos: p
       };
     }
@@ -1545,7 +1545,7 @@ FunctionDeclaration
 FunctionExpression
   = p:Pos FunctionToken __ name:Identifier? __
     "(" __ params:FormalParameterList? __ ")" __
-    "{" __ body:FunctionBody __ "}" {
+    "{" body:FunctionBody __ "}" {
       return {
         type: "function",
         nodes: [name !== "" ? name : undefinedNode(p), nodeList(params, p, 'parameters'), body],

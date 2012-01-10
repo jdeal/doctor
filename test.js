@@ -1,9 +1,11 @@
-function g() {
-  
+/* f */
+var f = function f(x, y) {
+  /* @signature fx */
+  if (typeof y === 'undefined') {
+    console.log(x + 1);
+  }
+  /* @signature fxy */
+  console.log(x + y);
 }
 
-var f = function f(x, y) {
-  if (typeof y === 'undefined') {
-    return g(x);
-  }
-}
+exports.f = f;

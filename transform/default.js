@@ -95,6 +95,12 @@ var commentTagFunctions = {
   },
   "abstract": function (value, node) {
     node.abstract = true;
+  },
+  "signature": function (value, node) {
+    if (!node.description || node.description === '') {
+      node.description = value.description;
+    }
+    node.checksSignature = true;
   }
 };
 
@@ -138,6 +144,7 @@ function transformFunction(node) {
   var paramsNodes = node.nodes[1] ? node.nodes[1].nodes : [];
   node.name = nameNode.value;
   node.params = [];
+  node.paramIndex = {};
 
   var paramTags = node.paramTags;
   // for anonymous functions assigned to variables, paramTags are in parent --
@@ -151,6 +158,7 @@ function transformFunction(node) {
     var param = {
       name: paramNode.value
     };
+    node.paramIndex[param.name] = i;
     if (paramTags) {
       if (paramTags[param.name]) {
         var tagValue = paramTags[param.name];

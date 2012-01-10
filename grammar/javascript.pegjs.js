@@ -14406,43 +14406,31 @@ module.exports = (function(){
                         }
                       }
                       if (result10 !== null) {
-                        var result11 = parse___();
+                        var result11 = parse_CommentedStatement();
                         if (result11 !== null) {
-                          var result12 = parse_Statement();
-                          if (result12 !== null) {
-                            var savedPos2 = pos;
-                            var result15 = parse___();
+                          var savedPos2 = pos;
+                          var result14 = parse___();
+                          if (result14 !== null) {
+                            var result15 = parse_ElseToken();
                             if (result15 !== null) {
-                              var result16 = parse_ElseToken();
+                              var result16 = parse_CommentedStatement();
                               if (result16 !== null) {
-                                var result17 = parse___();
-                                if (result17 !== null) {
-                                  var result18 = parse_Statement();
-                                  if (result18 !== null) {
-                                    var result14 = [result15, result16, result17, result18];
-                                  } else {
-                                    var result14 = null;
-                                    pos = savedPos2;
-                                  }
-                                } else {
-                                  var result14 = null;
-                                  pos = savedPos2;
-                                }
+                                var result13 = [result14, result15, result16];
                               } else {
-                                var result14 = null;
+                                var result13 = null;
                                 pos = savedPos2;
                               }
                             } else {
-                              var result14 = null;
+                              var result13 = null;
                               pos = savedPos2;
                             }
-                            var result13 = result14 !== null ? result14 : '';
-                            if (result13 !== null) {
-                              var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12, result13];
-                            } else {
-                              var result1 = null;
-                              pos = savedPos1;
-                            }
+                          } else {
+                            var result13 = null;
+                            pos = savedPos2;
+                          }
+                          var result12 = result13 !== null ? result13 : '';
+                          if (result12 !== null) {
+                            var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12];
                           } else {
                             var result1 = null;
                             pos = savedPos1;
@@ -14487,10 +14475,10 @@ module.exports = (function(){
           ? (function(p, condition, ifStatement, elseStatement) {
                 return {
                   type: "if",
-                  nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[3] : undefinedNode(p)],
+                  nodes: [condition, ifStatement, elseStatement !== "" ? elseStatement[2] : undefinedNode(p)],
                   pos: p
                 };
-              })(result1[0], result1[5], result1[9], result1[10])
+              })(result1[0], result1[5], result1[8], result1[9])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -16884,8 +16872,8 @@ module.exports = (function(){
           if (result4 !== null) {
             var result5 = parse___();
             if (result5 !== null) {
-              var result20 = parse_Identifier();
-              var result6 = result20 !== null ? result20 : '';
+              var result19 = parse_Identifier();
+              var result6 = result19 !== null ? result19 : '';
               if (result6 !== null) {
                 var result7 = parse___();
                 if (result7 !== null) {
@@ -16901,8 +16889,8 @@ module.exports = (function(){
                   if (result8 !== null) {
                     var result9 = parse___();
                     if (result9 !== null) {
-                      var result19 = parse_FormalParameterList();
-                      var result10 = result19 !== null ? result19 : '';
+                      var result18 = parse_FormalParameterList();
+                      var result10 = result18 !== null ? result18 : '';
                       if (result10 !== null) {
                         var result11 = parse___();
                         if (result11 !== null) {
@@ -16928,27 +16916,21 @@ module.exports = (function(){
                                 }
                               }
                               if (result14 !== null) {
-                                var result15 = parse___();
+                                var result15 = parse_FunctionBody();
                                 if (result15 !== null) {
-                                  var result16 = parse_FunctionBody();
+                                  var result16 = parse___();
                                   if (result16 !== null) {
-                                    var result17 = parse___();
+                                    if (input.substr(pos, 1) === "}") {
+                                      var result17 = "}";
+                                      pos += 1;
+                                    } else {
+                                      var result17 = null;
+                                      if (reportMatchFailures) {
+                                        matchFailed("\"}\"");
+                                      }
+                                    }
                                     if (result17 !== null) {
-                                      if (input.substr(pos, 1) === "}") {
-                                        var result18 = "}";
-                                        pos += 1;
-                                      } else {
-                                        var result18 = null;
-                                        if (reportMatchFailures) {
-                                          matchFailed("\"}\"");
-                                        }
-                                      }
-                                      if (result18 !== null) {
-                                        var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12, result13, result14, result15, result16, result17, result18];
-                                      } else {
-                                        var result1 = null;
-                                        pos = savedPos1;
-                                      }
+                                      var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12, result13, result14, result15, result16, result17];
                                     } else {
                                       var result1 = null;
                                       pos = savedPos1;
@@ -17016,7 +16998,7 @@ module.exports = (function(){
                   nodes: [name !== "" ? name : undefinedNode(p), nodeList(params, p, 'parameters'), body],
                   pos: p
                 };
-              })(result1[0], result1[3], result1[7], result1[13])
+              })(result1[0], result1[3], result1[7], result1[12])
           : null;
         if (result2 !== null) {
           var result0 = result2;

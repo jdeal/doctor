@@ -19,6 +19,13 @@ rules.push({
         name: 'Modules'
       });
     }
+    if (!report.item('classes')) {
+      report.add({
+        type: 'group',
+        key: 'classes',
+        name: 'Classes'
+      });
+    }
     return {
       type: 'module',
       key: node.path,
@@ -29,26 +36,126 @@ rules.push({
   }
 });
 
+function fixSignatureParams(item, signature) {
+  signature.params = [];
+  for (var i = 0; i < signature.arity; i++) {
+    signature.params.push(item.params[i]);
+  }
+}
+
+function functionSignatures(fn, node, fnItem, signatures, direction, lastParamIndex) {
+  var isFirst = true;
+  if (signatures.length > 0) {
+    isFirst = false;
+  }
+  if (node && node.checksSignature) {
+    var arity;
+    var signature = {
+      description: node.description,
+      returns: node.returns || fn.returns,
+      examples: node.examples
+    };
+    //item.returns = node.returns || fn.returns;
+    if (node.type === 'if') {
+      var paramName = node.nodes[0].nodes[1].nodes[1].value;
+      var paramIndex;
+      if (!(paramName in fn.paramIndex)) {
+        return;
+      } else {
+        paramIndex = fn.paramIndex[paramName];
+      }
+      var nextNode = node.next;
+      if (node.likeSource("if (typeof __name__ === 'undefined') {}")) {
+        signature.arity = fn.paramIndex[paramName];
+        fixSignatureParams(fnItem, signature);
+        signatures.push(signature);
+        functionSignatures(fn, nextNode, fnItem, signatures, 1, paramIndex);
+      } else if (node.likeSource("if (typeof __name__ !== 'undefined') {}")) {
+        signature.arity = fn.params.length;
+        fixSignatureParams(fnItem, signature);
+        if (!isFirst) {
+          signature.arity = lastParamIndex;
+        }
+        signatures.push(signature);
+        functionSignatures(fn, nextNode, fnItem, signatures, -1, paramIndex);
+      }
+    } else if (!isFirst) {
+      if (direction) {
+        signature.arity = fn.params.length;
+        fixSignatureParams(fnItem, signature);
+        signatures.push(signature);
+      } else {
+        signature.arity = lastParamIndex;
+        fixSignatureParams(fnItem, signature);
+        signatures.push(signature);
+      }
+    }
+  }
+}
+
+function functionReportItem(node, fnNode, name, item) {
+  if (!fnNode.type) {
+    item = name;
+    name = fnNode;
+    fnNode = node;
+  }
+  item = item || {};
+  var signatures = [];
+  var body = fnNode.nodes[2];
+  var items = [];
+  var fnItem = {
+    type: 'function',
+    constructorFunction: isCapitalized(name),
+    key: node.item('module') + '.' + name,
+    params: fnNode.params,
+    classDescription: node.classDescription,
+    returns: node.returns,
+    constructorDescription: node.constructorDescription,
+    description: node.description,
+    properties: node.properties,
+    examples: node.examples,
+    visibility: node.visibility,
+    extends: node.extends,
+    groups: [node.item('module')],
+    name: name,
+    signatures: signatures
+  };
+  fnItem = _.extend(fnItem, item);
+  functionSignatures(fnNode, body.nodes[0], fnItem, signatures);
+  if (fnItem.constructorFunction) {
+    var classItem = {
+      type: 'class',
+      key: node.item('module') + ".class." + fnItem.name,
+      name: fnItem.name,
+      groups: ['classes']
+    };
+    items.push(classItem);
+    fnItem.groups.push(classItem.key);
+  }
+  items.push(fnItem);
+  return items;
+}
+
 rules.push({
   type: 'define-function',
   report: function (node) {
-    var name = node.nodes[0].value;
-    return {
-      type: 'function',
-      constructorFunction: isCapitalized(name),
-      key: node.item('module') + '.' + name,
-      params: node.params,
-      classDescription: node.classDescription,
-      returns: node.returns,
-      constructorDescription: node.constructorDescription,
-      description: node.description,
-      properties: node.properties,
-      examples: node.examples,
-      visibility: node.visibility,
-      extends: node.extends,
-      groups: [node.item('module')],
-      name: name
-    };
+    return functionReportItem(node, node.nodes[0].value);
+  }
+});
+
+/*
+  var f = function f() {}
+  var f = function () {}
+*/
+rules.push({
+  type: 'var',
+  match: function (node) {
+    //console.log(node.lispify())
+    return node.likeSource('var __name__ = function __name__() {}') ||
+           node.likeSource('var __name__ = function () {}');
+  },
+  report: function (node, report) {
+    return functionReportItem(node.nodes[1], node.nodes[0].value);
   }
 });
 
@@ -71,16 +178,8 @@ function exportFunction(node, report, name, exportName) {
 rules.push({
   type: 'assign',
   match: function (node) {
-    // op dot name
-    try {
-      if (node.nodes[0].value === '=' && node.nodes[1].type === 'dot' &&
-          node.nodes[2].type === 'name') {
-        return true;
-      }
-    } catch (e) {
-    }
-
-    return false;
+    return node.likeSource('exports.__name__ = __name__') ||
+           node.likeSource('module.exports.__name__ = __name__');
   },
   report: function (node, report) {
     var name = node.nodes[2].value;
@@ -113,13 +212,14 @@ rules.push({
 });
 
 /*
+  exports.x = y.z;
   module.exports.x = y.z;
 */
 rules.push({
   type: 'assign',
   match: function (node) {
     return node.likeSource('module.exports.__name__ = __name__.__name__') ||
-        node.likeSource('exports.__name__ = __name__.__name__');
+           node.likeSource('exports.__name__ = __name__.__name__');
   },
   report: function (node, report) {
     var exportName = node.nodes[1].nodes[1].value;
@@ -206,7 +306,7 @@ rules.push({
     } else if (type === 'function') {
       var key = node.item('module') +  '.anonymous';
       return {
-        type: 'function',
+        type: 'module-function',
         key: key,
         params: typeNode.params,
         returns: node.returns,
@@ -410,9 +510,17 @@ rules.push({
   report: function (node, report) {
     var methodName = node.nodes[1].nodes[1].value;
     var className = node.nodes[1].nodes[0].nodes[0].value;
-    var params = node.nodes[2].params;
+    //var params = node.nodes[2].params;
     var key = node.item('module') + '.' + className + '.' + methodName;
-    var group = node.item('module') + '.' + className;
+    var group = node.item('module') + '.class.' + className;
+
+    return functionReportItem(node, node.nodes[2], methodName, {
+      method: true,
+      key: key,
+      groups: [group]
+    });
+
+    /*
 
     return {
       type: 'function',
@@ -430,6 +538,8 @@ rules.push({
       groups: [group],
       name: methodName
     };
+
+    */
   }
 });
 
@@ -462,11 +572,12 @@ rules.push({
   }
 });
 
+/*
 function inFunction(node) {
   return node.parent.parent.type === 'function' ||
     node.parent.parent.type === 'define-function';
 }
-/*
+
 rules.push({
   type: 'if',
   match: function (node) {
