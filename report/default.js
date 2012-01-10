@@ -514,6 +514,15 @@ rules.push({
     var key = node.item('module') + '.' + className + '.' + methodName;
     var group = node.item('module') + '.class.' + className;
 
+    if (!report.item(group)) {
+      report.add({
+        type: 'class',
+        key: group,
+        name: className,
+        groups: ['classes']
+      });
+    }
+
     return functionReportItem(node, node.nodes[2], methodName, {
       method: true,
       key: key,
