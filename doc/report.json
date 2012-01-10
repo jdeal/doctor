@@ -3,7 +3,8 @@
     "root": {
       "type": "group",
       "items": [
-        "modules"
+        "modules",
+        "classes"
       ]
     },
     "modules": {
@@ -15,11 +16,20 @@
         "cli",
         "doctor",
         "nice-ast",
-        "post-process",
         "render",
-        "transform",
         "report",
-        "util"
+        "transform",
+        "util",
+        "post-process"
+      ]
+    },
+    "classes": {
+      "type": "group",
+      "key": "classes",
+      "name": "Classes",
+      "items": [
+        "ast-node.class.AstNode",
+        "report.class.Report"
       ]
     },
     "ast-node": {
@@ -32,6 +42,30 @@
       "items": [
         "ast-node.AstNode",
         "ast-node.getNodeItem"
+      ]
+    },
+    "ast-node.class.AstNode": {
+      "type": "class",
+      "key": "ast-node.class.AstNode",
+      "name": "AstNode",
+      "groups": [
+        "classes"
+      ],
+      "items": [
+        "ast-node.AstNode",
+        "ast-node.AstNode.item",
+        "ast-node.AstNode.fix",
+        "ast-node.AstNode.index",
+        "ast-node.AstNode.walk",
+        "ast-node.AstNode.after",
+        "ast-node.AstNode.prepend",
+        "ast-node.AstNode.append",
+        "ast-node.AstNode.remove",
+        "ast-node.AstNode.lispify",
+        "ast-node.AstNode.like",
+        "ast-node.AstNode.parser",
+        "ast-node.AstNode.likeSource",
+        "ast-node.AstNode.ast"
       ]
     },
     "ast-node.AstNode": {
@@ -51,24 +85,11 @@
       ],
       "description": "Creates an AST node from a plain object.",
       "groups": [
-        "ast-node"
+        "ast-node",
+        "ast-node.class.AstNode"
       ],
       "name": "AstNode",
-      "items": [
-        "ast-node.AstNode.item",
-        "ast-node.AstNode.fix",
-        "ast-node.AstNode.index",
-        "ast-node.AstNode.walk",
-        "ast-node.AstNode.after",
-        "ast-node.AstNode.prepend",
-        "ast-node.AstNode.append",
-        "ast-node.AstNode.remove",
-        "ast-node.AstNode.lispify",
-        "ast-node.AstNode.like",
-        "ast-node.AstNode.parser",
-        "ast-node.AstNode.likeSource",
-        "ast-node.AstNode.ast"
-      ],
+      "signatures": [],
       "api": true
     },
     "ast-node.getNodeItem": {
@@ -83,11 +104,12 @@
       "groups": [
         "ast-node"
       ],
-      "name": "getNodeItem"
+      "name": "getNodeItem",
+      "signatures": []
     },
     "ast-node.AstNode.item": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.item",
       "params": [
         {
@@ -99,18 +121,43 @@
           "optional": true
         }
       ],
-      "returns": {
-        "description": "The value, if acting as a getter."
-      },
-      "description": "<p>Gets or sets a key/value pair from a node. Values are looked up starting at\nthis node and recursing back through parents. This is useful for setting\nvalues that child nodes will look up.</p>",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "item"
+      "name": "item",
+      "signatures": [
+        {
+          "description": "Gets an item value from a node.",
+          "returns": {
+            "description": "Value for this item."
+          },
+          "arity": 1,
+          "params": [
+            {
+              "name": "key"
+            }
+          ]
+        },
+        {
+          "description": "Sets an item value for a particular node.",
+          "arity": 2,
+          "params": [
+            {
+              "name": "key"
+            },
+            {
+              "name": "value",
+              "description": "Set value to this value.",
+              "optional": true
+            }
+          ]
+        }
+      ],
+      "method": true
     },
     "ast-node.AstNode.fix": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.fix",
       "params": [
         {
@@ -119,13 +166,15 @@
       ],
       "description": "Properly connect siblings to this node.",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "fix"
+      "name": "fix",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.index": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.index",
       "params": [],
       "returns": {
@@ -136,13 +185,15 @@
       },
       "description": "Get the index of a node.",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "index"
+      "name": "index",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.walk": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.walk",
       "params": [
         {
@@ -151,13 +202,15 @@
       ],
       "description": "<p>Walk this node and its children, using the registered walk method. When a\nnode is appended, this is used to run all the rules for the appended node and\nits children.</p>",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "walk"
+      "name": "walk",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.after": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.after",
       "params": [
         {
@@ -166,13 +219,15 @@
       ],
       "description": "Insert node after this one.",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "after"
+      "name": "after",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.prepend": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.prepend",
       "params": [
         {
@@ -181,13 +236,15 @@
       ],
       "description": "Insert a new child node before any other child nodes.",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "prepend"
+      "name": "prepend",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.append": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.append",
       "params": [
         {
@@ -196,24 +253,28 @@
       ],
       "description": "Insert a new child node after any other child nodes.",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "append"
+      "name": "append",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.remove": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.remove",
       "params": [],
       "description": "Remove this node.",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "remove"
+      "name": "remove",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.lispify": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.lispify",
       "params": [],
       "returns": {
@@ -224,13 +285,15 @@
       },
       "description": "<p>Return a lisp-like representation of this node. Useful while creating rules.\nGives you a terse look at the AST.</p>",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "lispify"
+      "name": "lispify",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.like": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.like",
       "params": [
         {
@@ -245,26 +308,30 @@
       },
       "description": "<p>Return a lisp-like representation of this node. Useful while creating rules.\nGives you a terse look at the AST.</p>",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "like"
+      "name": "like",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.parser": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.parser",
       "params": [],
       "returns": {
         "description": "The PEG parser used in creating this AST."
       },
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "parser"
+      "name": "parser",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.likeSource": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.likeSource",
       "params": [
         {
@@ -273,20 +340,24 @@
       ],
       "description": "<p>Compare this node to some arbitrary source. The source string will be\ncompiled to an AST, using the same grammar that was used to create this node.</p>",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "likeSource"
+      "name": "likeSource",
+      "signatures": [],
+      "method": true
     },
     "ast-node.AstNode.ast": {
       "type": "function",
-      "method": true,
+      "constructorFunction": false,
       "key": "ast-node.AstNode.ast",
       "params": [],
       "description": "Return an AST without the sibling and parent references.",
       "groups": [
-        "ast-node.AstNode"
+        "ast-node.class.AstNode"
       ],
-      "name": "ast"
+      "name": "ast",
+      "signatures": [],
+      "method": true
     },
     "cli": {
       "type": "module",
@@ -301,7 +372,7 @@
       ]
     },
     "cli.anonymous": {
-      "type": "function",
+      "type": "module-function",
       "key": "cli.anonymous",
       "params": [
         {
@@ -376,7 +447,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "getAst"
+      "name": "getAst",
+      "signatures": []
     },
     "doctor.transformAst": {
       "type": "function",
@@ -396,7 +468,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "transformAst"
+      "name": "transformAst",
+      "signatures": []
     },
     "doctor.ast": {
       "type": "var",
@@ -424,7 +497,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "makeReport"
+      "name": "makeReport",
+      "signatures": []
     },
     "doctor.pickupRequiredFiles": {
       "type": "function",
@@ -450,7 +524,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "pickupRequiredFiles"
+      "name": "pickupRequiredFiles",
+      "signatures": []
     },
     "doctor.examine": {
       "type": "function",
@@ -469,6 +544,7 @@
         "doctor"
       ],
       "name": "examine",
+      "signatures": [],
       "api": true
     },
     "doctor.finish": {
@@ -483,7 +559,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "finish"
+      "name": "finish",
+      "signatures": []
     },
     "doctor.writeOutput": {
       "type": "function",
@@ -497,7 +574,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "writeOutput"
+      "name": "writeOutput",
+      "signatures": []
     },
     "doctor.writeFile": {
       "type": "function",
@@ -514,7 +592,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "writeFile"
+      "name": "writeFile",
+      "signatures": []
     },
     "doctor.renderReport": {
       "type": "function",
@@ -528,7 +607,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "renderReport"
+      "name": "renderReport",
+      "signatures": []
     },
     "doctor.postProcess": {
       "type": "function",
@@ -545,7 +625,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "postProcess"
+      "name": "postProcess",
+      "signatures": []
     },
     "doctor.followRequired": {
       "type": "function",
@@ -559,7 +640,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "followRequired"
+      "name": "followRequired",
+      "signatures": []
     },
     "doctor.doMakeReport": {
       "type": "function",
@@ -573,7 +655,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "doMakeReport"
+      "name": "doMakeReport",
+      "signatures": []
     },
     "doctor.doTransformAst": {
       "type": "function",
@@ -583,7 +666,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "doTransformAst"
+      "name": "doTransformAst",
+      "signatures": []
     },
     "doctor.doGetAst": {
       "type": "function",
@@ -593,7 +677,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "doGetAst"
+      "name": "doGetAst",
+      "signatures": []
     },
     "doctor.getCommentParser": {
       "type": "function",
@@ -603,7 +688,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "getCommentParser"
+      "name": "getCommentParser",
+      "signatures": []
     },
     "doctor.copyView": {
       "type": "function",
@@ -614,7 +700,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "copyView"
+      "name": "copyView",
+      "signatures": []
     },
     "doctor.eachView": {
       "type": "function",
@@ -631,7 +718,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "eachView"
+      "name": "eachView",
+      "signatures": []
     },
     "doctor.checkOutputDir": {
       "type": "function",
@@ -641,7 +729,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "checkOutputDir"
+      "name": "checkOutputDir",
+      "signatures": []
     },
     "doctor.harmony": {
       "type": "function",
@@ -653,6 +742,7 @@
         "doctor"
       ],
       "name": "harmony",
+      "signatures": [],
       "api": true
     },
     "doctor.compiler": {
@@ -670,7 +760,8 @@
       "groups": [
         "doctor"
       ],
-      "name": "compiler"
+      "name": "compiler",
+      "signatures": []
     },
     "doctor.options": {
       "type": "var",
@@ -739,6 +830,7 @@
         "nice-ast"
       ],
       "name": "walk",
+      "signatures": [],
       "api": true
     },
     "nice-ast.walkEnd": {
@@ -757,6 +849,7 @@
         "nice-ast"
       ],
       "name": "walkEnd",
+      "signatures": [],
       "api": true
     },
     "nice-ast.extendAst": {
@@ -775,6 +868,7 @@
         "nice-ast"
       ],
       "name": "extendAst",
+      "signatures": [],
       "api": true
     },
     "nice-ast.cleanAst": {
@@ -790,6 +884,7 @@
         "nice-ast"
       ],
       "name": "cleanAst",
+      "signatures": [],
       "api": true
     },
     "nice-ast.copy": {
@@ -812,7 +907,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "parseCommentNode"
+      "name": "parseCommentNode",
+      "signatures": []
     },
     "nice-ast.pegParser": {
       "type": "function",
@@ -830,6 +926,7 @@
         "nice-ast"
       ],
       "name": "pegParser",
+      "signatures": [],
       "api": true
     },
     "nice-ast.existsNewerCompiledGrammarFile": {
@@ -847,7 +944,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "existsNewerCompiledGrammarFile"
+      "name": "existsNewerCompiledGrammarFile",
+      "signatures": []
     },
     "nice-ast.findGrammarFile": {
       "type": "function",
@@ -864,7 +962,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "findGrammarFile"
+      "name": "findGrammarFile",
+      "signatures": []
     },
     "nice-ast.addLineNumbers": {
       "type": "function",
@@ -881,7 +980,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "addLineNumbers"
+      "name": "addLineNumbers",
+      "signatures": []
     },
     "nice-ast.astFromFile": {
       "type": "function",
@@ -902,6 +1002,7 @@
         "nice-ast"
       ],
       "name": "astFromFile",
+      "signatures": [],
       "api": true
     },
     "nice-ast.convertSourceFile": {
@@ -919,7 +1020,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "convertSourceFile"
+      "name": "convertSourceFile",
+      "signatures": []
     },
     "nice-ast.convertPackage": {
       "type": "function",
@@ -929,7 +1031,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "convertPackage"
+      "name": "convertPackage",
+      "signatures": []
     },
     "nice-ast.prepareRules": {
       "type": "function",
@@ -946,7 +1049,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "prepareRules"
+      "name": "prepareRules",
+      "signatures": []
     },
     "nice-ast.typeToRules": {
       "type": "var",
@@ -984,6 +1088,7 @@
         "nice-ast"
       ],
       "name": "walkWithRules",
+      "signatures": [],
       "api": true
     },
     "nice-ast.eachNode": {
@@ -1001,7 +1106,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "eachNode"
+      "name": "eachNode",
+      "signatures": []
     },
     "nice-ast.lispify": {
       "type": "function",
@@ -1016,6 +1122,7 @@
         "nice-ast"
       ],
       "name": "lispify",
+      "signatures": [],
       "api": true
     },
     "nice-ast.isValueNode": {
@@ -1030,7 +1137,8 @@
       "groups": [
         "nice-ast"
       ],
-      "name": "isValueNode"
+      "name": "isValueNode",
+      "signatures": []
     },
     "nice-ast.like": {
       "type": "function",
@@ -1048,6 +1156,7 @@
         "nice-ast"
       ],
       "name": "like",
+      "signatures": [],
       "api": true
     },
     "nice-ast.parserForGrammar": {
@@ -1063,83 +1172,7 @@
         "nice-ast"
       ],
       "name": "parserForGrammar",
-      "api": true
-    },
-    "post-process": {
-      "type": "module",
-      "key": "post-process",
-      "name": "post-process",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "post-process.renamePackageItems",
-        "post-process.getParent",
-        "post-process.hoistRequiredItems",
-        "post-process.postProcessReport"
-      ]
-    },
-    "post-process.renamePackageItems": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.renamePackageItems",
-      "params": [
-        {
-          "name": "report"
-        }
-      ],
-      "description": "<p>Rename modules to their corresponding package names, if provided, via a\npackage.json file.</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "renamePackageItems"
-    },
-    "post-process.getParent": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.getParent",
-      "params": [
-        {
-          "name": "report"
-        },
-        {
-          "name": "item"
-        }
-      ],
-      "groups": [
-        "post-process"
-      ],
-      "name": "getParent"
-    },
-    "post-process.hoistRequiredItems": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.hoistRequiredItems",
-      "params": [
-        {
-          "name": "report"
-        }
-      ],
-      "description": "<p>If a module exports another required module, treat the required module as if\nits exports were owned by this module.</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "hoistRequiredItems"
-    },
-    "post-process.postProcessReport": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.postProcessReport",
-      "params": [
-        {
-          "name": "inputReport"
-        }
-      ],
-      "description": "<p>Use package names if available, and handle cases like:<br/>\nmodule.exports = require('foo');</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "postProcessReport",
+      "signatures": [],
       "api": true
     },
     "render": {
@@ -1175,6 +1208,7 @@
         "render"
       ],
       "name": "render",
+      "signatures": [],
       "api": true
     },
     "render.files": {
@@ -1200,7 +1234,221 @@
       "groups": [
         "render"
       ],
-      "name": "eachRender"
+      "name": "eachRender",
+      "signatures": []
+    },
+    "report": {
+      "type": "module",
+      "key": "report",
+      "name": "report",
+      "groups": [
+        "modules"
+      ],
+      "items": [
+        "report.Report",
+        "report.walk",
+        "report.eachNode",
+        "report.finishRules",
+        "report.finalReport",
+        "report.run"
+      ]
+    },
+    "report.class.Report": {
+      "type": "class",
+      "key": "report.class.Report",
+      "name": "Report",
+      "groups": [
+        "classes"
+      ],
+      "items": [
+        "report.Report",
+        "report.Report.run",
+        "report.Report.item",
+        "report.Report.ref",
+        "report.Report.remove",
+        "report.Report.add"
+      ]
+    },
+    "report.Report": {
+      "type": "function",
+      "constructorFunction": true,
+      "key": "report.Report",
+      "params": [
+        {
+          "name": "options"
+        },
+        {
+          "name": "ast"
+        }
+      ],
+      "groups": [
+        "report",
+        "report.class.Report"
+      ],
+      "name": "Report",
+      "signatures": []
+    },
+    "report.walk": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "report.walk",
+      "params": [
+        {
+          "name": "node"
+        },
+        {
+          "name": "cb"
+        }
+      ],
+      "groups": [
+        "report"
+      ],
+      "name": "walk",
+      "signatures": []
+    },
+    "report.Report.run": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "report.Report.run",
+      "params": [
+        {
+          "name": "cb"
+        }
+      ],
+      "description": "Run the report through the supplied report rules.",
+      "groups": [
+        "report.class.Report"
+      ],
+      "name": "run",
+      "signatures": [],
+      "method": true
+    },
+    "report.eachNode": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "report.eachNode",
+      "params": [
+        {
+          "name": "node"
+        },
+        {
+          "name": "rule"
+        }
+      ],
+      "groups": [
+        "report"
+      ],
+      "name": "eachNode",
+      "signatures": []
+    },
+    "report.finishRules": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "report.finishRules",
+      "params": [
+        {
+          "name": "err"
+        }
+      ],
+      "groups": [
+        "report"
+      ],
+      "name": "finishRules",
+      "signatures": []
+    },
+    "report.finalReport": {
+      "type": "var",
+      "key": "report.finalReport",
+      "groups": [
+        "report"
+      ],
+      "name": "finalReport"
+    },
+    "report.Report.item": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "report.Report.item",
+      "params": [
+        {
+          "name": "key"
+        }
+      ],
+      "groups": [
+        "report.class.Report"
+      ],
+      "name": "item",
+      "signatures": [],
+      "method": true
+    },
+    "report.Report.ref": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "report.Report.ref",
+      "params": [
+        {
+          "name": "key"
+        }
+      ],
+      "groups": [
+        "report.class.Report"
+      ],
+      "name": "ref",
+      "signatures": [],
+      "method": true
+    },
+    "report.Report.remove": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "report.Report.remove",
+      "params": [
+        {
+          "name": "key"
+        }
+      ],
+      "groups": [
+        "report.class.Report"
+      ],
+      "name": "remove",
+      "signatures": [],
+      "method": true
+    },
+    "report.Report.add": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "report.Report.add",
+      "params": [
+        {
+          "name": "item"
+        }
+      ],
+      "groups": [
+        "report.class.Report"
+      ],
+      "name": "add",
+      "signatures": [],
+      "method": true
+    },
+    "report.run": {
+      "type": "module-function",
+      "constructorFunction": false,
+      "key": "report.run",
+      "params": [
+        {
+          "name": "options"
+        },
+        {
+          "name": "ast"
+        },
+        {
+          "name": "cb"
+        }
+      ],
+      "groups": [
+        "report"
+      ],
+      "name": "run",
+      "signatures": [],
+      "api": true
     },
     "transform": {
       "type": "module",
@@ -1231,11 +1479,12 @@
           "name": "cb"
         }
       ],
-      "description": "Transoform the AST with the supplied transform rules.",
+      "description": "Transform the AST with the supplied transform rules.",
       "groups": [
         "transform"
       ],
       "name": "transform",
+      "signatures": [],
       "api": true
     },
     "transform.transformObj": {
@@ -1261,7 +1510,8 @@
       "groups": [
         "transform"
       ],
-      "name": "queueNodeWalk"
+      "name": "queueNodeWalk",
+      "signatures": []
     },
     "transform.eachNodeRule": {
       "type": "function",
@@ -1278,195 +1528,8 @@
       "groups": [
         "transform"
       ],
-      "name": "eachNodeRule"
-    },
-    "report": {
-      "type": "module",
-      "key": "report",
-      "name": "report",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "report.Report",
-        "report.walk",
-        "report.eachNode",
-        "report.finishRules",
-        "report.finalReport",
-        "report.run"
-      ]
-    },
-    "report.Report": {
-      "type": "function",
-      "constructorFunction": true,
-      "key": "report.Report",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "ast"
-        }
-      ],
-      "groups": [
-        "report"
-      ],
-      "name": "Report",
-      "items": [
-        "report.Report.run",
-        "report.Report.item",
-        "report.Report.ref",
-        "report.Report.remove",
-        "report.Report.add"
-      ]
-    },
-    "report.walk": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.walk",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "report"
-      ],
-      "name": "walk"
-    },
-    "report.Report.run": {
-      "type": "function",
-      "method": true,
-      "key": "report.Report.run",
-      "params": [
-        {
-          "name": "cb"
-        }
-      ],
-      "description": "Run the report through the supplied report rules.",
-      "groups": [
-        "report.Report"
-      ],
-      "name": "run"
-    },
-    "report.eachNode": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.eachNode",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "rule"
-        }
-      ],
-      "groups": [
-        "report"
-      ],
-      "name": "eachNode"
-    },
-    "report.finishRules": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.finishRules",
-      "params": [
-        {
-          "name": "err"
-        }
-      ],
-      "groups": [
-        "report"
-      ],
-      "name": "finishRules"
-    },
-    "report.finalReport": {
-      "type": "var",
-      "key": "report.finalReport",
-      "groups": [
-        "report"
-      ],
-      "name": "finalReport"
-    },
-    "report.Report.item": {
-      "type": "function",
-      "method": true,
-      "key": "report.Report.item",
-      "params": [
-        {
-          "name": "key"
-        }
-      ],
-      "groups": [
-        "report.Report"
-      ],
-      "name": "item"
-    },
-    "report.Report.ref": {
-      "type": "function",
-      "method": true,
-      "key": "report.Report.ref",
-      "params": [
-        {
-          "name": "key"
-        }
-      ],
-      "groups": [
-        "report.Report"
-      ],
-      "name": "ref"
-    },
-    "report.Report.remove": {
-      "type": "function",
-      "method": true,
-      "key": "report.Report.remove",
-      "params": [
-        {
-          "name": "key"
-        }
-      ],
-      "groups": [
-        "report.Report"
-      ],
-      "name": "remove"
-    },
-    "report.Report.add": {
-      "type": "function",
-      "method": true,
-      "key": "report.Report.add",
-      "params": [
-        {
-          "name": "item"
-        }
-      ],
-      "groups": [
-        "report.Report"
-      ],
-      "name": "add"
-    },
-    "report.run": {
-      "type": "module-function",
-      "constructorFunction": false,
-      "key": "report.run",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "ast"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "report"
-      ],
-      "name": "run",
-      "api": true
+      "name": "eachNodeRule",
+      "signatures": []
     },
     "util": {
       "type": "module",
@@ -1518,7 +1581,8 @@
       "groups": [
         "util"
       ],
-      "name": "callbackify"
+      "name": "callbackify",
+      "signatures": []
     },
     "util.asyncSync": {
       "type": "var",
@@ -1540,7 +1604,8 @@
       "groups": [
         "util"
       ],
-      "name": "flag"
+      "name": "flag",
+      "signatures": []
     },
     "util.toArray": {
       "type": "function",
@@ -1555,6 +1620,7 @@
         "util"
       ],
       "name": "toArray",
+      "signatures": [],
       "api": true
     },
     "util.requireMaybe": {
@@ -1569,7 +1635,8 @@
       "groups": [
         "util"
       ],
-      "name": "requireMaybe"
+      "name": "requireMaybe",
+      "signatures": []
     },
     "util.compareFileDates": {
       "type": "function",
@@ -1594,6 +1661,7 @@
         "util"
       ],
       "name": "compareFileDates",
+      "signatures": [],
       "api": true
     },
     "util.compareFileDatesSync": {
@@ -1614,7 +1682,8 @@
       "groups": [
         "util"
       ],
-      "name": "compareFileDatesSync"
+      "name": "compareFileDatesSync",
+      "signatures": []
     },
     "util.findRules": {
       "type": "function",
@@ -1633,6 +1702,7 @@
         "util"
       ],
       "name": "findRules",
+      "signatures": [],
       "api": true
     },
     "util.findFunctions": {
@@ -1652,6 +1722,7 @@
         "util"
       ],
       "name": "findFunctions",
+      "signatures": [],
       "api": true
     },
     "util.clone": {
@@ -1668,6 +1739,7 @@
         "util"
       ],
       "name": "clone",
+      "signatures": [],
       "api": true
     },
     "util.newObj": {
@@ -1697,7 +1769,8 @@
       "groups": [
         "util"
       ],
-      "name": "dirExists"
+      "name": "dirExists",
+      "signatures": []
     },
     "util.dirExistsSync": {
       "type": "function",
@@ -1714,7 +1787,8 @@
       "groups": [
         "util"
       ],
-      "name": "dirExistsSync"
+      "name": "dirExistsSync",
+      "signatures": []
     },
     "util.findFile": {
       "type": "function",
@@ -1741,6 +1815,7 @@
         "util"
       ],
       "name": "findFile",
+      "signatures": [],
       "api": true
     },
     "util.findFileSync": {
@@ -1761,7 +1836,8 @@
       "groups": [
         "util"
       ],
-      "name": "findFileSync"
+      "name": "findFileSync",
+      "signatures": []
     },
     "util.findDir": {
       "type": "function",
@@ -1788,6 +1864,7 @@
         "util"
       ],
       "name": "findDir",
+      "signatures": [],
       "api": true
     },
     "util.findDirSync": {
@@ -1808,7 +1885,8 @@
       "groups": [
         "util"
       ],
-      "name": "findDirSync"
+      "name": "findDirSync",
+      "signatures": []
     },
     "util.localizePaths": {
       "type": "function",
@@ -1824,6 +1902,7 @@
         "util"
       ],
       "name": "localizePaths",
+      "signatures": [],
       "api": true
     },
     "util.fs": {
@@ -1862,6 +1941,87 @@
       "name": "sync",
       "api": true,
       "constructorFunction": false
+    },
+    "post-process": {
+      "type": "module",
+      "key": "post-process",
+      "name": "post-process",
+      "groups": [
+        "modules"
+      ],
+      "items": [
+        "post-process.renamePackageItems",
+        "post-process.getParent",
+        "post-process.hoistRequiredItems",
+        "post-process.postProcessReport"
+      ]
+    },
+    "post-process.renamePackageItems": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "post-process.renamePackageItems",
+      "params": [
+        {
+          "name": "report"
+        }
+      ],
+      "description": "<p>Rename modules to their corresponding package names, if provided, via a\npackage.json file.</p>",
+      "groups": [
+        "post-process"
+      ],
+      "name": "renamePackageItems",
+      "signatures": []
+    },
+    "post-process.getParent": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "post-process.getParent",
+      "params": [
+        {
+          "name": "report"
+        },
+        {
+          "name": "item"
+        }
+      ],
+      "groups": [
+        "post-process"
+      ],
+      "name": "getParent",
+      "signatures": []
+    },
+    "post-process.hoistRequiredItems": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "post-process.hoistRequiredItems",
+      "params": [
+        {
+          "name": "report"
+        }
+      ],
+      "description": "<p>If a module exports another required module, treat the required module as if\nits exports were owned by this module.</p>",
+      "groups": [
+        "post-process"
+      ],
+      "name": "hoistRequiredItems",
+      "signatures": []
+    },
+    "post-process.postProcessReport": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "post-process.postProcessReport",
+      "params": [
+        {
+          "name": "inputReport"
+        }
+      ],
+      "description": "<p>Use package names if available, and handle cases like:<br/>\nmodule.exports = require('foo');</p>",
+      "groups": [
+        "post-process"
+      ],
+      "name": "postProcessReport",
+      "signatures": [],
+      "api": true
     }
   }
 }

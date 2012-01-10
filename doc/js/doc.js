@@ -31,7 +31,7 @@ doc.addSpan = function (parent, text, cssClass) {
 doc.configure = function (config) {
   if (config.title) {
     $('head').append('<title>' + config.title + '</title>');
-    $('header > span').text(config.title);
+    $('.title').text(config.title);
   }
   if (config.logo) {
     var img = $('<img>',
@@ -77,8 +77,10 @@ doc.render = function (report) {
   doc.renderToc(report, root, $('#toc'));
 
   // Expand the first group.
-  var firstLink  = $('#toc a:first');
-  firstLink.click();
+  if (root.items.length === 1) {
+    var firstLink  = $('#toc a:first');
+    firstLink.click();
+  }
 };
 
 doc.getDisplayType = function (item) {
@@ -189,52 +191,68 @@ doc.itemDescription = function (item) {
   return description;
 };
 
-doc.renderFunction = function (report, item, parent) {
-  var paramNames = item.params ? item.params.map(function (param) {
-    return param.name;
-  }) : [];
-  var params = paramNames ? paramNames.join(', ') : '';
-  var nameDiv = doc.addDiv(parent, '', 'itemName');
-
-  var type = doc.getDisplayType(item);
-
-  if (type !== 'var') {
-    doc.addSpan(nameDiv, item.name + '(', 'function');
-    doc.addSpan(nameDiv, params, 'arg');
-    doc.addSpan(nameDiv, ')', 'function');
+doc.renderFunction = function (report, group, item, parent) {
+  var signatures = [];
+  if (!item.signatures || item.signatures.length < 2) {
+    signatures.push(item);
   } else {
-    doc.addSpan(nameDiv, item.name, 'var');
+    item.signatures.forEach(function (sig) {
+      var sigItem = $.extend({}, item);
+      $.extend(sigItem, sig);
+      signatures.push(sigItem);
+    });
   }
+  signatures.forEach(function (item) {
+    var paramNames = item.params ? item.params.map(function (param) {
+      return param.name;
+    }) : [];
+    var params = paramNames ? paramNames.join(', ') : '';
+    var nameDiv = doc.addDiv(parent, '', 'itemName');
 
-  if (doc.isPrivate(report, item)) {
-    type = 'private ' + type;
-  }
-  doc.addDiv(parent, type, 'itemType');
+    var type = doc.getDisplayType(item);
 
-  var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
+    if (type !== 'var') {
+      if (item.type === 'module-function' && group.type === 'module') {
+        doc.addSpan(nameDiv, 'exports ', 'exportsTag');
+      }
+      doc.addSpan(nameDiv, item.name + '(', 'function');
+      doc.addSpan(nameDiv, params, 'arg');
+      doc.addSpan(nameDiv, ')', 'function');
+    } else {
+      doc.addSpan(nameDiv, item.name, 'var');
+    }
 
-  var description = doc.itemDescription(item);
-  $(descriptionDiv).append(description);
+    if (doc.isPrivate(item)) {
+      type = 'private ' + type;
+    }
+    doc.addDiv(parent, type, 'itemType');
 
-  doc.renderItemTags(item, parent);
-  doc.renderExamples(item, parent);
+    var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
+
+    var description = doc.itemDescription(item);
+    $(descriptionDiv).append(description);
+
+    doc.renderItemTags(item, parent);
+    doc.renderExamples(item, parent);
+  });
 };
 
-doc.isPrivate = function (report, item) {
-  return !doc.isVisible(item) && !doc.isPublicMethod(report, item);
+doc.isPrivate = function (item) {
+  return !doc.isVisible(item) && !doc.isPublicMethod(item);
 };
 
-doc.getParentItem = function (report, item) {
-  return report.items[item.groups[0]];
-};
+// doc.getParentItem = function (report, item) {
+//   return report.items[item.groups[0]];
+// };
 
-doc.isPublicMethod = function (report, item) {
-  return item.method && item.visibility === 'public' ||
-      doc.isVisible(doc.getParentItem(report, item));
+doc.isPublicMethod = function (item) {
+  return item.method && (!item.visibility || item.visibility === 'public');
+      // || doc.isVisible(doc.getParentItem(report, item));
 };
 
 doc.isVisible = function (item) {
-  return item.api || item.visibility === 'public';
+  return item.api || doc.isPublicMethod(item);
+  // || item.visibility === 'public';
 };
 
 doc.hasVisibleChildren = function (report, item) {
@@ -338,15 +356,15 @@ doc.renderContent = function (report, item, nested) {
         itemDiv.addClass('privateProperty');
         showPrivateToggle = true;
       }
-      doc.renderFunction(report, contentItem, itemDiv);
+      doc.renderFunction(report, parentItem, contentItem, itemDiv);
     //}
 
     if (showClass && contentItem.items) {
       contentItem.items.forEach(function (subItemKey) {
         var subItemDiv = doc.addDiv(content, '', 'item');
         var subItem = report.items[subItemKey];
-        if (doc.isPublicMethod(report, subItem)) {
-          doc.renderFunction(report, subItem, subItemDiv);
+        if (doc.isPublicMethod(subItem)) {
+          doc.renderFunction(report, parentItem, subItem, subItemDiv);
         }
       });
     }
@@ -364,9 +382,14 @@ doc.itemDisplayName = function (item) {
   return item.package ? item.package.name : item.name;
 };
 
+doc.tocTypeSet = {
+  'group': true,
+  'module': true,
+  'class': true
+};
+
 doc.isTocItem = function (item) {
-  var isModulesGroup = item.type === 'group' && item.name === 'Modules';
-  return isModulesGroup || item.type === 'module';
+  return doc.tocTypeSet[item.type] ? true : false;
 };
 
 doc.renderToc = function (report, group, element, nested) {
