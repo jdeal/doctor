@@ -2,7 +2,7 @@
   "author": "Justin Deal",
   "name": "doctor",
   "description": "Create documentation from a JavaScript AST.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "homepage": "https://github.com/jdeal/doctor",
   "repository": {
     "type": "git",
