@@ -53,7 +53,7 @@ npm install git:github.com/jdeal/doctor.git
 This is how doctor documents itself from the command-line:
 
 ```
-doctor lib/*.js -v default -o doc
+doctor lib/*.js -v default -v doctor -o doc
 ```
 
 You can see the documentation [here](http://jdeal.github.com/doctor/doc).
