@@ -40,6 +40,9 @@ rules.push({
     var indent = -1;
     var i;
     for (i = 0; i < lines.length; i++) {
+      if (lines[i].match(/^\s*$/)) {
+        continue;
+      }
       var padMatch = lines[i].match(/^\s*/);
       if (padMatch[0].length === 0) {
         indent = 0;

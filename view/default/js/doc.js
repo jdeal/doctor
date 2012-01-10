@@ -139,10 +139,10 @@ doc.renderItemTags = function (item, parent) {
 
 doc.renderExamples = function (item, parent) {
   if (item.examples && item.examples.length > 0) {
-    var html = '<dl class="examples"><dt>Examples:</dt><dd>';
+    var html = '<dl class="itemTags"><dt>Examples:</dt><dd>';
 
     item.examples.forEach(function (example) {
-      example = '\n ' + example; // TODO - why the space?
+      //example = '\n ' + example; // TODO - why the space?
       html += '<code class="example">' + example + '</code>';
     });
 
