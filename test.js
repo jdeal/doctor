@@ -1,8 +1,16 @@
 /* Hello file! */
 /* More file! */
 
-/* Hello function! */
-Function.prototype.foo = function () {
+/*
+
+Hello function!
+play time
+
+@param x here
+   and there
+@param y only here
+*/
+Function.prototype.foo = function (x, y) {
   
 };
 

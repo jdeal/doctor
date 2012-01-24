@@ -14,7 +14,8 @@ function stripParagraphTag(text) {
 function markdownToHtml(nodes) {
   if (nodes instanceof Object) {
     if (nodes.description) {
-      nodes.description = stripParagraphTag(converter.makeHtml(nodes.description));
+      //nodes.description = stripParagraphTag(converter.makeHtml(nodes.description));
+      nodes.description = converter.makeHtml(nodes.description);
     }
     _(nodes).each(function (value) {
       markdownToHtml(value);

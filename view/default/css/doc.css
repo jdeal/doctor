@@ -59,6 +59,9 @@ dd {
 .privateToggle {
   margin: 1em 0;
 }
+* > .param p:last-child {
+  margin-bottom: 0;
+}
 /*
 $borderColor = blue;
 $centerHeight = 500px;
