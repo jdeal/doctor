@@ -61,13 +61,25 @@
 
   var addComments = function addComments(node, comments) {
     node.comments = [];
-    for (var j = comments.length - 1; j >= 0; j--) {
-      var comment = comments[j][0];
-      var space = comments[j][1];
-      if (space.split(/\r\n|\r|\n/).length > 2){
-        break;
+    // file comments
+    if (comments.length === 3) {
+      node.comments.push(comments[0]);
+      if (comments[1] !== '') {
+        comments[1].forEach(function (comment) {
+          node.comments.push(comment[1]);
+        })
       }
-      node.comments.splice(0,0,comment);
+    } else {
+      // work backwards and only take comments "glued" to a node; if there is a
+      // gap between the comments, detach them
+      for (var j = comments.length - 1; j >= 0; j--) {
+        var comment = comments[j][0];
+        var space = comments[j][1];
+        if (space.split(/\r\n|\r|\n/).length > 2){
+          break;
+        }
+        node.comments.splice(0,0,comment);
+      }      
     }
     return node;
   }
@@ -513,6 +525,14 @@ __
 
 __empty
   = ws:((WhiteSpace / LineTerminatorSequence)*) {return ws.join('');}
+
+__space
+  = ws1:WhiteSpace* ws2:LineTerminatorSequence? ws3:WhiteSpace* {
+    return ws1 + ws2 + ws3;
+  }
+
+__gap
+  = WhiteSpace* LineTerminatorSequence WhiteSpace* LineTerminatorSequence
 
 /* ===== A.2 Number Conversions ===== */
 
@@ -1566,8 +1586,8 @@ FunctionBody
   = p:Pos elements:SourceElements? { return nodeList(elements, p); }
 
 Program
-  = p:Pos elements:SourceElements? {
-      return nodeList(elements, p, 'program');
+  = p:Pos  __empty comments:(Comment (__space Comment)* __gap)? elements:SourceElements? {
+      return addComments(nodeList(elements, p, 'program'), comments);
     }
 
 SourceElements

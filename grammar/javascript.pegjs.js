@@ -210,6 +210,8 @@ module.exports = (function(){
         "_": parse__,
         "__": parse___,
         "__empty": parse___empty,
+        "__gap": parse___gap,
+        "__space": parse___space,
         "start": parse_start
       };
       
@@ -6793,6 +6795,123 @@ module.exports = (function(){
           : null;
         if (result2 !== null) {
           var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse___space() {
+        var cacheKey = '__space@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        var result3 = [];
+        var result8 = parse_WhiteSpace();
+        while (result8 !== null) {
+          result3.push(result8);
+          var result8 = parse_WhiteSpace();
+        }
+        if (result3 !== null) {
+          var result7 = parse_LineTerminatorSequence();
+          var result4 = result7 !== null ? result7 : '';
+          if (result4 !== null) {
+            var result5 = [];
+            var result6 = parse_WhiteSpace();
+            while (result6 !== null) {
+              result5.push(result6);
+              var result6 = parse_WhiteSpace();
+            }
+            if (result5 !== null) {
+              var result1 = [result3, result4, result5];
+            } else {
+              var result1 = null;
+              pos = savedPos1;
+            }
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(ws1, ws2, ws3) {
+              return ws1 + ws2 + ws3;
+            })(result1[0], result1[1], result1[2])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse___gap() {
+        var cacheKey = '__gap@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var result1 = [];
+        var result6 = parse_WhiteSpace();
+        while (result6 !== null) {
+          result1.push(result6);
+          var result6 = parse_WhiteSpace();
+        }
+        if (result1 !== null) {
+          var result2 = parse_LineTerminatorSequence();
+          if (result2 !== null) {
+            var result3 = [];
+            var result5 = parse_WhiteSpace();
+            while (result5 !== null) {
+              result3.push(result5);
+              var result5 = parse_WhiteSpace();
+            }
+            if (result3 !== null) {
+              var result4 = parse_LineTerminatorSequence();
+              if (result4 !== null) {
+                var result0 = [result1, result2, result3, result4];
+              } else {
+                var result0 = null;
+                pos = savedPos0;
+              }
+            } else {
+              var result0 = null;
+              pos = savedPos0;
+            }
+          } else {
+            var result0 = null;
+            pos = savedPos0;
+          }
         } else {
           var result0 = null;
           pos = savedPos0;
@@ -17199,10 +17318,73 @@ module.exports = (function(){
         var savedPos1 = pos;
         var result3 = parse_Pos();
         if (result3 !== null) {
-          var result5 = parse_SourceElements();
-          var result4 = result5 !== null ? result5 : '';
+          var result4 = parse___empty();
           if (result4 !== null) {
-            var result1 = [result3, result4];
+            var savedPos2 = pos;
+            var result9 = parse_Comment();
+            if (result9 !== null) {
+              var result10 = [];
+              var savedPos3 = pos;
+              var result13 = parse___space();
+              if (result13 !== null) {
+                var result14 = parse_Comment();
+                if (result14 !== null) {
+                  var result12 = [result13, result14];
+                } else {
+                  var result12 = null;
+                  pos = savedPos3;
+                }
+              } else {
+                var result12 = null;
+                pos = savedPos3;
+              }
+              while (result12 !== null) {
+                result10.push(result12);
+                var savedPos3 = pos;
+                var result13 = parse___space();
+                if (result13 !== null) {
+                  var result14 = parse_Comment();
+                  if (result14 !== null) {
+                    var result12 = [result13, result14];
+                  } else {
+                    var result12 = null;
+                    pos = savedPos3;
+                  }
+                } else {
+                  var result12 = null;
+                  pos = savedPos3;
+                }
+              }
+              if (result10 !== null) {
+                var result11 = parse___gap();
+                if (result11 !== null) {
+                  var result8 = [result9, result10, result11];
+                } else {
+                  var result8 = null;
+                  pos = savedPos2;
+                }
+              } else {
+                var result8 = null;
+                pos = savedPos2;
+              }
+            } else {
+              var result8 = null;
+              pos = savedPos2;
+            }
+            var result5 = result8 !== null ? result8 : '';
+            if (result5 !== null) {
+              var result7 = parse_SourceElements();
+              var result6 = result7 !== null ? result7 : '';
+              if (result6 !== null) {
+                var result1 = [result3, result4, result5, result6];
+              } else {
+                var result1 = null;
+                pos = savedPos1;
+              }
+            } else {
+              var result1 = null;
+              pos = savedPos1;
+            }
           } else {
             var result1 = null;
             pos = savedPos1;
@@ -17212,9 +17394,9 @@ module.exports = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(p, elements) {
-                return nodeList(elements, p, 'program');
-              })(result1[0], result1[1])
+          ? (function(p, comments, elements) {
+                return addComments(nodeList(elements, p, 'program'), comments);
+              })(result1[0], result1[2], result1[3])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -17461,19 +17643,43 @@ module.exports = (function(){
       
       node.comments = [];
       
-      for (var j = comments.length - 1; j >= 0; j--) {
+      // file comments
       
-        var comment = comments[j][0];
+      if (comments.length === 3) {
       
-        var space = comments[j][1];
+        node.comments.push(comments[0]);
       
-        if (space.split(/\r\n|\r|\n/).length > 2){
+        if (comments[1] !== '') {
       
-          break;
+          comments[1].forEach(function (comment) {
+      
+            node.comments.push(comment[1]);
+      
+          })
       
         }
       
-        node.comments.splice(0,0,comment);
+      } else {
+      
+        // work backwards and only take comments "glued" to a node; if there is a
+      
+        // gap between the comments, detach them
+      
+        for (var j = comments.length - 1; j >= 0; j--) {
+      
+          var comment = comments[j][0];
+      
+          var space = comments[j][1];
+      
+          if (space.split(/\r\n|\r|\n/).length > 2){
+      
+            break;
+      
+          }
+      
+          node.comments.splice(0,0,comment);
+      
+        }      
       
       }
       

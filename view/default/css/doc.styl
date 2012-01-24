@@ -1,5 +1,85 @@
 @charset 'UTF-8';
 
+heading() {
+  border-color: #aaaaaa;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+}
+
+$indentMargin = 1.25em;
+$doctorColor = #2e7db2;
+
+html {
+  overflow-y: scroll;
+}
+
+.title {
+  background-color: $doctorColor;
+  color: white;
+  font-size: 2em;
+  border-color: black;
+  border-width: 0px 0px 1px 0px;
+  border-style: solid;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: .75em;
+}
+
+#toc a {
+  color: $doctorColor;
+  font-weight: bold;
+}
+
+h1 {
+  heading();
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+h2 {
+  heading();
+  font-size: 2em;
+  margin-top: 1em;
+}
+
+h3 {
+  font-size: 1.5em;
+  margin-top: 1em;
+}
+
+.function {
+  color: $doctorColor;
+}
+
+.arg {
+  font-size: 75%;
+}
+
+.paramName {
+  font-weight: bold;
+}
+
+.syntaxhighlighter {
+  width: 95% !important;
+}
+
+dd {
+  margin-left: $indentMargin;
+}
+
+.contentType {
+  font-style: italic;
+}
+
+.itemType {
+  font-style: italic;
+}
+
+.privateToggle {
+  margin: 1em 0;
+}
+
+/*
 $borderColor = blue;
 $centerHeight = 500px;
 $hoverColor = lightgreen;
@@ -12,8 +92,6 @@ div.container {
 
 @font-face {
   font-family: title;
-  /*src: url('fonts/kulminoituva.ttf');*/
-  /*src: url('fonts/plexifont.ttf');*/
 }
 
 panel() {
@@ -35,45 +113,28 @@ roundedCorners($radius, $color, $thickness) {
 }
 
 body {
-/*  background-color: black;
-  color: white; */
+
 }
 
 footer {
-/*  border-bottom: solid $textColor 1px;
-  clear: left;
-  padding: $space; */
+
 }
 
 header {
-/*  padding-left: $space;
-  padding-top: $space; */
+
 }
 
 #content {
-/*
-  panel();
-  float: left;
-  height: $centerHeight;
-  overflow: auto;
-  padding-bottom: $space; /* to make panels same height */
-  width: 70%; */
+
 }
 
 #logo {
   height: 50px;
-  /*float: right;*/
-  /*margin-right: $space;*/
   margin-left: $space;
 }
 
 #toc {
-/*  panel();
-  float: left;
-  height: $centerHeight;
-  overflow: auto;
-  padding-top: $space;
-  width: 20%; */
+
 }
 
 #toc a {
@@ -83,7 +144,6 @@ header {
 }
 
 #toc a:hover {
-  /*color: $hoverColor;*/
   text-decoration: underline;
 }
 
@@ -218,3 +278,5 @@ code {
   font-family: "Courier New", "Courier", monospace;
   white-space: pre;
 }
+
+*/

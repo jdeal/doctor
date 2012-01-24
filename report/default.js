@@ -30,6 +30,8 @@ rules.push({
       type: 'module',
       key: node.path,
       name: node.path,
+      description: node.description,
+      examples: node.examples,
       groups: ['modules'],
       package: node.package
     };
@@ -125,6 +127,7 @@ function functionReportItem(node, fnNode, name, item) {
   if (fnItem.constructorFunction) {
     var classItem = {
       type: 'class',
+      module: node.item('module'),
       key: node.item('module') + ".class." + fnItem.name,
       name: fnItem.name,
       groups: ['classes']
