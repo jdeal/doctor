@@ -62,7 +62,7 @@
   var addComments = function addComments(node, comments) {
     node.comments = [];
     // file comments
-    if (comments.length === 3) {
+    if (comments.length === 3 && typeof comments[0] === 'string') {
       node.comments.push(comments[0]);
       if (comments[1] !== '') {
         comments[1].forEach(function (comment) {

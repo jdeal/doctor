@@ -17645,7 +17645,7 @@ module.exports = (function(){
       
       // file comments
       
-      if (comments.length === 3) {
+      if (comments.length === 3 && typeof comments[0] === 'string') {
       
         node.comments.push(comments[0]);
       
