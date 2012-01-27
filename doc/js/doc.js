@@ -2,7 +2,9 @@
 
 /*global alert: false */
 
-function capitalise(string) {
+SyntaxHighlighter.defaults['gutter'] = false;
+
+function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -104,77 +106,73 @@ doc.paramHtml = function (param) {
   var html = '<dl class="param"><dt>' + doc.typesHtml(param.types) +
       '<span class="paramName">' + param.name + '</span>';
 
-  if (param.optional) {
-    html += ' Optional';
-  }
+  // if (param.optional) {
+  //   html += ' Optional';
+  // }
   if (param.defaultValue) {
-    html += ', Default: ' + param.defaultValue;
+    html += '<div>Default: ' + param.defaultValue + '</div>';
   }
-  
-  var description = param.description || '';
+  var description = '<div>' + (param.description || '') + '</div>';
   html += '</dt><dd>' + description + '</dd>';
   return html;
 };
 
 doc.renderItemTags = function (item, parent) {
-  var html = '<dl class="itemTags">';
+  var html = ''; //<dl class="itemTags">';
 
   if (item.params && item.params.length > 0) {
-    html += '<dt>Parameters:</dt><dd>';
+    //html += '<dt>Parameters:</dt><dd>';
+    html += '<h3>Parameters:</h3>';
     item.params.forEach(function (param) {
       html += doc.paramHtml(param);
     });
-    html += '</dd>';
+    //html += '</dd>';
   }
 
   if (item.returns) {
-    html += '<dt>Returns:</dt><dd>' + doc.typesHtml(item.returns.types) +
-        item.returns.description + '</dd>';
+    //html += '<dt>Returns:</dt><dd>' + doc.typesHtml(item.returns.types) +
+    //    item.returns.description + '</dd>';
+    html += '<h3>Returns:</h3>';
+    html += doc.typesHtml(item.returns.types) + item.returns.description;
   }
 
-  html += '</dl>';
+  //html += '</dl>';
 
   $(parent).append(html);
 };
 
 doc.renderExamples = function (item, parent) {
   if (item.examples && item.examples.length > 0) {
-    var html = '<dl class="examples"><dt>Examples:</dt><dd>';
+    //var html = '<dl class="itemTags"><dt>Examples:</dt><dd>';
+    var html = '<h3>Examples:</h3>';
 
     item.examples.forEach(function (example) {
-      example = '\n ' + example; // TODO - why the space?
-      html += '<code class="example">' + example + '</code>';
+      //example = '\n ' + example; // TODO - why the space?
+      html += '<pre class="brush: js">' + example + '</pre>';
     });
 
-    html += '</dd></dl>';
+    //html += '</dd></dl>';
 
     $(parent).append(html);
   }
 };
 
 doc.renderClassDescription = function (item, parent) {
-  $(parent).append('<span class="classLabel">class ' + item.name + '</span>');
+  //$(parent).append('<span class="classLabel">class ' + item.name + '</span>');
 
   if (item.extends) {
-    doc.addDiv(parent, 'extends ' + item.extends, 'itemType');
+    doc.addChild(parent, 'p', 'extends ' + item.extends, 'itemType');
   }
-
-  var classDiv = doc.addDiv(parent, '', 'classDescription');
 
   if (item.classDescription) {
-    $(classDiv).append(item.classDescription.description);
+    doc.addChild(parent, 'p', item.classDescription, 'classDescription');
   }
-
   if (item.properties && item.properties.length > 0) {
-    var html = '<dl class="itemTags">';
-    html += '<dt>Properties:</dt><dd>';
+    var html = '<h3>Properties:</h3>';
     item.properties.forEach(function (type) {
       html += doc.paramHtml(type);
     });
-    html += '</dd>';
-    html += '</dl>';
-
-    $(classDiv).append(html);
+    parent.append(html);
   }
 
   doc.renderExamples(item, parent);
@@ -203,11 +201,29 @@ doc.renderFunction = function (report, group, item, parent) {
     });
   }
   signatures.forEach(function (item) {
-    var paramNames = item.params ? item.params.map(function (param) {
-      return param.name;
-    }) : [];
-    var params = paramNames ? paramNames.join(', ') : '';
-    var nameDiv = doc.addDiv(parent, '', 'itemName');
+    // var paramNames = item.params ? item.params.map(function (param) {
+    //   return param.name;
+    // }) : [];
+    var paramsString = '';
+    //paramNames ? paramNames.join(', ') :
+    var params = item.params ? item.params : [];
+    params.forEach(function (param, i) {
+      if (param.optional) {
+        paramsString += ' [';
+      }
+      if (i > 0) {
+        paramsString += ', ';
+      }
+      paramsString += param.name;
+      if (param.optional) {
+        paramsString += ']';
+      }
+    });
+    if (params.length > 0) {
+      paramsString = ' ' + paramsString + ' ';
+    }
+    //var nameDiv = doc.addDiv(parent, '', 'itemName');
+    var nameDiv = doc.addChild(parent, 'h2', '', 'itemName');
 
     var type = doc.getDisplayType(item);
 
@@ -216,7 +232,7 @@ doc.renderFunction = function (report, group, item, parent) {
         doc.addSpan(nameDiv, 'exports ', 'exportsTag');
       }
       doc.addSpan(nameDiv, item.name + '(', 'function');
-      doc.addSpan(nameDiv, params, 'arg');
+      doc.addSpan(nameDiv, paramsString, 'arg');
       doc.addSpan(nameDiv, ')', 'function');
     } else {
       doc.addSpan(nameDiv, item.name, 'var');
@@ -225,7 +241,7 @@ doc.renderFunction = function (report, group, item, parent) {
     if (doc.isPrivate(item)) {
       type = 'private ' + type;
     }
-    doc.addDiv(parent, type, 'itemType');
+    doc.addChild(parent, 'p', type, 'itemType');
 
     var descriptionDiv = doc.addDiv(parent, '', 'itemDescription');
 
@@ -301,13 +317,25 @@ doc.renderContent = function (report, item, nested) {
     return;
   }
 
-  doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
-  var privateShow = $('<a href="#" id="privateShow">[show private]</a>');
+  //doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
+  doc.addChild(content, 'h1', doc.itemDisplayName(item), 'contentTitle');
+  doc.addChild(content, 'p', item.type, 'contentType');
+  if (item.module) {
+    var moduleItem = report.items[item.module];
+    doc.addChild(content, 'p', 'Defined in module: ' + moduleItem.name);
+  }
+  if (item.description) {
+    var descriptionDiv = doc.addDiv(content, '', 'moduleDescription');
+    $(descriptionDiv).append(item.description);
+  }
+  doc.renderExamples(item, content);
+  var privateShow = $('<a href="#" id="privateShow" class="privateToggle">[show private]</a>');
   privateShow.hide();
   privateShow.click(doc.togglePrivate);
-  var privateHide = $('<a href="#" id="privateHide">[hide private]</a>');
+  var privateHide = $('<a href="#" id="privateHide" class="privateToggle">[hide private]</a>');
   privateHide.hide();
   privateHide.click(doc.togglePrivate);
+
   content.append(privateShow);
   content.append(privateHide);
 
@@ -345,7 +373,7 @@ doc.renderContent = function (report, item, nested) {
     var visible = doc.isVisible(contentItem);
     var showClass = doc.showClass(report, contentItem);
 
-    if (showClass) {
+    if (showClass && item.type === 'class') {
       doc.renderClassDescription(contentItem, content);
     }
 
@@ -427,6 +455,7 @@ doc.renderToc = function (report, group, element, nested) {
           }
 
           doc.renderContent(report, item, nested);
+          SyntaxHighlighter.highlight();
         });
       }
     });

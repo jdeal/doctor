@@ -1,4 +1,73 @@
 @charset 'UTF-8';
+html {
+  overflow-y: scroll;
+}
+.title {
+  background-color: #2e7db2;
+  color: #fff;
+  font-size: 2em;
+  border-color: #000;
+  border-width: 0px 0px 1px 0px;
+  border-style: solid;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 0.75em;
+}
+#toc a {
+  color: #2e7db2;
+  font-weight: bold;
+}
+h1 {
+  border-color: #aaa;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+h2 {
+  border-color: #aaa;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  font-size: 2em;
+  margin-top: 1em;
+}
+h3 {
+  font-size: 1.5em;
+  margin-top: 1em;
+}
+.function {
+  color: #2e7db2;
+}
+.arg {
+  font-size: 75%;
+}
+.paramName {
+  font-weight: bold;
+}
+.syntaxhighlighter {
+  width: 95% !important;
+}
+dd {
+  margin-left: 1.25em;
+}
+.contentType {
+  font-style: italic;
+}
+.itemType {
+  font-style: italic;
+}
+.privateToggle {
+  margin: 1em 0;
+}
+* > .param p:last-child {
+  margin-bottom: 0;
+}
+/*
+$borderColor = blue;
+$centerHeight = 500px;
+$hoverColor = lightgreen;
+$space = 10px;
+$textColor = #2e7db2;
 
 div.container {
   padding-top: 30px;
@@ -6,150 +75,192 @@ div.container {
 
 @font-face {
   font-family: title;
-/*src: url('fonts/kulminoituva.ttf');
-  src: url("fonts/plexifont.ttf");*/
 }
+
+panel() {
+  roundedCorners(15px, black, 1px);
+  background-color: white;
+  color: black;
+  margin: 0 0 $space 1%;
+  padding: 0 $space 0 $space;
+}
+
+roundedCorners($radius, $color, $thickness) {
+  border: solid $color $thickness;
+  border-radius: $radius;
+}
+
 * {
   font-family: Arial, sans-serif;
   margin: 0;
 }
+
 body {
 
 }
+
 footer {
 
-  padding: 10px;
 }
+
 header {
 
 }
+
 #content {
 
 }
+
 #logo {
   height: 50px;
-/*float: right;*/
-/*margin-right: $space;*/
-  margin-left: 10px;
+  margin-left: $space;
 }
+
 #toc {
 
 }
+
 #toc a {
-  color: #2e7db2;
+  color: $textColor;
   font-size: 14pt;
   text-decoration: none;
 }
+
 #toc a:hover {
-/*color: $hoverColor;*/
   text-decoration: underline;
 }
+
 #toc ul {
   list-style-type: disc;
 }
+
 #toc > ul {
   list-style-type: none;
   padding-left: 0;
 }
+
 .arg {
   font-family: monospace;
   font-size: 14pt;
 }
+
 .contentTitle {
   font-family: sans-serif;
   font-size: 24pt;
-  padding-top: 10px;
+  padding-top: $space;
 }
+
 .function {
-  color: #2e7db2;
+  color: $textColor;
   font-family: monospace;
   font-size: 18pt;
   font-weight: bold;
 }
-.var {
-  color: #2e7db2;
-  font-family: monospace;
-  font-size: 18pt;
-  font-weight: bold;
-}
+
 span.label {
   font-weight: bold;
 }
+
 .item {
-  padding-top: 10px;
+  padding-top: $space;
 }
+
 .missing {
-  color: #f00;
+  color: red;
   font-size: 14pt;
-  padding-top: 10px;
+  padding-top: $space;
 }
+
 .selected {
   font-weight: bold;
 }
+
 .type {
-  color: #000;
+  color: black;
 }
+
 .title {
   font-family: title, sans-serif;
-  font-size: 24pt;
+  font-size: 48pt;
 }
+
 .itemType {
   font-style: italic;
 }
+
 dl.itemTags > dt {
   font-weight: bold;
 }
+
+$itemTopMargin = 10px;
+$itemLeftMargin = 30px;
+
 span.paramName {
   font-weight: bold;
 }
+
 dl.param > dd {
-  margin-left: 30px;
+  margin-left: $itemLeftMargin;
 }
+
 span.types {
   font-family: "Courier New", "Courier", monospace;
-  font-style: italic;
+  font-style: italic;  
 }
+
 div.itemType {
-  margin-left: 30px;
+  margin-left: $itemLeftMargin;
 }
+
 div.itemDescription {
-  margin-top: 10px;
-  margin-left: 30px;
+  margin-top: $itemTopMargin;
+  margin-left: $itemLeftMargin;
 }
+
 dl.itemTags {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: $itemTopMargin;
+  margin-bottom: $itemTopMargin;
 }
+
 dl.itemTags > dt {
-  margin-top: 10px;
-  margin-left: 30px;
+  margin-top: $itemTopMargin;
+  margin-left: $itemLeftMargin;
 }
+
 dl.itemTags > dd {
   margin-left: 60px;
 }
+
 span.classLabel {
-  color: #2e7db2;
+  color: $textColor;
   font-family: monospace;
   font-size: 18pt;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 10px;  
   display: block;
 }
+
 .classDescription {
-  margin-left: 30px;
+  margin-left: $itemLeftMargin;  
 }
+
 .properties {
   margin-top: 10px;
 }
+  
 dl.examples {
-  margin-left: 30px;
+  margin-left: $itemLeftMargin;
 }
+
 dl.examples > dt {
   font-weight: bold;
-  margin-left: 30px;
+  margin-left: $itemLeftMargin;  
 }
+
 code {
   font-family: "Courier New", "Courier", monospace;
   white-space: pre;
 }
+
+*/
 

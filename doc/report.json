@@ -16,11 +16,11 @@
         "cli",
         "doctor",
         "nice-ast",
+        "post-process",
         "render",
         "report",
         "transform",
-        "util",
-        "post-process"
+        "util"
       ]
     },
     "classes": {
@@ -46,6 +46,7 @@
     },
     "ast-node.class.AstNode": {
       "type": "class",
+      "module": "ast-node",
       "key": "ast-node.class.AstNode",
       "name": "AstNode",
       "groups": [
@@ -58,14 +59,18 @@
         "ast-node.AstNode.index",
         "ast-node.AstNode.walk",
         "ast-node.AstNode.after",
+        "ast-node.AstNode.before",
         "ast-node.AstNode.prepend",
         "ast-node.AstNode.append",
         "ast-node.AstNode.remove",
         "ast-node.AstNode.lispify",
         "ast-node.AstNode.like",
+        "ast-node.AstNode.equal",
         "ast-node.AstNode.parser",
         "ast-node.AstNode.likeSource",
-        "ast-node.AstNode.ast"
+        "ast-node.AstNode.ast",
+        "ast-node.AstNode.fromSource",
+        "ast-node.AstNode.nodeFromSource"
       ]
     },
     "ast-node.AstNode": {
@@ -75,15 +80,38 @@
       "params": [
         {
           "name": "node",
-          "description": "Plain object to use as template for node."
+          "description": "<p>Plain object to use as template for node.</p>"
         },
         {
           "name": "parent",
-          "description": "Parent node of this node.",
+          "description": "<p>Parent node of this node.</p>",
           "optional": true
         }
       ],
-      "description": "Creates an AST node from a plain object.",
+      "classDescription": {
+        "description": "<p>Represents an AST node.</p>"
+      },
+      "description": "<p>Creates an AST node from a plain object.</p>",
+      "properties": [
+        {
+          "name": "parent",
+          "description": "<p>Parent of this node.</p>",
+          "types": ""
+        },
+        {
+          "name": "prev",
+          "description": "<p>Previous sibling of this node.</p>",
+          "types": ""
+        },
+        {
+          "name": "next",
+          "description": "<p>Next sibling of this node.</p>",
+          "types": ""
+        }
+      ],
+      "examples": [
+        "var node = new AstNode({type: 'string', value: 'Hello, world!'});"
+      ],
       "groups": [
         "ast-node",
         "ast-node.class.AstNode"
@@ -117,7 +145,7 @@
         },
         {
           "name": "value",
-          "description": "Set value to this value.",
+          "description": "<p>Set value to this value.</p>",
           "optional": true
         }
       ],
@@ -127,9 +155,9 @@
       "name": "item",
       "signatures": [
         {
-          "description": "Gets an item value from a node.",
+          "description": "<p>Gets an item value from a node.</p>",
           "returns": {
-            "description": "Value for this item."
+            "description": "<p>Value for this item.</p>"
           },
           "arity": 1,
           "params": [
@@ -139,7 +167,7 @@
           ]
         },
         {
-          "description": "Sets an item value for a particular node.",
+          "description": "<p>Sets an item value for a particular node.</p>",
           "arity": 2,
           "params": [
             {
@@ -147,7 +175,7 @@
             },
             {
               "name": "value",
-              "description": "Set value to this value.",
+              "description": "<p>Set value to this value.</p>",
               "optional": true
             }
           ]
@@ -164,7 +192,7 @@
           "name": "index"
         }
       ],
-      "description": "Properly connect siblings to this node.",
+      "description": "<p>Properly connect siblings to this node.</p>",
       "groups": [
         "ast-node.class.AstNode"
       ],
@@ -183,7 +211,7 @@
           "integer"
         ]
       },
-      "description": "Get the index of a node.",
+      "description": "<p>Get the index of a node.</p>",
       "groups": [
         "ast-node.class.AstNode"
       ],
@@ -217,11 +245,28 @@
           "name": "node"
         }
       ],
-      "description": "Insert node after this one.",
+      "description": "<p>Insert node after this one.</p>",
       "groups": [
         "ast-node.class.AstNode"
       ],
       "name": "after",
+      "signatures": [],
+      "method": true
+    },
+    "ast-node.AstNode.before": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "ast-node.AstNode.before",
+      "params": [
+        {
+          "name": "node"
+        }
+      ],
+      "description": "<p>Insert node before this one.</p>",
+      "groups": [
+        "ast-node.class.AstNode"
+      ],
+      "name": "before",
       "signatures": [],
       "method": true
     },
@@ -234,7 +279,7 @@
           "name": "node"
         }
       ],
-      "description": "Insert a new child node before any other child nodes.",
+      "description": "<p>Insert a new child node before any other child nodes.</p>",
       "groups": [
         "ast-node.class.AstNode"
       ],
@@ -251,7 +296,7 @@
           "name": "node"
         }
       ],
-      "description": "Insert a new child node after any other child nodes.",
+      "description": "<p>Insert a new child node after any other child nodes.</p>",
       "groups": [
         "ast-node.class.AstNode"
       ],
@@ -264,7 +309,7 @@
       "constructorFunction": false,
       "key": "ast-node.AstNode.remove",
       "params": [],
-      "description": "Remove this node.",
+      "description": "<p>Remove this node.</p>",
       "groups": [
         "ast-node.class.AstNode"
       ],
@@ -303,14 +348,37 @@
       "returns": {
         "description": "",
         "types": [
-          "string"
+          "boolean"
         ]
       },
-      "description": "<p>Return a lisp-like representation of this node. Useful while creating rules.\nGives you a terse look at the AST.</p>",
+      "description": "<p>Returns true if this node has everything that node has.</p>",
       "groups": [
         "ast-node.class.AstNode"
       ],
       "name": "like",
+      "signatures": [],
+      "method": true
+    },
+    "ast-node.AstNode.equal": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "ast-node.AstNode.equal",
+      "params": [
+        {
+          "name": "node"
+        }
+      ],
+      "returns": {
+        "description": "",
+        "types": [
+          "boolean"
+        ]
+      },
+      "description": "<p>Return true if this node is idential to node.</p>",
+      "groups": [
+        "ast-node.class.AstNode"
+      ],
+      "name": "equal",
       "signatures": [],
       "method": true
     },
@@ -320,7 +388,7 @@
       "key": "ast-node.AstNode.parser",
       "params": [],
       "returns": {
-        "description": "The PEG parser used in creating this AST."
+        "description": "<p>The PEG parser used in creating this AST.</p>"
       },
       "groups": [
         "ast-node.class.AstNode"
@@ -351,11 +419,43 @@
       "constructorFunction": false,
       "key": "ast-node.AstNode.ast",
       "params": [],
-      "description": "Return an AST without the sibling and parent references.",
+      "description": "<p>Return an AST without the sibling and parent references.</p>",
       "groups": [
         "ast-node.class.AstNode"
       ],
       "name": "ast",
+      "signatures": [],
+      "method": true
+    },
+    "ast-node.AstNode.fromSource": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "ast-node.AstNode.fromSource",
+      "params": [
+        {
+          "name": "source"
+        }
+      ],
+      "groups": [
+        "ast-node.class.AstNode"
+      ],
+      "name": "fromSource",
+      "signatures": [],
+      "method": true
+    },
+    "ast-node.AstNode.nodeFromSource": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "ast-node.AstNode.nodeFromSource",
+      "params": [
+        {
+          "name": "source"
+        }
+      ],
+      "groups": [
+        "ast-node.class.AstNode"
+      ],
+      "name": "nodeFromSource",
       "signatures": [],
       "method": true
     },
@@ -379,7 +479,7 @@
           "name": "argv"
         }
       ],
-      "description": "Map command-line arguments to doctor's examine function.",
+      "description": "<p>Map command-line arguments to doctor's examine function.</p>",
       "api": true,
       "groups": [
         "cli"
@@ -398,6 +498,10 @@
       "type": "module",
       "key": "doctor",
       "name": "doctor",
+      "description": "<p>Main module.</p>",
+      "examples": [
+        "var doctor = require('doctor');"
+      ],
       "groups": [
         "modules"
       ],
@@ -423,7 +527,12 @@
         "doctor.checkOutputDir",
         "doctor.harmony",
         "doctor.compiler",
-        "doctor.options"
+        "doctor.options",
+        "doctor.hookEnterExit",
+        "doctor.includeFile",
+        "doctor.compiler",
+        "doctor.callEnterHook",
+        "doctor.callExitHook"
       ]
     },
     "doctor.getAst": {
@@ -533,13 +642,18 @@
       "key": "doctor.examine",
       "params": [
         {
-          "name": "options"
+          "name": "options",
+          "description": "<p>{Object}</p>"
         },
         {
-          "name": "cb"
+          "name": "cb",
+          "description": "<p>{function} Function to call when doctor is finished.</p>"
         }
       ],
       "description": "<p>Parses the AST of a set of JavaScript files, uses report rules to convert the\nAST into a report, and optionally combines the report with the view or\nrenders the report into an output format.</p>",
+      "examples": [
+        "var doctor = require('doctor');\nvar options = {\n  files: ['package.json'],\n  view: ['default', 'doctor']\n};\ndoctor.examine(options, function (err, report) {\n  console.log(JSON.stringify(report));\n})"
+      ],
       "groups": [
         "doctor"
       ],
@@ -696,7 +810,7 @@
       "constructorFunction": false,
       "key": "doctor.copyView",
       "params": [],
-      "description": "this will not run synchronously",
+      "description": "<p>this will not run synchronously</p>",
       "groups": [
         "doctor"
       ],
@@ -771,6 +885,74 @@
       ],
       "name": "options"
     },
+    "doctor.hookEnterExit": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "doctor.hookEnterExit",
+      "params": [
+        {
+          "name": "options",
+          "description": "<p>{Object|RegExp} Pass in a regular expression apply the compiler\nonly to paths matching that regular expression.</p>"
+        },
+        {
+          "name": "enterCb",
+          "description": "<p>{Function} Calls this function (passing it info) when a\nfunction is entered.</p>"
+        },
+        {
+          "name": "exitCb",
+          "description": "<p>{Fucntion} Calls this function (passing it info) when a function\nis exited.</p>"
+        }
+      ],
+      "description": "<p><strong>EXPERIMENTAL!</strong> Registers a compiler for the .js extension that will catch\nfunction entry/exit.</p>",
+      "examples": [
+        "var doctor = require('doctor');\n\nfunction hookMessage(title, info) {\n  return title + \" \" + info.name + \":\\n\" +\n    \"  type:   \" + info.type + \"\\n\" +\n    \"  line:   \" + info.line + \"\\n\" +\n    \"  column: \" + info.column + \"\\n\" +\n    \"  path:   \" + info.filename;\n}\n\ndoctor.hookEnterExit(\n  /foobar/,\n  function (info) {\n    console.log(hookMessage(\"Enter\", info));\n  },\n  function (info) {\n    console.log(hookMessage(\"Exit\", info));\n  }\n);\n\nrequire('./foobar');"
+      ],
+      "groups": [
+        "doctor"
+      ],
+      "name": "hookEnterExit",
+      "signatures": [],
+      "api": true
+    },
+    "doctor.includeFile": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "doctor.includeFile",
+      "params": [
+        {
+          "name": "filename"
+        }
+      ],
+      "groups": [
+        "doctor"
+      ],
+      "name": "includeFile",
+      "signatures": []
+    },
+    "doctor.callEnterHook": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "doctor.callEnterHook",
+      "params": [],
+      "groups": [
+        "doctor"
+      ],
+      "name": "callEnterHook",
+      "signatures": [],
+      "api": true
+    },
+    "doctor.callExitHook": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "doctor.callExitHook",
+      "params": [],
+      "groups": [
+        "doctor"
+      ],
+      "name": "callExitHook",
+      "signatures": [],
+      "api": true
+    },
     "nice-ast": {
       "type": "module",
       "key": "nice-ast",
@@ -790,6 +972,7 @@
         "nice-ast.existsNewerCompiledGrammarFile",
         "nice-ast.findGrammarFile",
         "nice-ast.addLineNumbers",
+        "nice-ast.astFromSource",
         "nice-ast.astFromFile",
         "nice-ast.convertSourceFile",
         "nice-ast.convertPackage",
@@ -800,6 +983,8 @@
         "nice-ast.lispify",
         "nice-ast.isValueNode",
         "nice-ast.like",
+        "nice-ast.equalDiff",
+        "nice-ast.equal",
         "nice-ast.parserForGrammar"
       ]
     },
@@ -983,6 +1168,28 @@
       "name": "addLineNumbers",
       "signatures": []
     },
+    "nice-ast.astFromSource": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "nice-ast.astFromSource",
+      "params": [
+        {
+          "name": "options"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "cb"
+        }
+      ],
+      "groups": [
+        "nice-ast"
+      ],
+      "name": "astFromSource",
+      "signatures": [],
+      "api": true
+    },
     "nice-ast.astFromFile": {
       "type": "function",
       "constructorFunction": false,
@@ -1159,6 +1366,49 @@
       "signatures": [],
       "api": true
     },
+    "nice-ast.equalDiff": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "nice-ast.equalDiff",
+      "params": [
+        {
+          "name": "a"
+        },
+        {
+          "name": "b"
+        },
+        {
+          "name": "diff"
+        }
+      ],
+      "groups": [
+        "nice-ast"
+      ],
+      "name": "equalDiff",
+      "signatures": []
+    },
+    "nice-ast.equal": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "nice-ast.equal",
+      "params": [
+        {
+          "name": "a"
+        },
+        {
+          "name": "b"
+        },
+        {
+          "name": "diff"
+        }
+      ],
+      "groups": [
+        "nice-ast"
+      ],
+      "name": "equal",
+      "signatures": [],
+      "api": true
+    },
     "nice-ast.parserForGrammar": {
       "type": "function",
       "constructorFunction": false,
@@ -1172,6 +1422,87 @@
         "nice-ast"
       ],
       "name": "parserForGrammar",
+      "signatures": [],
+      "api": true
+    },
+    "post-process": {
+      "type": "module",
+      "key": "post-process",
+      "name": "post-process",
+      "groups": [
+        "modules"
+      ],
+      "items": [
+        "post-process.renamePackageItems",
+        "post-process.getParent",
+        "post-process.hoistRequiredItems",
+        "post-process.postProcessReport"
+      ]
+    },
+    "post-process.renamePackageItems": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "post-process.renamePackageItems",
+      "params": [
+        {
+          "name": "report"
+        }
+      ],
+      "description": "<p>Rename modules to their corresponding package names, if provided, via a\npackage.json file.</p>",
+      "groups": [
+        "post-process"
+      ],
+      "name": "renamePackageItems",
+      "signatures": []
+    },
+    "post-process.getParent": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "post-process.getParent",
+      "params": [
+        {
+          "name": "report"
+        },
+        {
+          "name": "item"
+        }
+      ],
+      "groups": [
+        "post-process"
+      ],
+      "name": "getParent",
+      "signatures": []
+    },
+    "post-process.hoistRequiredItems": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "post-process.hoistRequiredItems",
+      "params": [
+        {
+          "name": "report"
+        }
+      ],
+      "description": "<p>If a module exports another required module, treat the required module as if\nits exports were owned by this module.</p>",
+      "groups": [
+        "post-process"
+      ],
+      "name": "hoistRequiredItems",
+      "signatures": []
+    },
+    "post-process.postProcessReport": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "post-process.postProcessReport",
+      "params": [
+        {
+          "name": "inputReport"
+        }
+      ],
+      "description": "<p>Use package names if available, and handle cases like:<br/>\nmodule.exports = require('foo');</p>",
+      "groups": [
+        "post-process"
+      ],
+      "name": "postProcessReport",
       "signatures": [],
       "api": true
     },
@@ -1203,7 +1534,7 @@
           "name": "cb"
         }
       ],
-      "description": "Render the report with the render modules supplied in the options.",
+      "description": "<p>Render the report with the render modules supplied in the options.</p>",
       "groups": [
         "render"
       ],
@@ -1255,6 +1586,7 @@
     },
     "report.class.Report": {
       "type": "class",
+      "module": "report",
       "key": "report.class.Report",
       "name": "Report",
       "groups": [
@@ -1315,7 +1647,7 @@
           "name": "cb"
         }
       ],
-      "description": "Run the report through the supplied report rules.",
+      "description": "<p>Run the report through the supplied report rules.</p>",
       "groups": [
         "report.class.Report"
       ],
@@ -1479,7 +1811,7 @@
           "name": "cb"
         }
       ],
-      "description": "Transform the AST with the supplied transform rules.",
+      "description": "<p>Transform the AST with the supplied transform rules.</p>",
       "groups": [
         "transform"
       ],
@@ -1656,7 +1988,7 @@
           "name": "sync"
         }
       ],
-      "description": "Compare the modified time stamps of two files.",
+      "description": "<p>Compare the modified time stamps of two files.</p>",
       "groups": [
         "util"
       ],
@@ -1734,7 +2066,7 @@
           "name": "obj"
         }
       ],
-      "description": "Shallow-copy an object.",
+      "description": "<p>Shallow-copy an object.</p>",
       "groups": [
         "util"
       ],
@@ -1765,7 +2097,7 @@
           "name": "sync"
         }
       ],
-      "description": "Check if a directory exists.",
+      "description": "<p>Check if a directory exists.</p>",
       "groups": [
         "util"
       ],
@@ -1800,17 +2132,17 @@
         },
         {
           "name": "ifCb",
-          "description": "If one is found, do this."
+          "description": "<p>If one is found, do this.</p>"
         },
         {
           "name": "elseCb",
-          "description": "If one is not found, do this."
+          "description": "<p>If one is not found, do this.</p>"
         },
         {
           "name": "sync"
         }
       ],
-      "description": "Find one of a list of files.",
+      "description": "<p>Find one of a list of files.</p>",
       "groups": [
         "util"
       ],
@@ -1849,17 +2181,17 @@
         },
         {
           "name": "ifCb",
-          "description": "If one is found, do this."
+          "description": "<p>If one is found, do this.</p>"
         },
         {
           "name": "elseCb",
-          "description": "If one is not found, do this."
+          "description": "<p>If one is not found, do this.</p>"
         },
         {
           "name": "sync"
         }
       ],
-      "description": "Find one of a list of directories.",
+      "description": "<p>Find one of a list of directories.</p>",
       "groups": [
         "util"
       ],
@@ -1897,7 +2229,7 @@
           "name": "pathList"
         }
       ],
-      "description": "Compress fully-qualified paths down to minimal non-colliding lengths.",
+      "description": "<p>Compress fully-qualified paths down to minimal non-colliding lengths.</p>",
       "groups": [
         "util"
       ],
@@ -1941,87 +2273,6 @@
       "name": "sync",
       "api": true,
       "constructorFunction": false
-    },
-    "post-process": {
-      "type": "module",
-      "key": "post-process",
-      "name": "post-process",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "post-process.renamePackageItems",
-        "post-process.getParent",
-        "post-process.hoistRequiredItems",
-        "post-process.postProcessReport"
-      ]
-    },
-    "post-process.renamePackageItems": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.renamePackageItems",
-      "params": [
-        {
-          "name": "report"
-        }
-      ],
-      "description": "<p>Rename modules to their corresponding package names, if provided, via a\npackage.json file.</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "renamePackageItems",
-      "signatures": []
-    },
-    "post-process.getParent": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.getParent",
-      "params": [
-        {
-          "name": "report"
-        },
-        {
-          "name": "item"
-        }
-      ],
-      "groups": [
-        "post-process"
-      ],
-      "name": "getParent",
-      "signatures": []
-    },
-    "post-process.hoistRequiredItems": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.hoistRequiredItems",
-      "params": [
-        {
-          "name": "report"
-        }
-      ],
-      "description": "<p>If a module exports another required module, treat the required module as if\nits exports were owned by this module.</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "hoistRequiredItems",
-      "signatures": []
-    },
-    "post-process.postProcessReport": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.postProcessReport",
-      "params": [
-        {
-          "name": "inputReport"
-        }
-      ],
-      "description": "<p>Use package names if available, and handle cases like:<br/>\nmodule.exports = require('foo');</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "postProcessReport",
-      "signatures": [],
-      "api": true
     }
   }
 }
