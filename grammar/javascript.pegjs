@@ -328,7 +328,8 @@ LineContinuation
 
 EscapeSequence
   = CharacterEscapeSequence
-  / "0" !DecimalDigit { return "\0"; }
+//  / "0" !DecimalDigit { return "\0"; }
+  / OctalEscapeSequence
   / HexEscapeSequence
   / UnicodeEscapeSequence
 
@@ -355,6 +356,18 @@ EscapeCharacter
   / DecimalDigit
   / "x"
   / "u"
+
+// deprecated, but some node code is using this; yuck!
+OctalEscapeSequence
+  = OctalDigit
+  / OctalDigit OctalDigit
+  / ZeroToThree OctalDigit OctalDigit
+
+OctalDigit
+  = [0-7]
+
+ZeroToThree
+  = [0-3]
 
 HexEscapeSequence
   = "x" h1:HexDigit h2:HexDigit {
@@ -549,7 +562,7 @@ PrimaryExpression
   / Literal
   / ArrayLiteral
   / ObjectLiteral
-  / "(" __ expression:Expression __ ")" { return expression; }
+  / "(" __ expression:Expression __ ")" { return {type: 'expression', nodes: [expression]}; }
 
 ArrayLiteral
   = p:Pos "[" __ elements:ElementList? __ (Elision __)? "]" {
@@ -1156,9 +1169,14 @@ AssignmentOperator
         return {type: 'operator', value: op, pos: p};
       }
 
+CommaOperator
+  = p:Pos ',' {
+    return {type: 'operator', value: ',', pos: p};
+  }
+
 Expression
   = head:AssignmentExpression
-    tail:(__ "," __ AssignmentExpression)* {
+    tail:(__ CommaOperator __ AssignmentExpression)* {
       var result = head;
       for (var i = 0; i < tail.length; i++) {
         result = {
@@ -1172,7 +1190,7 @@ Expression
 
 ExpressionNoIn
   = head:AssignmentExpressionNoIn
-    tail:(__ "," __ AssignmentExpressionNoIn)* {
+    tail:(__ CommaOperator __ AssignmentExpressionNoIn)* {
       var result = head;
       for (var i = 0; i < tail.length; i++) {
         result = {

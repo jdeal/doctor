@@ -1,0 +1,1 @@
+var regex = /\/xyz/gi;

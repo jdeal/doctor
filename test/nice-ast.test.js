@@ -127,20 +127,20 @@ test('clean an extended ast', function (t) {
   t.end();
 });
 
-function testFixtureAst(sourceFile, t) {
-  var fixtureAstFile = './fixture/' + sourceFile + '.ast.js';
-  sourceFile = path.join(__dirname, 'fixture', sourceFile + '.js');
-  var fixtureAst = require(fixtureAstFile);
-  nast.astFromFile({}, sourceFile, function (err, ast) {
-    t.equal(ast.type, fixtureAst.type);
-    t.deepEqual(ast.nodes, fixtureAst.nodes);
+function testFixtureAst(sourceFile) {
+  test('check against ast: ' + sourceFile, function (t) {
+    t.plan(2);
+    var fixtureAstFile = path.join(__dirname, 'fixture', 'ast', sourceFile + '.ast.js');
+    sourceFile = path.join(__dirname, 'fixture', 'ast', sourceFile + '.js');
+    var fixtureAst = require(fixtureAstFile);
+    nast.astFromFile({}, sourceFile, function (err, ast) {
+      t.equal(ast.type, fixtureAst.type);
+      t.deepEqual(ast.nodes, fixtureAst.nodes);
+    });
   });
 }
 
-test('ast from file', function (t) {
-  t.plan(4 * 2);
-  testFixtureAst('define', t);
-  testFixtureAst('var-function', t);
-  testFixtureAst('subscript', t);
-  testFixtureAst('object', t);
-});
+testFixtureAst('define');
+testFixtureAst('var-function');
+testFixtureAst('subscript');
+testFixtureAst('object');

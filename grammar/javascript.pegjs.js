@@ -39,6 +39,7 @@ module.exports = (function(){
         "Catch": parse_Catch,
         "CatchToken": parse_CatchToken,
         "CharacterEscapeSequence": parse_CharacterEscapeSequence,
+        "CommaOperator": parse_CommaOperator,
         "Comment": parse_Comment,
         "CommentedStatement": parse_CommentedStatement,
         "ConditionalExpression": parse_ConditionalExpression,
@@ -138,6 +139,8 @@ module.exports = (function(){
         "NullToken": parse_NullToken,
         "NumericLiteral": parse_NumericLiteral,
         "ObjectLiteral": parse_ObjectLiteral,
+        "OctalDigit": parse_OctalDigit,
+        "OctalEscapeSequence": parse_OctalEscapeSequence,
         "Pc": parse_Pc,
         "Pos": parse_Pos,
         "PostfixExpression": parse_PostfixExpression,
@@ -206,6 +209,7 @@ module.exports = (function(){
         "WhiteSpace": parse_WhiteSpace,
         "WithStatement": parse_WithStatement,
         "WithToken": parse_WithToken,
+        "ZeroToThree": parse_ZeroToThree,
         "Zs": parse_Zs,
         "_": parse__,
         "__": parse___,
@@ -3387,52 +3391,11 @@ module.exports = (function(){
         }
         
         
-        var result9 = parse_CharacterEscapeSequence();
-        if (result9 !== null) {
-          var result0 = result9;
+        var result4 = parse_CharacterEscapeSequence();
+        if (result4 !== null) {
+          var result0 = result4;
         } else {
-          var savedPos0 = pos;
-          var savedPos1 = pos;
-          if (input.substr(pos, 1) === "0") {
-            var result6 = "0";
-            pos += 1;
-          } else {
-            var result6 = null;
-            if (reportMatchFailures) {
-              matchFailed("\"0\"");
-            }
-          }
-          if (result6 !== null) {
-            var savedPos2 = pos;
-            var savedReportMatchFailuresVar0 = reportMatchFailures;
-            reportMatchFailures = false;
-            var result8 = parse_DecimalDigit();
-            reportMatchFailures = savedReportMatchFailuresVar0;
-            if (result8 === null) {
-              var result7 = '';
-            } else {
-              var result7 = null;
-              pos = savedPos2;
-            }
-            if (result7 !== null) {
-              var result4 = [result6, result7];
-            } else {
-              var result4 = null;
-              pos = savedPos1;
-            }
-          } else {
-            var result4 = null;
-            pos = savedPos1;
-          }
-          var result5 = result4 !== null
-            ? (function() { return "\0"; })()
-            : null;
-          if (result5 !== null) {
-            var result3 = result5;
-          } else {
-            var result3 = null;
-            pos = savedPos0;
-          }
+          var result3 = parse_OctalEscapeSequence();
           if (result3 !== null) {
             var result0 = result3;
           } else {
@@ -3643,6 +3606,129 @@ module.exports = (function(){
               };
             };
           };
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_OctalEscapeSequence() {
+        var cacheKey = 'OctalEscapeSequence@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var result8 = parse_OctalDigit();
+        if (result8 !== null) {
+          var result0 = result8;
+        } else {
+          var savedPos1 = pos;
+          var result6 = parse_OctalDigit();
+          if (result6 !== null) {
+            var result7 = parse_OctalDigit();
+            if (result7 !== null) {
+              var result5 = [result6, result7];
+            } else {
+              var result5 = null;
+              pos = savedPos1;
+            }
+          } else {
+            var result5 = null;
+            pos = savedPos1;
+          }
+          if (result5 !== null) {
+            var result0 = result5;
+          } else {
+            var savedPos0 = pos;
+            var result2 = parse_ZeroToThree();
+            if (result2 !== null) {
+              var result3 = parse_OctalDigit();
+              if (result3 !== null) {
+                var result4 = parse_OctalDigit();
+                if (result4 !== null) {
+                  var result1 = [result2, result3, result4];
+                } else {
+                  var result1 = null;
+                  pos = savedPos0;
+                }
+              } else {
+                var result1 = null;
+                pos = savedPos0;
+              }
+            } else {
+              var result1 = null;
+              pos = savedPos0;
+            }
+            if (result1 !== null) {
+              var result0 = result1;
+            } else {
+              var result0 = null;;
+            };
+          };
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_OctalDigit() {
+        var cacheKey = 'OctalDigit@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        if (input.substr(pos).match(/^[0-7]/) !== null) {
+          var result0 = input.charAt(pos);
+          pos++;
+        } else {
+          var result0 = null;
+          if (reportMatchFailures) {
+            matchFailed("[0-7]");
+          }
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_ZeroToThree() {
+        var cacheKey = 'ZeroToThree@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        if (input.substr(pos).match(/^[0-3]/) !== null) {
+          var result0 = input.charAt(pos);
+          pos++;
+        } else {
+          var result0 = null;
+          if (reportMatchFailures) {
+            matchFailed("[0-3]");
+          }
         }
         
         
@@ -7038,7 +7124,7 @@ module.exports = (function(){
                     pos = savedPos1;
                   }
                   var result3 = result2 !== null
-                    ? (function(expression) { return expression; })(result2[2])
+                    ? (function(expression) { return {type: 'expression', nodes: [expression]}; })(result2[2])
                     : null;
                   if (result3 !== null) {
                     var result1 = result3;
@@ -13195,6 +13281,59 @@ module.exports = (function(){
         return result0;
       }
       
+      function parse_CommaOperator() {
+        var cacheKey = 'CommaOperator@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        var result3 = parse_Pos();
+        if (result3 !== null) {
+          if (input.substr(pos, 1) === ",") {
+            var result4 = ",";
+            pos += 1;
+          } else {
+            var result4 = null;
+            if (reportMatchFailures) {
+              matchFailed("\",\"");
+            }
+          }
+          if (result4 !== null) {
+            var result1 = [result3, result4];
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(p) {
+              return {type: 'operator', value: ',', pos: p};
+            })(result1[0])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
       function parse_Expression() {
         var cacheKey = 'Expression@' + pos;
         var cachedResult = cache[cacheKey];
@@ -13212,15 +13351,7 @@ module.exports = (function(){
           var savedPos2 = pos;
           var result6 = parse___();
           if (result6 !== null) {
-            if (input.substr(pos, 1) === ",") {
-              var result7 = ",";
-              pos += 1;
-            } else {
-              var result7 = null;
-              if (reportMatchFailures) {
-                matchFailed("\",\"");
-              }
-            }
+            var result7 = parse_CommaOperator();
             if (result7 !== null) {
               var result8 = parse___();
               if (result8 !== null) {
@@ -13248,15 +13379,7 @@ module.exports = (function(){
             var savedPos2 = pos;
             var result6 = parse___();
             if (result6 !== null) {
-              if (input.substr(pos, 1) === ",") {
-                var result7 = ",";
-                pos += 1;
-              } else {
-                var result7 = null;
-                if (reportMatchFailures) {
-                  matchFailed("\",\"");
-                }
-              }
+              var result7 = parse_CommaOperator();
               if (result7 !== null) {
                 var result8 = parse___();
                 if (result8 !== null) {
@@ -13336,15 +13459,7 @@ module.exports = (function(){
           var savedPos2 = pos;
           var result6 = parse___();
           if (result6 !== null) {
-            if (input.substr(pos, 1) === ",") {
-              var result7 = ",";
-              pos += 1;
-            } else {
-              var result7 = null;
-              if (reportMatchFailures) {
-                matchFailed("\",\"");
-              }
-            }
+            var result7 = parse_CommaOperator();
             if (result7 !== null) {
               var result8 = parse___();
               if (result8 !== null) {
@@ -13372,15 +13487,7 @@ module.exports = (function(){
             var savedPos2 = pos;
             var result6 = parse___();
             if (result6 !== null) {
-              if (input.substr(pos, 1) === ",") {
-                var result7 = ",";
-                pos += 1;
-              } else {
-                var result7 = null;
-                if (reportMatchFailures) {
-                  matchFailed("\",\"");
-                }
-              }
+              var result7 = parse_CommaOperator();
               if (result7 !== null) {
                 var result8 = parse___();
                 if (result8 !== null) {

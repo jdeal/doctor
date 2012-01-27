@@ -8,7 +8,7 @@ function comma(buffer, i) {
 
 var sourceRules = {
   file: function (node) {
-    return this.source(node.nodes);
+    return this.source(node.nodes, ';');
   },
   'define-function': function (node) {
     return 'function ' + this.source(node.nodes);
@@ -26,7 +26,7 @@ var sourceRules = {
     return '(' + buffer.join('') + ')';
   },
   nodes: function (node) {
-    return '{' + this.source(node.nodes) + '}';
+    return '{' + this.source(node.nodes, ';') + '}';
     // var buffer = [];
     // node.nodes.forEach(function (childNode, i) {
     //   buffer.push(source(p))
@@ -34,23 +34,29 @@ var sourceRules = {
     // return buffer.join('\n');
   },
   'return': function (node) {
+    //console.log(JSON.stringify(node, null, 2))
     if (node.nodes[0].type !== 'undefined') {
-      return 'return ' + this.source(node.nodes[0]) + ';';
+      return 'return ' + this.source(node.nodes[0]);
     }
     return 'return;';
   },
   vars: function (node) {
-    var self = this;
-    var buffer = ['var '];
-    node.nodes.forEach(function (varNode, i) {
-      comma(buffer, i);
-      buffer.push(self.source(varNode));
-    });
-    return buffer.join('') + ';';
+    // var self = this;
+    // var buffer = ['var '];
+    // node.nodes.forEach(function (varNode, i) {
+    //   comma(buffer, i);
+    //   buffer.push(self.source(varNode));
+    // });
+    // return buffer.join('');
+    return 'var ' + this.source(node.nodes, ', ', '', node);
   },
-  'var': function (node) {
-    var buffer = [node.nodes[0].value];
-    console.log(node)
+  'var': function (node, parent) {
+    var buffer = [];
+    if (!parent || parent.type !== 'vars') {
+      buffer.push('var ');
+    }
+    buffer.push(node.nodes[0].value);
+    //console.log(node)
     if (node.nodes[1].type !== 'undefined') {
       buffer.push(' = ' + this.source(node.nodes[1]));
     }
@@ -75,7 +81,7 @@ var sourceRules = {
     return buffer.join('');
   },
   assign: function (node) {
-    return this.source(node.nodes[1]) + ' ' + this.source(node.nodes[0]) + ' ' + this.source(node.nodes[2]) + ';';
+    return this.source(node.nodes[1]) + ' ' + this.source(node.nodes[0]) + ' ' + this.source(node.nodes[2]);
   },
   operator: function (node) {
     return node.value;
@@ -87,7 +93,8 @@ var sourceRules = {
     return this.source(node.nodes[1]) + node.nodes[0].value;
   },
   unary: function (node) {
-    return this.source(node.nodes[0]) + node.nodes[1].value;
+    //console.log(JSON.stringify(node, null, 2));
+    return this.source(node.nodes[0]) + ' ' + this.source(node.nodes[1]);
   },
   'switch': function (node) {
     return 'switch (' + this.source(node.nodes[0]) + ') {' + this.source(node.nodes[1].nodes) + '}';
@@ -96,7 +103,7 @@ var sourceRules = {
     return 'case ' + this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1].nodes);
   },
   block: function (node) {
-    return '{' + this.source(node.nodes) + '}';
+    return '{' + this.source(node.nodes, ';') + '}';
   },
   regex: function (node) {
     return '/' + this.source(node.nodes[0]) + '/' + this.source(node.nodes[1]);
@@ -108,7 +115,8 @@ var sourceRules = {
     return node.value;
   },
   string: function (node) {
-    return '"' + node.value.replace('"', '\\"') + '"';
+    //return '"' + node.value.replace('"', '\\"') + '"';
+    return JSON.stringify(node.value);
   },
   number: function (node) {
     return node.value;
@@ -129,7 +137,7 @@ var sourceRules = {
     return this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1]);
   },
   key: function (node) {
-    return node.value;
+    return JSON.stringify(node.value);
   },
   binary: function (node) {
     return this.source(node.nodes[1]) + ' ' + this.source(node.nodes[0]) + ' ' + this.source(node.nodes[2]);
@@ -171,17 +179,16 @@ var sourceRules = {
     return this.source(node.nodes[0]) + ' ? ' + this.source(node.nodes[1]) + ' : ' + this.source(node.nodes[2]);
   },
   'empty': function (node) {
-        
+    return '';
   },
   'if': function (node) {
     return 'if (' + this.source(node.nodes[0]) + ') ' + this.source(node.nodes[1]) +
-      (node.nodes[2].type === 'undefined' ? '' : ' else ' + this.source(node.nodes[2]));
+     (node.nodes[2].type === 'undefined' ? '' : this.source(node.nodes[2], '', ' else '));
   },
   'while': function (node) {
     return 'while (' + this.source(node.nodes[0]) + ') ' + this.source(node.nodes[1]);
   },
   'for': function (node) {
-    console.log(node)
     return 'for (' +
       this.source(node.nodes[0]) + ';' +
       this.source(node.nodes[1]) + ';' +
@@ -189,18 +196,16 @@ var sourceRules = {
       this.source(node.nodes[3]);
   },
   'for-in': function (node) {
-    return 'for (' + this.soure(node.nodes[0]) + ' in ' + this.source(node.nodes[1]) +
+    return 'for (' + this.source(node.nodes[0]) + ' in ' + this.source(node.nodes[1]) +
       ') ' + this.source(node.nodes[2]);
   },
   'continue': function (node) {
     return 'continue' +
-      (this.nodes[1].type === 'undefined' ? '' : ' ' + this.source(node.nodes[2])) +
-      ';';
+      (node.nodes[0].type === 'undefined' ? '' : ' ' + this.source(node.nodes[0]));
   },
   'break': function (node) {
     return 'break' +
-      (this.nodes[1].type === 'undefined' ? '' : ' ' + this.source(node.nodes[2])) +
-      ';';
+      (node.nodes[0].type === 'undefined' ? '' : ' ' + this.source(node.nodes[0]));
   },
   'with': function (node) {
     return 'with (' + this.source(node.nodes[0]) + ') ' + this.source(node.nodes[1]);
@@ -209,7 +214,7 @@ var sourceRules = {
     return this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1]);
   },
   'throw': function (node) {
-    return 'throw ' + this.source(node.nodes) + ';';
+    return 'throw ' + this.source(node.nodes);
   },
   'try': function (node) {
     return 'try ' + this.source(node.nodes);
@@ -221,10 +226,13 @@ var sourceRules = {
     return 'finally ' + this.source(node.nodes);
   },
   'debug': function (node) {
-    return 'debug;';
+    return 'debugger';
   },
   'function': function (node) {
     return 'function ' + this.source(node.nodes);
+  },
+  'expression': function (node) {
+    return '(' + this.source(node.nodes[0]) + ')';
   }
 };
 
@@ -235,20 +243,24 @@ function lines(node, lastLine) {
   return "";
 }
 
-function source(ast) {
+function source(ast, sep, leader, parent) {
   var self = this;
+  sep = sep || '';
+  leader = leader || '';
+  parent = parent || null;
   if (ast.type) {
     var gap = lines(ast, self.line);
     if (ast.line && ast.line > self.line) {
       self.line = ast.line;
     }
-    return gap + sourceRules[ast.type].call(self, ast);
+    return gap + leader + sourceRules[ast.type].call(self, ast, parent);
   } else {
     var sources = [];
+    //console.log(JSON.stringify(ast));
     _(ast).each(function (node) {
-      sources.push(self.source(node));
+      sources.push(self.source(node, '', '', parent));
     });
-    return sources.join('');
+    return leader + sources.join(sep);
   }
 }
 

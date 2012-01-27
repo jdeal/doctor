@@ -4,3 +4,4 @@ node_modules
 /sandbox
 !.gitignore
 .sass-cache
+/coverage

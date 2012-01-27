@@ -11,7 +11,7 @@ play time
 @param y only here
 */
 Function.prototype.foo = function (x, y) {
-  
+  return 'bar';
 };
 
 function doSomething() {
@@ -20,4 +20,21 @@ function doSomething() {
   // yada
   // yoda
   var thing = {};
+  return thing;
+}
+
+function noReturn() {
+  var foo = 'bar';
+}
+
+if (true) {
+  console.log("5");console.log("6");
+}
+
+if ('string' != typeof route) {
+  middleware = route, route = '/';
+}
+
+for (var i = 0; i < 10; i++) {
+  continue xyz;
 }
