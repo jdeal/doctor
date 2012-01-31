@@ -532,7 +532,10 @@
         "doctor.includeFile",
         "doctor.compiler",
         "doctor.callEnterHook",
-        "doctor.callExitHook"
+        "doctor.callExitHook",
+        "doctor.enterExitHooks",
+        "doctor.callHook",
+        "doctor.insertEnterExitHooksSync"
       ]
     },
     "doctor.getAst": {
@@ -950,6 +953,65 @@
         "doctor"
       ],
       "name": "callExitHook",
+      "signatures": [],
+      "api": true
+    },
+    "doctor.enterExitHooks": {
+      "type": "var",
+      "key": "doctor.enterExitHooks",
+      "groups": [
+        "doctor"
+      ],
+      "name": "enterExitHooks"
+    },
+    "doctor.callHook": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "doctor.callHook",
+      "params": [
+        {
+          "name": "type"
+        },
+        {
+          "name": "filename"
+        },
+        {
+          "name": "info"
+        }
+      ],
+      "groups": [
+        "doctor"
+      ],
+      "name": "callHook",
+      "signatures": [],
+      "api": true
+    },
+    "doctor.insertEnterExitHooksSync": {
+      "type": "function",
+      "constructorFunction": false,
+      "key": "doctor.insertEnterExitHooksSync",
+      "params": [
+        {
+          "name": "filename",
+          "description": "<p>{String} Filename of file to trasform. Callback hooks are\nregistered to this filename.</p>"
+        },
+        {
+          "name": "enterCb",
+          "description": "<p>{Function} Function to call when entering function. If exitCb\nis not defined, enterCb will be called for exit as well.</p>"
+        },
+        {
+          "name": "exitCb",
+          "description": "<p>{Function} Function to call when exiting function.</p>"
+        }
+      ],
+      "description": "<p><strong>EXPERIMENTAL</strong> Inserts enter/exit hooks into a JavaScript file. Registers\ncallback hooks for that file.</p>",
+      "examples": [
+        "var doctor = require('doctor');\n\nvar source = doctor.insertEnterExitHooksSync('foobar.js', function (info) {\n  console.log(JSON.stringify(info, null, 2));\n});\n\neval(source);"
+      ],
+      "groups": [
+        "doctor"
+      ],
+      "name": "insertEnterExitHooksSync",
       "signatures": [],
       "api": true
     },
