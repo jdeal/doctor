@@ -1,9 +1,6 @@
 var rules = [];
 
-function makeHook(type, node) {
-  type = type === 'enter' ? 'Enter' : type;
-  type = type === 'exit' ? 'Exit' : type;
-
+function makeHook(options, type, node) {
   var info = {
     type: node.type === 'file' ? 'module' : 'function',
     line: node.line,
@@ -15,25 +12,27 @@ function makeHook(type, node) {
   } else if (node.nodes[0].type === 'name') {
     info.name = node.nodes[0].value;
   }
-  return node.fromSource('__doctor.call' + type + 'Hook(' +
+  return node.fromSource('__doctor.callHook(' +
+    JSON.stringify(type) + ',' +
+    JSON.stringify(options.hookFilename ? options.hookFilename : '') + ',' +
     JSON.stringify(info).replace(/\}$/, ', filename:__filename}') + ')');
 }
 
 rules.push({
   type: 'file',
-  transform: function (node) {
+  transform: function (node, transform) {
     node.item('modulePath', node.path);
     node.item('functionNode', node);
-    node.prepend(makeHook('enter', node));
+    node.prepend(makeHook(transform.options, 'enter', node));
     node.prepend(node.fromSource("var __doctor = require('doctor')"));
   }
 });
 
 rules.push({
   type: ['function', 'define-function'],
-  transform: function (node) {
+  transform: function (node, transform) {
     node.item('functionNode', node);
-    node.nodes[2].prepend(makeHook('enter', node));
+    node.nodes[2].prepend(makeHook(transform.options, 'enter', node));
   }
 });
 
@@ -42,9 +41,9 @@ rules.push({
   match: function (node) {
     return node.nodes[0].type === 'undefined';
   },
-  transform: function (node) {
+  transform: function (node, transform) {
     var returnBlock = node.nodeFromSource('{return;}');
-    returnBlock.prepend(makeHook('exit', node.item('functionNode')));
+    returnBlock.prepend(makeHook(transform.options, 'exit', node.item('functionNode')));
     node.before(returnBlock);
     node.remove();
   }
@@ -55,7 +54,7 @@ rules.push({
   match: function (node) {
     return node.nodes[0].type !== 'undefined';
   },
-  transform: function (node) {
+  transform: function (node, transform) {
     var returnValue = node.nodes[0].ast();
     var returnBlock = node.nodeFromSource('{var __doctor__return = 0}');
     var returnVar = returnBlock.nodes[0];
@@ -67,8 +66,8 @@ rules.push({
     //console.log(returnBlock.lispify())
     returnVar.nodes[0].append(returnValue);
     //console.log(returnBlock.lispify())
-    returnBlock.append(makeHook('exit', node.item('functionNode')));
-    returnBlock.append(node.nodeFromSource('return __doctor__return'))
+    returnBlock.append(makeHook(transform.options, 'exit', node.item('functionNode')));
+    returnBlock.append(node.nodeFromSource('return __doctor__return'));
     node.before(returnBlock);
 
     //console.log(returnBlock.lispify());
@@ -108,15 +107,15 @@ rules.push({
 
 rules.push({
   type: ['end-function', 'end-define-function'],
-  transform: function (node) {
-    node.nodes[2].append(makeHook('exit', node));
+  transform: function (node, transform) {
+    node.nodes[2].append(makeHook(transform.options, 'exit', node));
   }
 });
 
 rules.push({
   type: 'end-file',
-  transform: function (node) {
-    node.append(makeHook('exit', node));
+  transform: function (node, transform) {
+    node.append(makeHook(transform.options, 'exit', node));
   }
 });
 
