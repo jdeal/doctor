@@ -253,7 +253,13 @@ function source(ast, sep, leader, parent) {
     if (ast.line && ast.line > self.line) {
       self.line = ast.line;
     }
-    return gap + leader + sourceRules[ast.type].call(self, ast, parent);
+    var sourceText = sourceRules[ast.type].call(self, ast, parent);
+    if (self.options.hookSourceCb) {
+      if (ast.type === 'function' || ast.type === 'define-function') {
+        self.options.hookSourceCb(ast.type, sourceText);
+      }
+    }
+    return gap + leader + sourceText;
   } else {
     var sources = [];
     //console.log(JSON.stringify(ast));
@@ -270,7 +276,7 @@ module.exports = function render(options, files, cb) {
     if (report.items) {
       _(report.items).each(function (item, key) {
         if (item.ast) {
-          var context = {source: source, line: 1};
+          var context = {source: source, line: 1, options: options};
           sourceFiles[key] = context.source(item.ast);
         }
       });
