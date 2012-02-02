@@ -256,7 +256,7 @@ function source(ast, sep, leader, parent) {
     var sourceText = sourceRules[ast.type].call(self, ast, parent);
     if (self.options.hookSourceCb) {
       if (ast.type === 'function' || ast.type === 'define-function') {
-        self.options.hookSourceCb({type: ast.type, source: sourceText});
+        self.options.hookSourceCb({type: ast.type, source: sourceText, line: ast.line, column: ast.column});
       }
     }
     return gap + leader + sourceText;
