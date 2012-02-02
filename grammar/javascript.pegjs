@@ -672,7 +672,7 @@ NewExpression
   / p:Pos NewToken __ constructor:NewExpression {
       return {
         type: "new",
-        nodes: [constructor, arguments],
+        nodes: [constructor],
         pos: p
       };
     }
@@ -1282,7 +1282,7 @@ VariableDeclarationListNoIn
     }
 
 VariableDeclaration
-  = p:Pos name:Identifier __ value:Initialiser? {
+  = p:Pos name:Identifier value:Initialiser? {
       return {
         type: "var",
         nodes: [name, value !== "" ? value : undefinedNode(p)],
@@ -1291,7 +1291,7 @@ VariableDeclaration
     }
 
 VariableDeclarationNoIn
-  = p:Pos name:Identifier __ value:InitialiserNoIn? {
+  = p:Pos name:Identifier value:InitialiserNoIn? {
       return {
         type: "var",
         nodes: [name, value !== "" ? value : undefinedNode(p)],
@@ -1300,10 +1300,10 @@ VariableDeclarationNoIn
     }
 
 Initialiser
-  = "=" (!"=") __ expression:AssignmentExpression { return expression; }
+  = __ "=" (!"=") __ expression:AssignmentExpression { return expression; }
 
 InitialiserNoIn
-  = "=" (!"=") __ expression:AssignmentExpressionNoIn { return expression; }
+  = __ "=" (!"=") __ expression:AssignmentExpressionNoIn { return expression; }
 
 EmptyStatement
   = p:Pos ";" { return { type: "empty", pos: p }; }

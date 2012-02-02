@@ -87,7 +87,11 @@ var sourceRules = {
     return node.value;
   },
   'new': function (node) {
-    return 'new ' + node.nodes[0].value + '(' + this.source(node.nodes[1]) + ')';
+    if (node.nodes.length < 2) {
+      return 'new ' + this.source(node.nodes[0]);
+    } else {
+      return 'new ' + this.source(node.nodes[0]) + '(' + this.source(node.nodes[1]) + ')';
+    }
   },
   postfix: function (node) {
     return this.source(node.nodes[1]) + node.nodes[0].value;
@@ -101,6 +105,9 @@ var sourceRules = {
   },
   'case': function (node) {
     return 'case ' + this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1].nodes);
+  },
+  'default': function (node) {
+    return 'default: ' + this.source(node.nodes);
   },
   block: function (node) {
     return '{' + this.source(node.nodes, ';') + '}';
@@ -153,9 +160,6 @@ var sourceRules = {
     });
     buffer.push(']');
     return buffer.join('');
-  },
-  'default': function (node) {
-    return 'default: ' + this.source(node.nodes[0]);
   },
   'undefined': function (node) {
     return '';

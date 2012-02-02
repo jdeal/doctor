@@ -32,6 +32,7 @@ function testSource(sourceFile) {
         render: 'source',
         followRequired: false
       }, function (err, report) {
+        //console.log(err);
         var keys = Object.keys(report);
         t.equal(keys.length, 1);
         if (keys.length !== 1) {
@@ -39,7 +40,8 @@ function testSource(sourceFile) {
         } else {
           // finally convert that source code to an ast
           nast.astFromSource({}, report[keys[0]], function (err, sourcedAst) {
-            //console.log(report[keys[0]])
+            //console.log(sourceFile);
+            //console.log(report[keys[0]]);
             // console.log(JSON.stringify(ast, null, 2));
             // console.log(">>>" + nast.extendAst(ast).lispify());
             // console.log(">>>" + nast.extendAst(sourcedAst).lispify());
@@ -53,6 +55,7 @@ function testSource(sourceFile) {
             if (!equal) {
               console.log(sourceName + " failed: ast line: " + diff.a.line +
                 ", source line: " + diff.b.line);
+              console.log(report[keys[0]]);
             }
             t.equal(equal, true);
             t.end();
@@ -116,5 +119,9 @@ testSources([
   'express/request',
   'express/response',
   'express/utils',
-  'express/view'
+  'express/view',
+
+  'yamlish/yamlish',
+  
+  'tap/tap-consumer'
 ]);
