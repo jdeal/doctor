@@ -123,5 +123,7 @@ testSources([
 
   'yamlish/yamlish',
   
-  'tap/tap-consumer'
+  'tap/tap-consumer',
+  'tap/runner',
+  'tap/tap-runner'
 ]);

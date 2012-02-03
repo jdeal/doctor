@@ -141,6 +141,7 @@ module.exports = (function(){
         "ObjectLiteral": parse_ObjectLiteral,
         "OctalDigit": parse_OctalDigit,
         "OctalEscapeSequence": parse_OctalEscapeSequence,
+        "OctalLiteral": parse_OctalLiteral,
         "Pc": parse_Pc,
         "Pos": parse_Pos,
         "PostfixExpression": parse_PostfixExpression,
@@ -2288,15 +2289,20 @@ module.exports = (function(){
         reportMatchFailures = false;
         var savedPos0 = pos;
         var savedPos1 = pos;
-        var result7 = parse_HexIntegerLiteral();
-        if (result7 !== null) {
-          var result3 = result7;
+        var result8 = parse_OctalLiteral();
+        if (result8 !== null) {
+          var result3 = result8;
         } else {
-          var result6 = parse_DecimalLiteral();
-          if (result6 !== null) {
-            var result3 = result6;
+          var result7 = parse_HexIntegerLiteral();
+          if (result7 !== null) {
+            var result3 = result7;
           } else {
-            var result3 = null;;
+            var result6 = parse_DecimalLiteral();
+            if (result6 !== null) {
+              var result3 = result6;
+            } else {
+              var result3 = null;;
+            };
           };
         }
         if (result3 !== null) {
@@ -2757,6 +2763,66 @@ module.exports = (function(){
         }
         var result2 = result1 !== null
           ? (function(sign, digits) { return sign + digits; })(result1[0], result1[1])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_OctalLiteral() {
+        var cacheKey = 'OctalLiteral@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        if (input.substr(pos, 1) === "0") {
+          var result3 = "0";
+          pos += 1;
+        } else {
+          var result3 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"0\"");
+          }
+        }
+        if (result3 !== null) {
+          var result5 = parse_OctalDigit();
+          if (result5 !== null) {
+            var result4 = [];
+            while (result5 !== null) {
+              result4.push(result5);
+              var result5 = parse_OctalDigit();
+            }
+          } else {
+            var result4 = null;
+          }
+          if (result4 !== null) {
+            var result1 = [result3, result4];
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(digits) { return parseInt("0" + digits.join(''), 8); })(result1[1])
           : null;
         if (result2 !== null) {
           var result0 = result2;

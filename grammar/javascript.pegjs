@@ -255,7 +255,7 @@ BooleanLiteral
   / p:Pos FalseToken { return { type: 'boolean', value: false, pos: p }; }
 
 NumericLiteral "number"
-  = literal:(HexIntegerLiteral / DecimalLiteral) !IdentifierStart {
+  = literal:(OctalLiteral / HexIntegerLiteral / DecimalLiteral) !IdentifierStart {
       return literal;
     }
 
@@ -295,6 +295,9 @@ ExponentIndicator
 
 SignedInteger
   = sign:[-+]? digits:DecimalDigits { return sign + digits; }
+
+OctalLiteral
+  = "0" digits:OctalDigit+ { return parseInt("0" + digits.join(''), 8); }
 
 HexIntegerLiteral
   = "0" [xX] digits:HexDigit+ { return parseInt("0x" + digits.join("")); }
