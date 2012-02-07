@@ -24,7 +24,7 @@ rules.push({
     node.item('modulePath', node.path);
     node.item('functionNode', node);
     node.prepend(makeHook(transform.options, 'enter', node));
-    node.prepend(node.fromSource("var __doctor = require('doctor')"));
+    node.prepend(node.fromSource("var __doctor = require(" + JSON.stringify(transform.options.hookDoctorPath) + ")"));
   }
 });
 
