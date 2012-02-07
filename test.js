@@ -1,40 +1,15 @@
-/* Hello file! */
-/* More file! */
+/* hello */
 
-/*
+/* nice literal class */
+function LiteralProto() {
+  
+}
 
-Hello function!
-play time
-
-@param x here
-   and there
-@param y only here
-*/
-Function.prototype.foo = function (x, y) {
-  return 'bar';
+LiteralProto.prototype = {
+  /* do something literal */
+  literalDoSomething: function () {
+    
+  }
 };
 
-function doSomething() {
-  // blah
-
-  // yada
-  // yoda
-  var thing = {};
-  return thing;
-}
-
-function noReturn() {
-  var foo = 'bar';
-}
-
-if (true) {
-  console.log("5");console.log("6");
-}
-
-if ('string' != typeof route) {
-  middleware = route, route = '/';
-}
-
-for (var i = 0; i < 10; i++) {
-  continue xyz;
-}
+exports.LiteralProto = LiteralProto;

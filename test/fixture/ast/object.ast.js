@@ -40,9 +40,9 @@ module.exports = {
                     }
                   ],
                   "pos": 16,
+                  "comments": [],
                   "line": 2,
-                  "column": 3,
-                  "comments": []
+                  "column": 3
                 },
                 {
                   "type": "property",
@@ -65,9 +65,9 @@ module.exports = {
                     }
                   ],
                   "pos": 24,
+                  "comments": [],
                   "line": 3,
-                  "column": 3,
-                  "comments": []
+                  "column": 3
                 },
                 {
                   "type": "property",
@@ -90,9 +90,9 @@ module.exports = {
                     }
                   ],
                   "pos": 34,
+                  "comments": [],
                   "line": 4,
-                  "column": 3,
-                  "comments": []
+                  "column": 3
                 }
               ],
               "pos": 12,

@@ -587,7 +587,7 @@ Elision
   = "," (__ ",")*
 
 ObjectLiteral
-  = p:Pos "{" __ properties:(PropertyNameAndValueList __ ("," __)?)? "}" {
+  = p:Pos "{" properties:(PropertyNameAndValueList __ ("," __)?)? "}" {
       return {
         type: "object",
         nodes: properties !== "" ? properties[0] : [],
@@ -596,23 +596,28 @@ ObjectLiteral
     }
 
 PropertyNameAndValueList
-  = head:PropertyAssignment tail:(__ "," __ PropertyAssignment)* {
+  = head:CommentedPropertyAssignment tail:(__ "," CommentedPropertyAssignment)* {
       var result = [head];
       for (var i = 0; i < tail.length; i++) {
-        result.push(tail[i][3]);
+        result.push(tail[i][2]);
       }
       return result;
     }
 
+CommentedPropertyAssignment
+  = __empty comments:(Comment __empty)* property:PropertyAssignment {
+    return addComments(property, comments);
+  }
+
 PropertyAssignment
-  = p:Pos name:PropertyName __ ":" __ value:AssignmentExpression {
+  = __ p:Pos name:PropertyName __ ":" __ value:AssignmentExpression {
       return {
         type: "property",
         nodes: [{type: 'key', value: name, pos: p}, value],
         pos: p
       };
     }
-  / p:Pos GetToken __ name:PropertyName __
+  / __ p:Pos GetToken __ name:PropertyName __
     "(" __ ")" __
     "{" __ body:FunctionBody __ "}" {
       return {
@@ -621,7 +626,7 @@ PropertyAssignment
         pos: p
       };
     }
-  / p:Pos SetToken __ name:PropertyName __
+  / __ p:Pos SetToken __ name:PropertyName __
     "(" __ param:PropertySetParameterList __ ")" __
     "{" __ body:FunctionBody __ "}" {
       return {

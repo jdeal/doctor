@@ -558,6 +558,41 @@ rules.push({
 rules.push({
   type: 'assign',
   match: function (node) {
+    return node.likeSource('__name__.prototype = {}');
+  },
+  report: function (node, report) {
+    var className = node.nodes[1].nodes[0].value;
+    var group = node.item('module') + '.class.' + className;
+
+    if (!report.item(group)) {
+      report.add({
+        type: 'class',
+        key: group,
+        name: className,
+        groups: ['classes']
+      });
+    }
+
+    var items = [];
+
+    var properties = node.nodes[2].nodes;
+    _(properties).each(function (property) {
+      var methodName = property.nodes[0].value;
+      var key = node.item('module') + '.' + className + '.' + methodName;
+      var fnItems = functionReportItem(property, property.nodes[1], methodName, {
+        method: true,
+        key: key,
+        groups: [group]
+      });
+      items = items.concat(fnItems);
+    });
+    return items;
+  }
+});
+
+rules.push({
+  type: 'assign',
+  match: function (node) {
     return node.likeSource('__name__.__name__ = pcodeDefine()') ||
         node.likeSource('__name__.__name__ = selectFirstDefine()');
   },

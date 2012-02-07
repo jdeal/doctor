@@ -135,6 +135,11 @@ function testFixtureAst(sourceFile) {
     var fixtureAst = require(fixtureAstFile);
     nast.astFromFile({}, sourceFile, function (err, ast) {
       t.equal(ast.type, fixtureAst.type);
+      // if (sourceFile.indexOf('object.js') >= 0) {
+      //   console.log(JSON.stringify(ast.nodes, null, 2));
+      //   console.log(JSON.stringify(fixtureAst.nodes, null, 2));
+      // }
+
       t.deepEqual(ast.nodes, fixtureAst.nodes);
     });
   });
