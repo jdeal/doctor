@@ -20,3 +20,6 @@ if (true) console.log('true');
 
 if (true) console.log('true')
 else console.log('false')
+
+if (err1) throw err1;
+else return sync(p, mode);

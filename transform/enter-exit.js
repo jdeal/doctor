@@ -68,6 +68,7 @@ rules.push({
     //console.log(returnBlock.lispify())
     returnBlock.append(makeHook(transform.options, 'exit', node.item('functionNode')));
     returnBlock.append(node.nodeFromSource('return __doctor__return'));
+    returnBlock.line = node.line;
     node.before(returnBlock);
 
     //console.log(returnBlock.lispify());

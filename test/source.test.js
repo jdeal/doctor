@@ -125,5 +125,10 @@ testSources([
   
   'tap/tap-consumer',
   'tap/runner',
-  'tap/tap-runner'
+  'tap/tap-runner',
+
+  'mkdirp/index',
+
+  'jade/jade',
+  'jade/parser'
 ]);

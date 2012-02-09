@@ -101,13 +101,13 @@ var sourceRules = {
     return this.source(node.nodes[0]) + ' ' + this.source(node.nodes[1]);
   },
   'switch': function (node) {
-    return 'switch (' + this.source(node.nodes[0]) + ') {' + this.source(node.nodes[1].nodes) + '}';
+    return 'switch (' + this.source(node.nodes[0]) + ') {' + this.source(node.nodes[1].nodes, ';') + '}';
   },
   'case': function (node) {
-    return 'case ' + this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1].nodes);
+    return 'case ' + this.source(node.nodes[0]) + ': ' + this.source(node.nodes[1].nodes, ';');
   },
   'default': function (node) {
-    return 'default: ' + this.source(node.nodes);
+    return 'default: ' + this.source(node.nodes, ';');
   },
   block: function (node) {
     return '{' + this.source(node.nodes, ';') + '}';
