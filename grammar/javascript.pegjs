@@ -206,6 +206,7 @@ Keyword
       / "try"
       / "typeof"
       / "var"
+      / "const"
       / "void"
       / "while"
       / "with"
@@ -215,7 +216,7 @@ Keyword
 FutureReservedWord
   = (
         "class"
-      / "const"
+ //     / "const"
       / "enum"
       / "export"
       / "extends"
@@ -462,6 +463,7 @@ TrueToken = "true" !IdentifierPart
 TryToken = "try" !IdentifierPart
 TypeofToken = "typeof" !IdentifierPart { return "typeof"; }
 VarToken = "var" !IdentifierPart
+ConstToken = "const" !IdentifierPart
 VoidToken = "void" !IdentifierPart { return "void"; }
 WhileToken = "while" !IdentifierPart
 WithToken = "with" !IdentifierPart
@@ -1263,9 +1265,16 @@ StatementList
 */
 
 VariableStatement
-  = p:Pos VarToken __ declarations:VariableDeclarationList EOS {
+  = p:Pos varOrConst:(VarToken / ConstToken) __ declarations:VariableDeclarationList EOS {
+      var type = "vars";
+      if (varOrConst === 'const' || varOrConst[0] === 'const') {
+        declarations.forEach(function (declaration) {
+          declaration.type = 'const';
+        });
+        type = "const-vars";
+      }
       return {
-        type: "vars",
+        type: type,
         nodes: declarations,
         pos: p
       };

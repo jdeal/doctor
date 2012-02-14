@@ -41,14 +41,10 @@ var sourceRules = {
     return 'return;';
   },
   vars: function (node) {
-    // var self = this;
-    // var buffer = ['var '];
-    // node.nodes.forEach(function (varNode, i) {
-    //   comma(buffer, i);
-    //   buffer.push(self.source(varNode));
-    // });
-    // return buffer.join('');
     return 'var ' + this.source(node.nodes, ', ', '', node);
+  },
+  'const-vars': function (node) {
+    return 'const ' + this.source(node.nodes, ', ', '', node);
   },
   'var': function (node, parent) {
     var buffer = [];
@@ -56,7 +52,14 @@ var sourceRules = {
       buffer.push('var ');
     }
     buffer.push(node.nodes[0].value);
-    //console.log(node)
+    if (node.nodes[1].type !== 'undefined') {
+      buffer.push(' = ' + this.source(node.nodes[1]));
+    }
+    return buffer.join('');
+  },
+  'const': function (node, parent) {
+    var buffer = [];
+    buffer.push(node.nodes[0].value);
     if (node.nodes[1].type !== 'undefined') {
       buffer.push(' = ' + this.source(node.nodes[1]));
     }
