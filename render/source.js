@@ -192,12 +192,15 @@ var sourceRules = {
   'while': function (node) {
     return 'while (' + this.source(node.nodes[0]) + ') ' + this.source(node.nodes[1]);
   },
+  'do-while': function (node) {
+    return 'do ' + this.source(node.nodes[0]) + ' while (' + this.source(node.nodes[1]) + ')';
+  },
   'for': function (node) {
     return 'for (' +
       this.source(node.nodes[0]) + ';' +
       this.source(node.nodes[1]) + ';' +
       this.source(node.nodes[2]) + ') ' +
-      this.source(node.nodes[3]);
+      (node.nodes[3].type === 'empty' ? ';' : this.source(node.nodes[3]));
   },
   'for-in': function (node) {
     return 'for (' + this.source(node.nodes[0]) + ' in ' + this.source(node.nodes[1]) +
@@ -282,6 +285,7 @@ module.exports = function render(options, files, cb) {
         if (item.ast) {
           var context = {source: source, line: 1, options: options};
           sourceFiles[key] = context.source(item.ast);
+          //console.log(sourceFiles[key])
         }
       });
     }

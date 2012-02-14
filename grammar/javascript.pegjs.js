@@ -15020,8 +15020,8 @@ module.exports = (function(){
         var result2 = result1 !== null
           ? (function(p, statement, condition) {
                 return {
-                  type: "while",
-                  nodes: [condition, statement],
+                  type: "do-while",
+                  nodes: [statement, condition],
                   pos: p
                 };
               })(result1[0], result1[3], result1[9])

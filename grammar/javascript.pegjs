@@ -1342,8 +1342,8 @@ DoWhileStatement
     statement:Statement __
     WhileToken __ "(" __ condition:Expression __ ")" EOS {
       return {
-        type: "while",
-        nodes: [condition, statement],
+        type: "do-while",
+        nodes: [statement, condition],
         pos: p
       };
     }
