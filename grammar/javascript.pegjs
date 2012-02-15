@@ -589,7 +589,7 @@ Elision
   = "," (__ ",")*
 
 ObjectLiteral
-  = p:Pos "{" properties:(PropertyNameAndValueList __ ("," __)?)? "}" {
+  = p:Pos "{" properties:(PropertyNameAndValueList __ ("," __)?)? __ "}" {
       return {
         type: "object",
         nodes: properties !== "" ? properties[0] : [],

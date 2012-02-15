@@ -24,6 +24,7 @@ function testSource(sourceFile) {
     sourceFile = Path.join(__dirname, 'fixture', 'source', sourceFile + '.js');
     // get a ast from the file
     nast.astFromFile({}, sourceFile, function (err, ast) {
+      t.equal(err, null);
       // now let doctor turn the file into an ast and then into source code
       doctor.examine({
         files: [sourceFile],
@@ -32,6 +33,7 @@ function testSource(sourceFile) {
         render: 'source',
         followRequired: false
       }, function (err, report) {
+        t.equal(err, null);
         //console.log(err);
         var keys = Object.keys(report);
         t.equal(keys.length, 1);
@@ -130,5 +132,7 @@ testSources([
   'mkdirp/index',
 
   'jade/jade',
-  'jade/parser'
+  'jade/parser',
+
+  'react/vcon'
 ]);

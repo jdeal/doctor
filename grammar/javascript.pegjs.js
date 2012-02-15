@@ -7655,60 +7655,66 @@ module.exports = (function(){
           }
           if (result4 !== null) {
             var savedPos2 = pos;
-            var result8 = parse_PropertyNameAndValueList();
-            if (result8 !== null) {
-              var result9 = parse___();
-              if (result9 !== null) {
+            var result9 = parse_PropertyNameAndValueList();
+            if (result9 !== null) {
+              var result10 = parse___();
+              if (result10 !== null) {
                 var savedPos3 = pos;
                 if (input.substr(pos, 1) === ",") {
-                  var result12 = ",";
+                  var result13 = ",";
                   pos += 1;
                 } else {
-                  var result12 = null;
+                  var result13 = null;
                   if (reportMatchFailures) {
                     matchFailed("\",\"");
                   }
                 }
-                if (result12 !== null) {
-                  var result13 = parse___();
-                  if (result13 !== null) {
-                    var result11 = [result12, result13];
+                if (result13 !== null) {
+                  var result14 = parse___();
+                  if (result14 !== null) {
+                    var result12 = [result13, result14];
                   } else {
-                    var result11 = null;
+                    var result12 = null;
                     pos = savedPos3;
                   }
                 } else {
-                  var result11 = null;
+                  var result12 = null;
                   pos = savedPos3;
                 }
-                var result10 = result11 !== null ? result11 : '';
-                if (result10 !== null) {
-                  var result7 = [result8, result9, result10];
+                var result11 = result12 !== null ? result12 : '';
+                if (result11 !== null) {
+                  var result8 = [result9, result10, result11];
                 } else {
-                  var result7 = null;
+                  var result8 = null;
                   pos = savedPos2;
                 }
               } else {
-                var result7 = null;
+                var result8 = null;
                 pos = savedPos2;
               }
             } else {
-              var result7 = null;
+              var result8 = null;
               pos = savedPos2;
             }
-            var result5 = result7 !== null ? result7 : '';
+            var result5 = result8 !== null ? result8 : '';
             if (result5 !== null) {
-              if (input.substr(pos, 1) === "}") {
-                var result6 = "}";
-                pos += 1;
-              } else {
-                var result6 = null;
-                if (reportMatchFailures) {
-                  matchFailed("\"}\"");
-                }
-              }
+              var result6 = parse___();
               if (result6 !== null) {
-                var result1 = [result3, result4, result5, result6];
+                if (input.substr(pos, 1) === "}") {
+                  var result7 = "}";
+                  pos += 1;
+                } else {
+                  var result7 = null;
+                  if (reportMatchFailures) {
+                    matchFailed("\"}\"");
+                  }
+                }
+                if (result7 !== null) {
+                  var result1 = [result3, result4, result5, result6, result7];
+                } else {
+                  var result1 = null;
+                  pos = savedPos1;
+                }
               } else {
                 var result1 = null;
                 pos = savedPos1;
