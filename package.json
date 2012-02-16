@@ -15,7 +15,7 @@
   "dependencies": {
     "optimist": ">= 0.2.8",
     "async": ">= 0.1.9",
-    "ncp": ">= 0.2.1",
+    "ncp": "= 0.2.2",
     "pegjs": ">= 0.6.2",
     "handlebars": ">= 1.0.0",
     "github-flavored-markdown": ">= 1.0.0",
