@@ -2,7 +2,7 @@
   "author": "Justin Deal",
   "name": "doctor",
   "description": "Create documentation from a JavaScript AST.",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "homepage": "https://github.com/jdeal/doctor",
   "repository": {
     "type": "git",
@@ -24,13 +24,13 @@
     "showdown": ">= 0.0.1"
   },
   "devDependencies": {
-    "tap": ">=0.1.0",
-    "tapr": ">=0.1.0"
+    "mocha": ">=0.12.1",
+    "chai": ">=0.3.3"
   },
   "bin": {
     "doctor": "bin/doctor"
   },
   "scripts": {
-    "test": "./node_modules/tapr/bin/tapr.js test/*.js"
+    "test": "./node_modules/mocha/bin/mocha test/*.js -u qunit -R spec -t 20000"
   }
 }

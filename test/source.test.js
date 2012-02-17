@@ -1,8 +1,10 @@
-var test = require("tap").test;
+/*global suite:false, test:false*/
 var Path = require('path');
 var fs = require('fs');
 var doctor = require('../lib/doctor');
 var nast = require('../lib/nice-ast');
+
+var assert = require('chai').assert;
 
 function removeEmptyStatements(ast) {
   if (!ast.nodes) {
@@ -18,13 +20,14 @@ function removeEmptyStatements(ast) {
   }
 }
 
+
+
 function testSource(sourceFile) {
   var sourceName = sourceFile;
-  test('check against source: ' + sourceFile, function (t) {
+  test('check against source: ' + sourceFile, function (done) {
     sourceFile = Path.join(__dirname, 'fixture', 'source', sourceFile + '.js');
     // get a ast from the file
     nast.astFromFile({}, sourceFile, function (err, ast) {
-      t.equal(err, null);
       // now let doctor turn the file into an ast and then into source code
       doctor.examine({
         files: [sourceFile],
@@ -33,12 +36,11 @@ function testSource(sourceFile) {
         render: 'source',
         followRequired: false
       }, function (err, report) {
-        t.equal(err, null);
         //console.log(err);
         var keys = Object.keys(report);
-        t.equal(keys.length, 1);
+        assert.equal(keys.length, 1);
         if (keys.length !== 1) {
-          t.end();
+          done();
         } else {
           // finally convert that source code to an ast
           nast.astFromSource({}, report[keys[0]], function (err, sourcedAst) {
@@ -59,8 +61,8 @@ function testSource(sourceFile) {
                 ", source line: " + diff.b.line);
               console.log(report[keys[0]]);
             }
-            t.equal(equal, true);
-            t.end();
+            assert.equal(equal, true);
+            done();
           });
         }
       });
@@ -73,6 +75,8 @@ function testSources(sources) {
     testSource(source);
   });
 }
+
+suite('test source files');
 
 testSources([
   'define-function',
@@ -132,7 +136,5 @@ testSources([
   'mkdirp/index',
 
   'jade/jade',
-  'jade/parser',
-
-  'react/vcon'
+  'jade/parser'
 ]);

@@ -1,7 +1,10 @@
-var test = require("tap").test;
+/*global suite:false, test:false*/
+
 var path = require('path');
 
 var nast = require('../lib/nice-ast');
+
+var assert = require('chai').assert;
 
 var fakeAst = {
   type: 'root',
@@ -31,7 +34,7 @@ var fakeAst = {
   ]
 };
 
-test('ast walker', function (t) {
+test('ast walker', function () {
   var walkList = [];
   nast.walk(fakeAst,
     function (node) {
@@ -43,24 +46,22 @@ test('ast walker', function (t) {
       }
     }
   );
-  t.deepEqual(walkList,
+  assert.deepEqual(walkList,
     ['root', 'first', 'first-first', 'first-second', 'end-first', 'second',
     'second-first', 'second-second', 'end-second', 'end-root']);
-  t.end();
 });
 
-test('ast end walker', function (t) {
+test('ast end walker', function () {
   var walkList = [];
   nast.walkEnd(fakeAst, function (node) {
     walkList.push(node.type === 'end' ? 'end-' + node.node.type : node.type);
   });
-  t.deepEqual(walkList,
+  assert.deepEqual(walkList,
     ['root', 'first', 'first-first', 'first-second', 'end-first', 'second',
     'second-first', 'second-second', 'end-second', 'end-root']);
-  t.end();
 });
 
-test('extend the ast', function (t) {
+test('extend the ast', function () {
   var extendedAst = nast.extendAst(fakeAst);
 
   // basic extensions
@@ -71,76 +72,73 @@ test('extend the ast', function (t) {
   var firstSecond = first.nodes[1];
   var secondFirst = second.nodes[0];
   var secondSecond = second.nodes[1];
-  t.equal(first.next, second);
-  t.equal(second.prev, first);
-  t.equal(first.parent, extendedAst);
-  t.equal(second.parent, extendedAst);
-  t.equal(firstFirst.next, firstSecond);
-  t.equal(firstSecond.prev, firstFirst);
-  t.equal(firstFirst.parent, first);
-  t.equal(firstSecond.parent, first);
-  t.equal(secondFirst.parent, second);
-  t.equal(secondSecond.parent, second);
+  assert.equal(first.next, second);
+  assert.equal(second.prev, first);
+  assert.equal(first.parent, extendedAst);
+  assert.equal(second.parent, extendedAst);
+  assert.equal(firstFirst.next, firstSecond);
+  assert.equal(firstSecond.prev, firstFirst);
+  assert.equal(firstFirst.parent, first);
+  assert.equal(firstSecond.parent, first);
+  assert.equal(secondFirst.parent, second);
+  assert.equal(secondSecond.parent, second);
 
   // transform extensions
 
   firstSecond.after({type: 'first-third'});
   var firstThird = first.nodes[2];
-  t.equal(firstSecond.next, firstThird);
-  t.equal(firstThird.type, 'first-third');
+  assert.equal(firstSecond.next, firstThird);
+  assert.equal(firstThird.type, 'first-third');
   firstFirst.after({type: 'first-first-a'});
   var firstFirstA = first.nodes[1];
-  t.equal(firstFirstA.type, 'first-first-a');
-  t.equal(firstFirstA.next, firstSecond);
-  t.equal(firstSecond.prev, firstFirstA);
+  assert.equal(firstFirstA.type, 'first-first-a');
+  assert.equal(firstFirstA.next, firstSecond);
+  assert.equal(firstSecond.prev, firstFirstA);
 
   second.append({type: 'second-third'});
   var secondThird = second.nodes[2];
-  t.equal(secondThird.type, 'second-third');
+  assert.equal(secondThird.type, 'second-third');
 
-  t.equal(secondThird.prev, secondSecond);
-  t.equal(secondSecond.next, secondThird);
-  t.equal(secondThird.parent, second);
+  assert.equal(secondThird.prev, secondSecond);
+  assert.equal(secondSecond.next, secondThird);
+  assert.equal(secondThird.parent, second);
 
-  t.equal(secondFirst.index(), 0);
-  t.equal(secondSecond.index(), 1);
-  t.equal(secondThird.index(), 2);
+  assert.equal(secondFirst.index(), 0);
+  assert.equal(secondSecond.index(), 1);
+  assert.equal(secondThird.index(), 2);
 
   secondThird.remove();
-  t.equal(second.nodes.length, 2);
-  t.equal(secondSecond.next, null);
+  assert.equal(second.nodes.length, 2);
+  assert.equal(secondSecond.next, null);
   second.append({type: 'second-third'});
   secondThird = second.nodes[2];
   secondSecond.remove();
-  t.equal(secondFirst.next, secondThird);
-  t.equal(secondThird.prev, secondFirst);
+  assert.equal(secondFirst.next, secondThird);
+  assert.equal(secondThird.prev, secondFirst);
   secondFirst.remove();
-  t.equal(secondThird.prev, null);
-
-  t.end();
+  assert.equal(secondThird.prev, null);
 });
 
-test('clean an extended ast', function (t) {
+test('clean an extended ast', function () {
   var extendedAst = nast.extendAst(fakeAst);
   var cleanAst = nast.cleanAst(extendedAst);
-  t.deepEqual(fakeAst, cleanAst);
-  t.end();
+  assert.deepEqual(fakeAst, cleanAst);
 });
 
 function testFixtureAst(sourceFile) {
-  test('check against ast: ' + sourceFile, function (t) {
-    t.plan(2);
+  test('check against ast: ' + sourceFile, function (done) {
     var fixtureAstFile = path.join(__dirname, 'fixture', 'ast', sourceFile + '.ast.js');
     sourceFile = path.join(__dirname, 'fixture', 'ast', sourceFile + '.js');
     var fixtureAst = require(fixtureAstFile);
     nast.astFromFile({}, sourceFile, function (err, ast) {
-      t.equal(ast.type, fixtureAst.type);
+      assert.equal(ast.type, fixtureAst.type);
       // if (sourceFile.indexOf('object.js') >= 0) {
       //   console.log(JSON.stringify(ast.nodes, null, 2));
       //   console.log(JSON.stringify(fixtureAst.nodes, null, 2));
       // }
 
-      t.deepEqual(ast.nodes, fixtureAst.nodes);
+      assert.deepEqual(ast.nodes, fixtureAst.nodes);
+      done();
     });
   });
 }

@@ -1,8 +1,9 @@
-//'use strict';
+/*global suite:false, test:false*/
 
-var test = require('tap').test;
 var postProcessReport = require('../lib/post-process').postProcessReport;
 var _ = require('underscore');
+
+var assert = require('chai').assert;
 
 var inputReport = {
   "items": {
@@ -115,20 +116,18 @@ var inputReport = {
   }
 };
 
-test('postProcessReport', function (t) {
+test('postProcessReport', function () {
   var report = postProcessReport(inputReport);
-  t.ok(report);
+  assert.ok(report);
 
   var items = report.items;
-  t.ok(items);
+  assert.ok(items);
 
   // renames package items with package name
-  t.equal(items['index.js'].name, 'apto-collection');
+  assert.equal(items['index.js'].name, 'apto-collection');
 
   // hoists required items
-  t.equal(items['index.js'].items[0], 'lib/set.js.Set');
-
-  t.end();
+  assert.equal(items['index.js'].items[0], 'lib/set.js.Set');
 });
 
 

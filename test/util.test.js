@@ -1,123 +1,120 @@
-var test = require('tap').test;
+/*global suite:false, test:false*/
 var util = require('../lib/util');
 var fs = require('fs');
 var path = require('path');
 
-test('toArray', function (t) {
-  t.deepEqual(util.toArray([1, 2]), [1, 2]);
-  t.deepEqual(util.toArray(1), [1]);
-  t.deepEqual(util.toArray(), []);
-  t.deepEqual(util.toArray(null), [null]);
-  t.deepEqual(util.toArray(undefined), []);
+var assert = require('chai').assert;
 
-  t.end();
+test('toArray', function () {
+  assert.deepEqual(util.toArray([1, 2]), [1, 2]);
+  assert.deepEqual(util.toArray(1), [1]);
+  assert.deepEqual(util.toArray(), []);
+  assert.deepEqual(util.toArray(null), [null]);
+  assert.deepEqual(util.toArray(undefined), []);
 });
 
-test('clone', function (t) {
+test('clone', function () {
   var obj = { a: "a", b: "b" };
   var result = util.clone(obj);
   
-  t.deepEqual(obj, result);
+  assert.deepEqual(obj, result);
   obj.a = "not a";
-  t.equal(obj.a, "not a");
-  t.equal(result.a, "a");
-
-  t.end();
+  assert.equal(obj.a, "not a");
+  assert.equal(result.a, "a");
 });
 
-test('findFile exists', function (t) {
+test('findFile exists', function (done) {
   util.findFile(['doesNotExist', __filename], function (file) {
-    t.equal(file, __filename);
-    t.end();
+    assert.equal(file, __filename);
+    done();
   }, function () {
-    t.fail('file should exist but does not');
-    t.end();
+    assert.fail('file should exist but does not');
+    done();
   });
 });
 
-test('findFile does not exist', function (t) {
+test('findFile does not exist', function (done) {
   util.findFile(['doesNotExist'], function (file) {
-    t.fail('file should not exist but does - ' + file);
-    t.end();
+    assert.fail('file should not exist but does - ' + file);
+    done();
   }, function () {
-    t.end();
+    done();
   });
 });
 
 
-test('findDir exists', function (t) {
+test('findDir exists', function (done) {
   util.findDir(['doesNotExist', __filename, __dirname], function (file) {
-    t.equal(file, __dirname);
-    t.end();
+    assert.equal(file, __dirname);
+    done();
   }, function () {
-    t.fail('file should exist but does not');
-    t.end();
+    assert.fail('file should exist but does not');
+    done();
   });
 });
 
-test('findDir does not exist', function (t) {
+test('findDir does not exist', function (done) {
   util.findDir([__filename, 'doesNotExist'], function (file) {
-    t.fail('file should not exist but does - ' + file);
-    t.end();
+    assert.fail('file should not exist but does - ' + file);
+    done();
   }, function () {
-    t.end();
+    done();
   });
 });
 
-test('compareFileDates old file, new file', function (t) {
+test('compareFileDates old file, new file', function (done) {
   var newFile = 'new1.txt';
   fs.writeFileSync(newFile, 'data');
 
   util.compareFileDates(__filename, newFile, function (cmp) {
-    t.equal(cmp, 1);
+    assert.equal(cmp, 1);
     fs.unlinkSync(newFile);
-    t.end();
+    done();
   });
 });
 
-test('compareFileDates new file, old file', function (t) {
+test('compareFileDates new file, old file', function (done) {
   var newFile = 'new2.txt';
   fs.writeFileSync(newFile, 'data');
 
   util.compareFileDates(newFile, __filename, function (cmp) {
-    t.equal(cmp, -1);
+    assert.equal(cmp, -1);
     fs.unlinkSync(newFile);
-    t.end();
+    done();
   });
 });
 
-test('compareFileDates same file', function (t) {
+test('compareFileDates same file', function (done) {
   util.compareFileDates(__filename, __filename, function (cmp) {
-    t.equal(cmp, 0);
-    t.end();
+    assert.equal(cmp, 0);
+    done();
   });
 });
 
-test('compareFileDates file a does not exist', function (t) {
+test('compareFileDates file a does not exist', function (done) {
   util.compareFileDates('doesNotExist', __filename, function (cmp) {
-    t.equal(cmp, 1);
-    t.end();
+    assert.equal(cmp, 1);
+    done();
   });
 });
 
-test('compareFileDates file b does not exist', function (t) {
+test('compareFileDates file b does not exist', function (done) {
   util.compareFileDates(__filename, 'doesNotExist', function (cmp) {
-    t.equal(cmp, -1);
-    t.end();
+    assert.equal(cmp, -1);
+    done();
   });
 });
 
-test('compareFileDates neither file exists', function (t) {
+test('compareFileDates neither file exists', function (done) {
   util.compareFileDates('doesNotExist', 'doesNotExistEither', function (cmp) {
-    t.equal(cmp, 0);
-    t.end();
+    assert.equal(cmp, 0);
+    done();
   });
 });
 
-test('findFunctions', function (t) {
+test('findFunctions', function () {
   var dir = 'render';
   var functions = util.findFunctions(['default'], dir);
-  t.equal(functions.length, 1);
-  t.equal(functions[0].name, 'render');
-  t.end();
+  assert.equal(functions.length, 1);
+  assert.equal(functions[0].name, 'render');
 });
