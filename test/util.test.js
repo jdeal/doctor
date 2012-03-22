@@ -3,7 +3,7 @@ var util = require('../lib/util');
 var fs = require('fs');
 var path = require('path');
 
-var assert = require('chai').assert;
+var assert = require('assert');
 
 test('toArray', function () {
   assert.deepEqual(util.toArray([1, 2]), [1, 2]);
@@ -117,4 +117,14 @@ test('findFunctions', function () {
   var functions = util.findFunctions(['default'], dir);
   assert.equal(functions.length, 1);
   assert.equal(functions[0].name, 'render');
+});
+
+test('cleanUndefinedProperties', function () {
+  var obj = {
+    x: 1
+  };
+  obj.y = undefined;
+  assert.notDeepEqual(obj, {x: 1});
+  var cleanObj = util.cleanUndefinedProperties(obj);
+  assert.deepEqual(cleanObj, {x: 1});
 });

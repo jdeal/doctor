@@ -1621,6 +1621,17 @@ FunctionBody
   = p:Pos elements:SourceElements? { return nodeList(elements, p); }
 
 Program
+  = EmptyProgram / NonEmptyProgram
+
+EmptyProgram
+  = p:Pos  __empty comments:(Comment (__space Comment)*)? !SourceElement {
+      if (comments != '') {
+        comments.push('');
+      }
+      return addComments(nodeList('', p, 'program'), comments);
+    }
+
+NonEmptyProgram
   = p:Pos  __empty comments:(Comment (__space Comment)* __gap)? elements:SourceElements? {
       return addComments(nodeList(elements, p, 'program'), comments);
     }

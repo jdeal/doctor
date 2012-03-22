@@ -1,0 +1,29 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    items:
+    - b
+    - a
+  b:
+    type: module
+    key: b
+    name: b
+    groups:
+    - modules
+    fullPath: files/b.js
+    requires: []
+  a:
+    type: module
+    key: a
+    name: a
+    groups:
+    - modules
+    fullPath: files/a.js
+    requires:
+    - files/b.js

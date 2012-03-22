@@ -125,6 +125,26 @@ test('clean an extended ast', function () {
   assert.deepEqual(fakeAst, cleanAst);
 });
 
+function assertDeepEqual(a, b, keyPath) {
+  keyPath = keyPath || (Array.isArray(a) ? '[array]' : '{object}');
+  assert.equal(typeof a, typeof b, 'typeof comparison at ' + keyPath + ' is equal');
+  if (typeof a === 'object') {
+    var isArray = Array.isArray(a);
+    Object.keys(a).forEach(function (key) {
+      var newKeyPath;
+      if (isArray) {
+        newKeyPath = keyPath + '[' + key + ']';
+      } else {
+        newKeyPath = keyPath + "." + key;
+      }
+      assert.notEqual(b[key], undefined, 'key comparison at ' + newKeyPath + ' exists');
+      assertDeepEqual(a[key], b[key], newKeyPath);
+    });
+  } else {
+    assert.equal(a, b, 'value comparison at ' + keyPath + ' is equal');
+  }
+}
+
 function testFixtureAst(sourceFile) {
   test('check against ast: ' + sourceFile, function (done) {
     var fixtureAstFile = path.join(__dirname, 'fixture', 'ast', sourceFile + '.ast.js');
@@ -136,8 +156,8 @@ function testFixtureAst(sourceFile) {
       //   console.log(JSON.stringify(ast.nodes, null, 2));
       //   console.log(JSON.stringify(fixtureAst.nodes, null, 2));
       // }
-
-      assert.deepEqual(ast.nodes, fixtureAst.nodes);
+      assertDeepEqual(ast.nodes, fixtureAst.nodes);
+      //assert.deepEqual(ast.nodes, fixtureAst.nodes);
       done();
     });
   });
@@ -147,3 +167,5 @@ testFixtureAst('define');
 testFixtureAst('var-function');
 testFixtureAst('subscript');
 testFixtureAst('object');
+testFixtureAst('gaps');
+testFixtureAst('commented-function');

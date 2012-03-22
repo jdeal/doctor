@@ -4,7 +4,7 @@ var fs = require('fs');
 var doctor = require('../lib/doctor');
 var nast = require('../lib/nice-ast');
 
-var assert = require('chai').assert;
+var assert = require('assert');
 
 function removeEmptyStatements(ast) {
   if (!ast.nodes) {
@@ -34,7 +34,7 @@ function testSource(sourceFile) {
         transform: false,
         report: 'ast',
         render: 'source',
-        followRequired: false
+        follow: false
       }, function (err, report) {
         //console.log(err);
         var keys = Object.keys(report);

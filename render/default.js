@@ -26,8 +26,8 @@ function markdownToHtml(nodes) {
 module.exports = function render(options, files, cb) {
   try {
     markdownToHtml(files);
-    cb(null, files);
   } catch (e) {
     cb(e);
   }
+  cb(null, files);
 };

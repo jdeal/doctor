@@ -1,0 +1,46 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+    - classes
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    items:
+    - constructor
+  classes:
+    type: group
+    key: classes
+    name: Classes
+    items:
+    - constructor.class.Foo
+  constructor:
+    type: module
+    key: constructor
+    name: constructor
+    groups:
+    - modules
+    items:
+    - constructor.exports-Foo
+  constructor.class.Foo:
+    type: class
+    module: constructor
+    key: constructor.class.Foo
+    name: Foo
+    groups:
+    - classes
+    items:
+    - constructor.exports-Foo
+  constructor.exports-Foo:
+    type: module-function
+    constructorFunction: true
+    key: constructor.exports-Foo
+    params: []
+    groups:
+    - constructor
+    - constructor.class.Foo
+    name: Foo
+    signatures: []
+    api: true

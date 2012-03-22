@@ -1,0 +1,1 @@
+exports.barx = require('./testm');

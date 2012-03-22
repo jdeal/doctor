@@ -67,6 +67,7 @@ module.exports = (function(){
         "ElementList": parse_ElementList,
         "Elision": parse_Elision,
         "ElseToken": parse_ElseToken,
+        "EmptyProgram": parse_EmptyProgram,
         "EmptyStatement": parse_EmptyStatement,
         "EqualityExpression": parse_EqualityExpression,
         "EqualityExpressionNoIn": parse_EqualityExpressionNoIn,
@@ -135,6 +136,7 @@ module.exports = (function(){
         "NewToken": parse_NewToken,
         "Nl": parse_Nl,
         "NodeComment": parse_NodeComment,
+        "NonEmptyProgram": parse_NonEmptyProgram,
         "NonEscapeCharacter": parse_NonEscapeCharacter,
         "NonZeroDigit": parse_NonZeroDigit,
         "NullLiteral": parse_NullLiteral,
@@ -17638,6 +17640,151 @@ module.exports = (function(){
       
       function parse_Program() {
         var cacheKey = 'Program@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var result2 = parse_EmptyProgram();
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result1 = parse_NonEmptyProgram();
+          if (result1 !== null) {
+            var result0 = result1;
+          } else {
+            var result0 = null;;
+          };
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_EmptyProgram() {
+        var cacheKey = 'EmptyProgram@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        var result3 = parse_Pos();
+        if (result3 !== null) {
+          var result4 = parse___empty();
+          if (result4 !== null) {
+            var savedPos3 = pos;
+            var result9 = parse_Comment();
+            if (result9 !== null) {
+              var result10 = [];
+              var savedPos4 = pos;
+              var result12 = parse___space();
+              if (result12 !== null) {
+                var result13 = parse_Comment();
+                if (result13 !== null) {
+                  var result11 = [result12, result13];
+                } else {
+                  var result11 = null;
+                  pos = savedPos4;
+                }
+              } else {
+                var result11 = null;
+                pos = savedPos4;
+              }
+              while (result11 !== null) {
+                result10.push(result11);
+                var savedPos4 = pos;
+                var result12 = parse___space();
+                if (result12 !== null) {
+                  var result13 = parse_Comment();
+                  if (result13 !== null) {
+                    var result11 = [result12, result13];
+                  } else {
+                    var result11 = null;
+                    pos = savedPos4;
+                  }
+                } else {
+                  var result11 = null;
+                  pos = savedPos4;
+                }
+              }
+              if (result10 !== null) {
+                var result8 = [result9, result10];
+              } else {
+                var result8 = null;
+                pos = savedPos3;
+              }
+            } else {
+              var result8 = null;
+              pos = savedPos3;
+            }
+            var result5 = result8 !== null ? result8 : '';
+            if (result5 !== null) {
+              var savedPos2 = pos;
+              var savedReportMatchFailuresVar0 = reportMatchFailures;
+              reportMatchFailures = false;
+              var result7 = parse_SourceElement();
+              reportMatchFailures = savedReportMatchFailuresVar0;
+              if (result7 === null) {
+                var result6 = '';
+              } else {
+                var result6 = null;
+                pos = savedPos2;
+              }
+              if (result6 !== null) {
+                var result1 = [result3, result4, result5, result6];
+              } else {
+                var result1 = null;
+                pos = savedPos1;
+              }
+            } else {
+              var result1 = null;
+              pos = savedPos1;
+            }
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(p, comments) {
+                if (comments != '') {
+                  comments.push('');
+                }
+                return addComments(nodeList('', p, 'program'), comments);
+              })(result1[0], result1[2])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_NonEmptyProgram() {
+        var cacheKey = 'NonEmptyProgram@' + pos;
         var cachedResult = cache[cacheKey];
         if (cachedResult) {
           pos = cachedResult.nextPos;

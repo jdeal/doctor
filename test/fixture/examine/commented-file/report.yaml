@@ -1,0 +1,23 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+    - classes
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    items:
+    - source
+  classes:
+    type: group
+    key: classes
+    name: Classes
+  source:
+    type: module
+    key: source
+    name: source
+    groups:
+    - modules
+    description: <p>top comment</p>

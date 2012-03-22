@@ -1,43 +1,11 @@
-var path = require('path');
+var Path = require('path');
 var _ = require('underscore');
-
-var rules = [];
 
 function isCapitalized(string) {
   return (string && string.match(/^[A-Z]/)) ? true : false;
 }
 
-rules.push({
-  type: 'file',
-  report: function (node, report) {
-    node.item('module', node.path);
-    node.item('object._', {});
-    if (!report.item('modules')) {
-      report.add({
-        type: 'group',
-        key: 'modules',
-        name: 'Modules'
-      });
-    }
-    if (!report.item('classes')) {
-      report.add({
-        type: 'group',
-        key: 'classes',
-        name: 'Classes'
-      });
-    }
-    return {
-      type: 'module',
-      key: node.path,
-      name: node.path,
-      description: node.description,
-      examples: node.examples,
-      groups: ['modules'],
-      package: node.package
-    };
-  }
-});
-
+// make a set of params to match the signature
 function fixSignatureParams(item, signature) {
   signature.params = [];
   for (var i = 0; i < signature.arity; i++) {
@@ -45,6 +13,15 @@ function fixSignatureParams(item, signature) {
   }
 }
 
+/*
+create function signatures for this function
+@param fn {Function} node for the function
+@param node {AstNode} first node of the body
+@param fnItem {Object} report item for the function
+@param signatures {Array} list to hold signatures
+@param [direction] {Number} whether successive signatures are increasing or decreasing arity
+@param [lastParamIndex] {Number} for decreasing arity, the index of the previous arity parameter
+*/
 function functionSignatures(fn, node, fnItem, signatures, direction, lastParamIndex) {
   var isFirst = true;
   if (signatures.length > 0) {
@@ -95,7 +72,14 @@ function functionSignatures(fn, node, fnItem, signatures, direction, lastParamIn
   }
 }
 
-function functionReportItem(node, fnNode, name, item) {
+/*
+create a function report item and any required class items
+@param node {AstNode} node holding description, examples, etc.
+@param [fnNode] {AstNode} node of the function
+@param name {String} name for the function
+@param [item] {Object} override report item for the function
+*/
+function functionReportItems(node, fnNode, name, item) {
   if (!fnNode.type) {
     item = name;
     name = fnNode;
@@ -139,258 +123,384 @@ function functionReportItem(node, fnNode, name, item) {
   return items;
 }
 
-rules.push({
-  type: 'define-function',
-  report: function (node) {
-    return functionReportItem(node, node.nodes[0].value);
-  }
-});
-
-/*
-  var f = function f() {}
-  var f = function () {}
-*/
-rules.push({
-  type: 'var',
-  match: function (node) {
-    //console.log(node.lispify())
-    return node.likeSource('var __name__ = function __name__() {}') ||
-           node.likeSource('var __name__ = function () {}');
-  },
-  report: function (node, report) {
-    return functionReportItem(node.nodes[1], node.nodes[0].value);
-  }
-});
-
-function exportFunction(node, report, name, exportName) {
-  exportName = exportName || name;
-  if (report.item(node.item('module') + '.' + name)) {
-    var functionItem = report.item(node.item('module') + '.' + name);
-    functionItem.api = true;
-    functionItem.name = exportName;
-    functionItem.constructorFunction = isCapitalized(name);
-    return functionItem;
-  }
-  return null;
-}
-
-/*
-  exports.x = x;
-  module.exports.x = x;
-*/
-rules.push({
-  type: 'assign',
-  match: function (node) {
-    return node.likeSource('exports.__name__ = __name__') ||
-           node.likeSource('module.exports.__name__ = __name__');
-  },
-  report: function (node, report) {
-    var name = node.nodes[2].value;
-    var dotLeft = node.nodes[1].nodes[0];
-    var dotRight = node.nodes[1].nodes[1];
-    if (dotLeft.type === 'dot') {
-      var dotDotLeft = dotLeft.nodes[0];
-      var dotDotRight = dotLeft.nodes[1];
-      if (dotDotLeft.type === 'name' && dotDotRight.type === 'name' && dotDotLeft.value === 'module') {
-        dotLeft = dotDotRight;
-      }
-    }
-    if (dotLeft.type === 'name' && dotRight.type === 'name' && dotLeft.value === 'exports') {
-      var exportName = dotRight.value;
-      var f = exportFunction(node, report, name, exportName);
-      if (!f) {
-        // whatever else it is, it's exported so show it's name and comment tags at least:
-        return {
-          type: 'var',
-          key: node.item('module') + '.' + exportName,
-          groups: [node.item('module')],
-          name: exportName,
-          api: true,
-          description: node.description,
-          examples: node.examples,
-        }
-      }
-    }
-  }
-});
-
-/*
-  exports.x = y.z;
-  module.exports.x = y.z;
-*/
-rules.push({
-  type: 'assign',
-  match: function (node) {
-    return node.likeSource('module.exports.__name__ = __name__.__name__') ||
-           node.likeSource('exports.__name__ = __name__.__name__');
-  },
-  report: function (node, report) {
-    var exportName = node.nodes[1].nodes[1].value;
-    var localName = node.nodes[2].nodes[0].value + '.' + node.nodes[2].nodes[1].value;
-    var key = node.item('module') + '.' + localName;
-    var item = report.item(key);
-    if (item) {
-      item.api = true;
-      item.name = exportName;
-      item.constructorFunction = isCapitalized(exportName);
-    } else {
-      // misc export
-      return {
-        type: 'var',
-        key: node.item('module') + '.' + exportName,
-        groups: [node.item('module')],
-        name: exportName,
-        api: true,
-        description: node.description,
-        examples: node.examples,
-      }
-    }
-  }
-});
-
-/*
-  _(module).export(...)
-*/
-rules.push({
-  type: 'call',
-  match: function (node) {
-    return node.likeSource("_(module).export()");
-  },
-  report: function (node, report) {
-    var exportArgNodes = node.nodes[1].nodes;
-    exportArgNodes.forEach(function (argNode, i) {
-      if (argNode.type === 'name') {
-        exportFunction(node, report, argNode.value);
-      } else if (argNode.type === 'object') {
-        argNode.nodes.forEach(function (propertyNode, i) {
-          exportFunction(node, report, propertyNode.nodes[0].value, propertyNode.nodes[1].value);
-        });
-      }
-    });
-  }
-});
-
-/*
-  module.exports = ...
-*/
-rules.push({
-  type: 'assign',
-  match: function (node) {
-    return node.nodes[0].value === '=' && node.nodes[1].likeSource('module.exports');
-  },
-  report: function (node, report) {
-    var typeNode = node.nodes[2];
-    var type = typeNode.type;
-
-    if (type === 'name') {
-      var name = node.nodes[2].value;
-      var obj = node.item('object.' + name);
-      if (obj) {
-        _(obj).each(function (prop, key) {
-          if (prop.ref) {
-            var name = prop.ref.name;
-            var exportName = prop.ref.exportName || name;
-            exportFunction(node, report, name, exportName);
-          }
-        });
-      } else {
-        var exportName = name ? name : 'function';
-        var f = exportFunction(node, report, name, exportName);
-        if (f) {
-          f.type = 'module-function';
-        }
-      }
-    } else if (type === 'new') {
-      var constructorName = node.nodes[2].nodes[0].value;
-      var o = exportFunction(node, report, constructorName, 'object');
-      if (o) {
-        o.type = 'module-object';
-      }
-    } else if (type === 'function') {
-      var key = node.item('module') +  '.anonymous';
-      return {
-        type: 'module-function',
-        key: key,
-        params: typeNode.params,
-        returns: node.returns,
-        description: node.description,
-        examples: node.examples,
-        visibility: node.visibility,
-        api: true,
-        groups: [node.item('module')],
-        name: 'anonymous'
-      };
-    }
-  }
-});
-
-
-function getFullPath(node, requiredFile) {
-  var fullPath = path.join(path.dirname(node.parent.fullPath), requiredFile);
+function fullRequirePath(node, requirePath) {
+  var fullPath = Path.join(Path.dirname(node.item('fullPath')), requirePath);
   if (!fullPath.match(/\.js$/)) {
     fullPath += '.js';
   }
   return fullPath;
 }
-/*
-  exports.x = require('...')
-*/
-rules.push({
-  type: 'assign',
-  match: function (node) {
-    return node.likeSource("exports.__name__ = require()");
-  },
-  report: function (node, report) {
-    var name = node.nodes[1].nodes[1].value;
-    var requiredFile = node.nodes[2].nodes[1].nodes[0].value;
-    var fullPath = getFullPath(node, requiredFile);
 
-    return {
-      type: 'module-function',
-      constructorFunction: isCapitalized(name),
-      key: node.item('module') + '.' + name,
-      description: node.description,
-      properties: node.properties,
-      examples: node.examples,
-      visibility: node.visibility,
-      extends: node.extends,
-      groups: [node.item('module')],
-      required: true,
-      items: [ fullPath ],
-      name: name
-    };
+function expressionNames(node) {
+  var leftNames;
+  if (node.type === 'call') {
+    if (node.nodes[0].value === 'require') {
+      var argsNode = node.nodes[1];
+      if (argsNode.nodes.length > 0) {
+        var path = argsNode.nodes[0].value;
+        if (path.charAt(0) === '.') {
+          return [fullRequirePath(node, path)];
+        }
+      }
+    }
+  } else if (node.nodes[1].type === 'name') {
+    if (node.nodes[0].type === 'name') {
+      return [node.nodes[0].value, node.nodes[1].value];
+    } else if (node.nodes[0].type === 'call') {
+      leftNames = expressionNames(node.nodes[0]);
+      if (leftNames) {
+        return leftNames.concat(node.nodes[1].value);
+      }
+    } else if (node.nodes[0].type === 'dot') {
+      leftNames = expressionNames(node.nodes[0]);
+      if (leftNames) {
+        return leftNames.concat(node.nodes[1].value);
+      }
+    }
+  }
+  return null;
+}
+
+function findVarProperty(varNames, varItem) {
+  if (!varItem) {
+    return null;
+  }
+  if (varNames.length === 0) {
+    return varItem;
+  }
+  varNames = varNames.slice(0);
+  var varName = varNames.shift();
+  if (varName in varItem.properties) {
+    return findVarProperty(varNames, varItem.properties[varName]);
+  }
+  return null;
+}
+
+/*
+Finds the value object of a variable.
+@param valueNode {AstNode} Node of expression or name.
+*/
+function findVarItem(valueNode) {
+  var varNames = [];
+  var varName;
+  if (valueNode.type === 'name') {
+    varName = valueNode.value;
+  } else if (valueNode.type === 'dot' || valueNode.type === 'call') {
+    varNames = expressionNames(valueNode);
+    if (!varNames) {
+      return;
+    }
+    varName = varNames.shift();
+  }
+  if (!varName) {
+    return;
+  }
+  var varItem = valueNode.item('var.' + varName);
+  if (typeof varItem === 'undefined') {
+    return;
+  }
+  varItem = findVarProperty(varNames, varItem);
+  return varItem;
+}
+
+/*
+Creates an object to represent a variable value.
+@param node {AstNode} Node holding the variable scope.
+@param valueNode {AstNode} Node holding the value.
+*/
+function varItem(node, valueNode) {
+  var type;
+  var properties = {};
+  if (valueNode.type === 'object') {
+    type = 'object';
+    _(valueNode.nodes).each(function (prop) {
+      var name = prop.nodes[0].value;
+      var item = varItem(prop, prop.nodes[1]);
+      if (item) {
+        properties[name] = item;
+      }
+    });
+  } else if (valueNode.type === 'function' ||
+             valueNode.type === 'define-function') {
+    type = 'function';
+  } else if (valueNode.type === 'new') {
+    type = 'object';
+    var className = valueNode.nodes[0].value;
+    if (node.item('classes')[className]) {
+      var classVar = node.item('var.' + className);
+      var classPrototype = classVar.properties.prototype;
+      if (classPrototype) {
+        _(classPrototype.properties).each(function (method, key) {
+          var item = varItem(method.node, method.value);
+          if (item) {
+            properties[key] = item;
+          }
+        });
+      }
+    }
+  } else {
+    return findVarItem(valueNode);
+  }
+  return {
+    node: node,
+    value: valueNode,
+    type: type,
+    properties: properties
+  };
+}
+
+/*
+Saves a variable for later exporting.
+@param node {AstNode} Node that holds the variable scope.
+@param node {String|AstNode} Name of variable or name node or expression of
+name nodes.
+@param valueNode {AstNode} Node that holds the value of the variable.
+*/
+function saveVar(node, name, valueNode) {
+  var scopeNode = node.item('scopeNode');
+  var names = [];
+  if (typeof name !== 'string') {
+    if (Array.isArray(name)) {
+      names = name;
+    } else {
+      names = expressionNames(name);
+    }
+    if (!names || names.length === 0) {
+      // some names can't be understood yet
+      return;
+    }
+    name = names.shift();
+  }
+  if (names.length === 0) {
+    var item = varItem(node, valueNode);
+    if (item && item.type === 'function') {
+      if (isCapitalized(name)) {
+        item.isConstructor = true;
+      }
+      item.name = name;
+    }
+    scopeNode.item('var.' + name, item);
+  } else {
+    var savedVarItem = scopeNode.item('var.' + name);
+    if (!savedVarItem && names[0] === 'prototype') {
+      // assume this is a global class and create a proxy for it here
+      var moduleScopeNode = node.item('moduleScopeNode');
+      saveVar(moduleScopeNode, name, {type: 'function', nodes: []});
+      savedVarItem = scopeNode.item('var.' + name);
+      saveVar(moduleScopeNode, [name, 'prototype'], {type: 'object', nodes: []});
+      node.item('classes')[name] = {global: true};
+    }
+    if (savedVarItem) {
+      var lastPropertyName = names.pop();
+      savedVarItem = findVarProperty(names, savedVarItem);
+      if (!savedVarItem && names[0] === 'prototype') {
+        node.item('classes')[name] = {};
+        saveVar(node, [name, 'prototype'], {type: 'object', nodes: []});
+        savedVarItem = scopeNode.item('var.' + name);
+        savedVarItem = findVarProperty(names, savedVarItem);
+      }
+      if (savedVarItem) {
+        // check for literal prototypes
+        if (lastPropertyName === 'prototype' && !(name in node.item('classes'))) {
+          node.item('classes')[name] = {};
+        }
+        savedVarItem.properties[lastPropertyName] = varItem(node, valueNode);
+      }
+    }
+  }
+}
+
+function extendVar(node, name, valueNode) {
+  var scopeNode = node.item('scopeNode');
+  var savedVarItem = scopeNode.item('var.' + name);
+  if (savedVarItem) {
+    var valueVarItem = varItem(node, valueNode);
+    if (valueVarItem) {
+      _.extend(savedVarItem.properties, valueVarItem.properties);
+    }
+  }
+}
+
+function exportVarValue(exports, exportName) {
+  var node = exports.node;
+  var valueNode = exports.value;
+  if (valueNode.type === 'function' || valueNode.type === 'define-function') {
+    var item = {api: true};
+    if (exportName === 'anonymous') {
+      item.type = 'module-function';
+      item.constructorFunction = exports.isConstructor;
+      item.name = exports.name;
+      exportName = 'exports-' + exports.name;
+    }
+    return functionReportItems(node, valueNode, exportName, item);
+  } else if (valueNode.type === 'object') {
+    var props = valueNode.nodes;
+    var items = [];
+    props.forEach(function (prop) {
+      var name = exportName + '.' + prop.nodes[0].value;
+      items = items.concat(exportVarValue({node: prop, value: prop.nodes[1]}, name));
+    });
+    return items;
+  }
+}
+
+function exportModule(exports, exportName) {
+  var items = [];
+  if (!exports) {
+    return [];
+  }
+  if (exports.type === 'function') {
+    items = items.concat(exportVarValue(exports, exportName || 'anonymous'));
+  }
+  _(exports.properties).each(function (obj, key) {
+    var nextExportName = exportName;
+    if (nextExportName) {
+      nextExportName += '.' + key;
+    } else {
+      nextExportName = key;
+    }
+    // don't export prototype of function
+    if (key !== 'prototype') {
+      items = items.concat(exportModule(obj, nextExportName));
+    }
+  });
+  // re-key items from other modules
+  _(items).each(function (item) {
+    var key = item.key;
+    if (key.indexOf('.') >= 0) {
+      var subKey = key.substring(key.indexOf('.'));
+      item.key = exports.node.item('module') + subKey;
+    }
+  });
+  return items;
+}
+
+var rules = [];
+
+rules.push({
+  type: 'files',
+  report: function (node, report) {
+    // save this global scope
+    node.item('globalScopeNode', node);
+    node.item('scopeNode', node);
+    return [
+      {
+        type: 'group',
+        key: 'modules',
+        name: 'Modules'
+      },
+      {
+        type: 'group',
+        key: 'classes',
+        name: 'Classes'
+      }
+    ];
   }
 });
 
-/*
- public requires
-*/
 rules.push({
-  type: 'call',
-  match: function (node) {
-    return node.likeSource("require()") && node.visibility === 'public';
-  },
+  type: 'file',
   report: function (node, report) {
-    var requiredFile = node.nodes[1].nodes[0].value;
-    var fullPath = getFullPath(node, requiredFile);
-
+    node.item('module', node.path);
+    node.item('fullPath', node.fullPath);
+    // create a new scope by saving this node as the place to save vars
+    node.item('scopeNode', node);
+    // save this module scope
+    node.item('moduleScopeNode', node);
+    node.item('var.exports', {
+      node: node,
+      value: {type: 'object', nodes: []},
+      type: 'object',
+      properties: {}
+    });
+    node.item('var.module', {
+      node: node,
+      value: {type: 'object', nodes: []},
+      type: 'object',
+      properties: {
+        exports: node.item('var.exports')
+      }
+    });
+    node.item('classes', {});
+    // special case for underscore object
+    node.item('var._', {
+      node: node,
+      value: {type: 'object', nodes: []},
+      type: 'object',
+      properties: {}
+    });
     return {
       type: 'module',
-      key: node.item('module') + '.' + requiredFile,
+      key: node.path,
+      name: node.path,
       description: node.description,
-      properties: node.properties,
       examples: node.examples,
-      visibility: node.visibility,
-      groups: [node.item('module')],
-      required: true,
-      items: [ fullPath ],
-      name: 'anonymous require'
+      groups: ['modules'],
+      package: node.package,
+      required: node.required
     };
   }
 });
 
 /*
-  var obj = {...}
+function f() {}
+*/
+rules.push({
+  type: 'define-function',
+  report: function (node, report) {
+    var name = node.nodes[0].value;
+    saveVar(node, name, node);
+    // create a new scope by saving this node as the place to save vars
+    node.item('scopeNode', node);
+  }
+});
+
+/*
+var f = function f() {}
+var f = function () {}
+*/
+rules.push({
+  type: 'var',
+  match: function (node) {
+    return node.likeSource('var __name__ = function __name__() {}') ||
+           node.likeSource('var __name__ = function () {}');
+  },
+  report: function (node, report) {
+    var name = node.nodes[0].value;
+    var fnNode = node.nodes[1];
+    saveVar(node, name, fnNode);
+  }
+});
+
+rules.push({
+  type: 'function',
+  report: function (node, report) {
+    // create a new scope by saving this node as the place to save vars
+    node.item('scopeNode', node);
+  }
+});
+
+/*
+var f = x;
+var f = x.y.z;
+var f = require('foo');
+*/
+rules.push({
+  type: 'var',
+  match: function (node) {
+    return node.likeSource('var __name__ = __name__') ||
+           node.likeSource('var __name__ = __dot__') ||
+           node.likeSource('var __name__ = require(__string__)');
+  },
+  report: function (node, report) {
+    var name = node.nodes[0].value;
+    var varNode = node.nodes[1];
+    saveVar(node, name, varNode);
+  }
+});
+
+/*
+var thing = {};
 */
 rules.push({
   type: 'var',
@@ -399,58 +509,179 @@ rules.push({
   },
   report: function (node, report) {
     var name = node.nodes[0].value;
-    var obj = {};
-    node.parent.parent.item('object.' + name, obj);
-    var props = node.nodes[1].nodes;
-    _(props).each(function (prop) {
-      // need to get functions here
-    });
+    var objNode = node.nodes[1];
+    saveVar(node, name, objNode);
+  }
+});
 
-    var moduleName = node.item('module');
-    var key = moduleName + '.' + name;
+/*
+var thing = new Foo();
+*/
+rules.push({
+  type: 'var',
+  match: function (node) {
+    return node.likeSource('var __name__ = new __name__()');
+  },
+  report: function (node, report) {
+    var name = node.nodes[0].value;
+    var newNode = node.nodes[1];
+    saveVar(node, name, newNode);
+  }
+});
 
-    if (!report.item(key)) {
-      return {
-        type: 'var',
-        key: key,
-        groups: [moduleName],
-        name: name
-      };
+/*
+f = x.y.z;
+f = require('foo');
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource('__name__ = __name__') ||
+           node.likeSource('__name__ = __dot__') ||
+           node.likeSource('__name__ = require(__string__)');
+  },
+  report: function (node, report) {
+    var name = node.nodes[1].value;
+    var varNode = node.nodes[2];
+    saveVar(node, name, varNode);
+  }
+});
+
+
+/*
+f = new Foo();
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.likeSource('__name__ = new __name__()');
+  },
+  report: function (node, report) {
+    var name = node.nodes[1].value;
+    var newNode = node.nodes[2];
+    saveVar(node, name, newNode);
+  }
+});
+
+/*
+a.b.c = function () {};
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    if (!node.likeSource('__dot__ = function () {}') &&
+        !node.likeSource('__dot__ = function __name__() {}')) {
+      return false;
+    }
+    return true;
+  },
+  report: function (node, report) {
+    var nameSelector = node.nodes[1];
+    var fnNode = node.nodes[2];
+    saveVar(node, nameSelector, fnNode);
+  }
+});
+
+/*
+a.b.c = {};
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    if (!node.likeSource('__dot__ = {}')) {
+      return false;
+    }
+    return true;
+  },
+  report: function (node, report) {
+    var nameSelector = node.nodes[1];
+    var objNode = node.nodes[2];
+    saveVar(node, nameSelector, objNode);
+  }
+});
+
+/*
+a.b.c = x;
+a.b.c = x.y.z;
+a.b.c = require('foo');
+a.b.c = require('foo').bar;
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    if (!node.likeSource('__dot__ = __name__') &&
+        !node.likeSource('__dot__ = __dot__') &&
+        !node.likeSource('__dot__ = require(__string__)')) {
+      return false;
+    }
+    return true;
+  },
+  report: function (node, report) {
+    var nameSelector = node.nodes[1];
+    var varSelector = node.nodes[2];
+    saveVar(node, nameSelector, varSelector);
+  }
+});
+
+/*
+a.b.c = new Foo();
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    if (!node.likeSource('__dot__ = new __name__()')) {
+      return false;
+    }
+    return true;
+  },
+  report: function (node, report) {
+    var nameSelector = node.nodes[1];
+    var newNode = node.nodes[2];
+    saveVar(node, nameSelector, newNode);
+  }
+});
+
+/*
+_.mixin(...)
+*/
+rules.push({
+  type: 'call',
+  match: function (node) {
+    return node.likeSource('_.mixin()');
+  },
+  report: function (node, report) {
+    if (node.nodes[1].nodes.length > 0) {
+      var mixinArgNode = node.nodes[1].nodes[0];
+      extendVar(node, '_', mixinArgNode);
     }
   }
 });
 
 /*
-  obj.x = function
+_(module).export(...)
 */
 rules.push({
-  type: 'assign',
+  type: 'call',
   match: function (node) {
-    return node.likeSource('__name__.__name__ = function() {}');
+    return node.likeSource('_(module).export()');
   },
   report: function (node, report) {
-    var objName = node.nodes[1].nodes[0].value;
-    var propName = node.nodes[1].nodes[1].value;
-    var key = node.item('module') + '.' + objName + '.' + propName;
-    var params = node.nodes[2].params;
-
-    return {
-      type: 'function',
-      key: key,
-      params: params,
-      returns: node.returns,
-      description: node.description,
-      examples: node.examples,
-      visibility: node.visibility,
-      groups: [node.item('module')],
-      name: propName
-    };
+    var exportArgNodes = node.nodes[1].nodes;
+    exportArgNodes.forEach(function (argNode, i) {
+      if (argNode.type === 'name') {
+        saveVar(node, ['exports', argNode.value], argNode);
+      } else if (argNode.type === 'object') {
+        argNode.nodes.forEach(function (propertyNode, i) {
+          saveVar(node, ['exports', propertyNode.nodes[0].value], propertyNode.nodes[1]);
+        });
+      }
+    });
   }
 });
 
 /*
-  extendWithFunctions(obj, ...)
-  _.extendWithFunctions(obj, ...)
+extendWithFunctions(obj, ...)
+_.extendWithFunctions(obj, ...)
 */
 rules.push({
   type: 'call',
@@ -460,193 +691,93 @@ rules.push({
   },
   report: function (node, report) {
     var argNodes = node.nodes[1].nodes;
-    var name = argNodes[0].value;
-    var obj = node.item('object.' + name);
-    if (obj) {
-      _(argNodes).each(function (argNode, i) {
-        if (i > 0) {
-          if (argNode.type === 'name') {
-            var name = argNode.value;
-            if (report.item(node.item('module') + '.' + name)) {
-              obj[name] = {'ref': {name: name}};
-            }
-          } else if (argNode.type === 'object') {
-            argNode.nodes.forEach(function (propertyNode, i) {
-              var name = propertyNode.nodes[1].value;
-              var exportName = propertyNode.nodes[0].value;
-              if (report.item(node.item('module') + '.' + name)) {
-                obj[name] = {'ref': {name: name, exportName: exportName}};
-              }
-            });
-          }
+    var objName = argNodes[0].value;
+    _(argNodes).each(function (argNode, i) {
+      if (i > 0) {
+        if (argNode.type === 'name') {
+          var fnName = argNode.value;
+          saveVar(node, [objName, fnName], argNode);
+        } else if (argNode.type === 'object') {
+          argNode.nodes.forEach(function (propertyNode, i) {
+            var varNode = propertyNode.nodes[1];
+            var exportName = propertyNode.nodes[0].value;
+            saveVar(node, [objName, exportName], varNode);
+          });
         }
-      });
-    }
-  }
-});
-
-/*
-  _.mixin(...)
-*/
-rules.push({
-  type: 'call',
-  match: function (node) {
-    return node.likeSource('_.mixin(__name__)');
-  },
-  report: function (node, report) {
-    var name = node.nodes[1].nodes[0].value;
-    var obj = node.item('object.' + name);
-    if (obj) {
-      _.extend(node.item('object._'), obj);
-    }
-  }
-});
-
-/*
- *.prototype.*
- */
-rules.push({
-  type: 'assign',
-  match: function (node) {
-    return node.likeSource('__name__.prototype.__name__ = function () {}');
-  },
-  report: function (node, report) {
-    var methodName = node.nodes[1].nodes[1].value;
-    var className = node.nodes[1].nodes[0].nodes[0].value;
-    //var params = node.nodes[2].params;
-    var key = node.item('module') + '.' + className + '.' + methodName;
-    var group = node.item('module') + '.class.' + className;
-
-    if (!report.item(group)) {
-      report.add({
-        type: 'class',
-        key: group,
-        name: className,
-        groups: ['classes']
-      });
-    }
-
-    return functionReportItem(node, node.nodes[2], methodName, {
-      method: true,
-      key: key,
-      groups: [group]
+      }
     });
-
-    /*
-
-    return {
-      type: 'function',
-      method: true,
-      key: key,
-      params: params,
-      classDescription: node.classDescription,
-      constructorDescription: node.constructorDescription,
-      returns: node.returns,
-      description: node.description,
-      properties: node.properties,
-      examples: node.examples,
-      visibility: node.visibility,
-      extends: node.extends,
-      groups: [group],
-      name: methodName
-    };
-
-    */
   }
 });
 
 rules.push({
-  type: 'assign',
-  match: function (node) {
-    return node.likeSource('__name__.prototype = {}');
-  },
+  type: 'end-file',
   report: function (node, report) {
-    var className = node.nodes[1].nodes[0].value;
-    var group = node.item('module') + '.class.' + className;
+    var exportsObj = node.item('var.module').properties.exports;
+    node.item('globalScopeNode').item('var.' + node.item('fullPath'), exportsObj);
+    return exportModule(exportsObj);
+  }
+});
 
-    if (!report.item(group)) {
-      report.add({
-        type: 'class',
-        key: group,
-        name: className,
-        groups: ['classes']
-      });
-    }
-
+rules.push({
+  type: 'end-file',
+  report: function (node, report) {
     var items = [];
-
-    var properties = node.nodes[2].nodes;
-    _(properties).each(function (property) {
-      var methodName = property.nodes[0].value;
-      var key = node.item('module') + '.' + className + '.' + methodName;
-      var fnItems = functionReportItem(property, property.nodes[1], methodName, {
-        method: true,
-        key: key,
-        groups: [group]
+    var classes = node.item('classes');
+    _(classes).each(function (classDef, className) {
+      var classVar = node.item('var.' + className);
+      var groupName = node.item('module') + '.class.' + className;
+      if (!report.item(groupName)) {
+        report.add({
+          type: 'class',
+          key: groupName,
+          name: className,
+          groups: ['classes']
+        });
+      }
+      var methods = classVar.properties.prototype.properties;
+      _(methods).each(function (method, methodName) {
+        items = items.concat(functionReportItems(method.node, method.value, methodName, {
+          method: true,
+          key: node.item('module') + '.' + className + '.' + methodName,
+          groups: [groupName]
+        }));
       });
-      items = items.concat(fnItems);
     });
     return items;
   }
 });
 
-rules.push({
-  type: 'assign',
-  match: function (node) {
-    return node.likeSource('__name__.__name__ = pcodeDefine()') ||
-        node.likeSource('__name__.__name__ = selectFirstDefine()');
-  },
-  report: function (node, report) {
-    var name = node.nodes[1].nodes[0].value + '.' + node.nodes[1].nodes[1].value;
-    var args = node.nodes[2].nodes[1].nodes[0].value.split(/,\s*/);
-    var params = _(args).map(function (arg) {
-      return {name: arg};
-    });
-    var moduleName = node.item('module');
-    var key = moduleName + '.' + name;
-
-    return {
-      type: 'function',
-      key: key,
-      params: params,
-      returns: node.returns,
-      description: node.description,
-      examples: node.examples,
-      visibility: node.visibility,
-      groups: [moduleName],
-      name: name
-    };
-  }
-});
-
 /*
-function inFunction(node) {
-  return node.parent.parent.type === 'function' ||
-    node.parent.parent.type === 'define-function';
-}
-
-rules.push({
-  type: 'if',
-  match: function (node) {
-    return inFunction(node) &&
-      node.likeSource("if (typeof __name__ === 'undefined') {return __name__()}");
-  },
-  report: function (node, report) {
-    console.log(node.lispify())
-  }
-});
+Remove required files.
 */
-
 rules.push({
   type: 'end-files',
   report: function (node, report) {
-    Object.keys(report.items).forEach(function (key) {
-      var item = report.item(key);
-      if (item.type === 'function' && !item.api && report.options.api) {
-        report.remove(key);
+    var modulesToRemove = [];
+    var moduleNames = report.item('modules').items.slice(0);
+    _(moduleNames).each(function (moduleName) {
+      var item = report.item(moduleName);
+      if (item.required) {
+        if (item.type === 'module') {
+          modulesToRemove.push(moduleName);
+        }
+        report.remove(moduleName);
+      }
+    });
+    _(report.items).each(function (item, key) {
+      if (key.indexOf('.') >= 0) {
+        var moduleName = key.substr(0, key.indexOf('.'));
+        if (modulesToRemove.indexOf(moduleName) >= 0) {
+          report.remove(key);
+        }
       }
     });
   }
 });
 
 module.exports = rules;
+
+// TESTS NEEDED
+// literal prototypes
+// a requires b
+// export top-level function
