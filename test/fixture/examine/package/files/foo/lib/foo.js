@@ -1,0 +1,3 @@
+exports.bar = function bar() {
+
+};

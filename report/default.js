@@ -738,7 +738,7 @@ rules.push({
       _(methods).each(function (method, methodName) {
         items = items.concat(functionReportItems(method.node, method.value, methodName, {
           method: true,
-          key: node.item('module') + '.' + className + '.' + methodName,
+          key: node.item('module') + '.class.' + className + '.' + methodName,
           groups: [groupName]
         }));
       });
@@ -770,6 +770,20 @@ rules.push({
         if (modulesToRemove.indexOf(moduleName) >= 0) {
           report.remove(key);
         }
+      }
+    });
+  }
+});
+
+/*
+Rename modules to package names.
+*/
+rules.push({
+  type: 'end-files',
+  report: function (node, report) {
+    _(report.items).each(function (item, key) {
+      if (item.package && item.package.name) {
+        item.name = item.package.name;
       }
     });
   }
