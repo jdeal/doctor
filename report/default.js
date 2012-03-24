@@ -6,10 +6,16 @@ function isCapitalized(string) {
 }
 
 // make a set of params to match the signature
-function fixSignatureParams(item, signature) {
+function fixSignatureParams(node, item, signature) {
   signature.params = [];
   for (var i = 0; i < signature.arity; i++) {
-    signature.params.push(item.params[i]);
+    var paramCopy = _.extend({}, item.params[i]);
+    if (node && node.paramTags) {
+      if (node.paramTags[paramCopy.name]) {
+        _.extend(paramCopy, node.paramTags[paramCopy.name]);
+      }
+    }
+    signature.params.push(paramCopy);
   }
 }
 
@@ -46,12 +52,12 @@ function functionSignatures(fn, node, fnItem, signatures, direction, lastParamIn
       var nextNode = node.next;
       if (node.likeSource("if (typeof __name__ === 'undefined') {}")) {
         signature.arity = fn.paramIndex[paramName];
-        fixSignatureParams(fnItem, signature);
+        fixSignatureParams(node, fnItem, signature);
         signatures.push(signature);
         functionSignatures(fn, nextNode, fnItem, signatures, 1, paramIndex);
       } else if (node.likeSource("if (typeof __name__ !== 'undefined') {}")) {
         signature.arity = fn.params.length;
-        fixSignatureParams(fnItem, signature);
+        fixSignatureParams(node, fnItem, signature);
         if (!isFirst) {
           signature.arity = lastParamIndex;
         }
@@ -61,11 +67,11 @@ function functionSignatures(fn, node, fnItem, signatures, direction, lastParamIn
     } else if (!isFirst) {
       if (direction) {
         signature.arity = fn.params.length;
-        fixSignatureParams(fnItem, signature);
+        fixSignatureParams(node, fnItem, signature);
         signatures.push(signature);
       } else {
         signature.arity = lastParamIndex;
-        fixSignatureParams(fnItem, signature);
+        fixSignatureParams(node, fnItem, signature);
         signatures.push(signature);
       }
     }

@@ -28,8 +28,10 @@ items:
     key: foo.item
     params:
     - name: key
+      description: <p>key of item</p>
     - name: value
-    description: <p>item</p>
+      description: <p>default description</p>
+    description: <p>gets/sets item</p>
     groups:
     - foo
     name: item
@@ -38,9 +40,12 @@ items:
       arity: 1
       params:
       - name: key
+        description: <p>key of item</p>
     - description: <p>sets item value</p>
       arity: 2
       params:
       - name: key
+        description: <p>key of item</p>
       - name: value
+        description: <p>value of item</p>
     api: true
