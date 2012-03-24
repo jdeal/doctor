@@ -75,9 +75,9 @@ module.exports = {
               "column": 3
             }
           ],
-          "pos": 60,
-          "line": 5,
-          "column": 3,
+          "pos": 57,
+          "line": 4,
+          "column": 21,
           "comments": []
         }
       ],

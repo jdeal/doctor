@@ -1,0 +1,46 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+    - classes
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    items:
+    - foo
+  classes:
+    type: group
+    key: classes
+    name: Classes
+  foo:
+    type: module
+    key: foo
+    name: foo
+    groups:
+    - modules
+    items:
+    - foo.item
+  foo.item:
+    type: function
+    constructorFunction: false
+    key: foo.item
+    params:
+    - name: key
+    - name: value
+    description: <p>item</p>
+    groups:
+    - foo
+    name: item
+    signatures:
+    - description: <p>gets item value</p>
+      arity: 1
+      params:
+      - name: key
+    - description: <p>sets item value</p>
+      arity: 2
+      params:
+      - name: key
+      - name: value
+    api: true

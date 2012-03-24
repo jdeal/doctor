@@ -20,11 +20,9 @@ function removeEmptyStatements(ast) {
   }
 }
 
-
-
 function testSource(sourceFile) {
   var sourceName = sourceFile;
-  test('check against source: ' + sourceFile, function (done) {
+  test(sourceFile, function (done) {
     sourceFile = Path.join(__dirname, 'fixture', 'source', sourceFile + '.js');
     // get a ast from the file
     nast.astFromFile({}, sourceFile, function (err, ast) {

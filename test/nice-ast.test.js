@@ -34,6 +34,8 @@ var fakeAst = {
   ]
 };
 
+suite('test nice ast module')
+
 test('ast walker', function () {
   var walkList = [];
   nast.walk(fakeAst,

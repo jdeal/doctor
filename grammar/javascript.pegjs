@@ -1281,34 +1281,34 @@ VariableStatement
     }
 
 VariableDeclarationList
-  = head:VariableDeclaration tail:(__ "," __ VariableDeclaration)* {
+  = head:VariableDeclaration tail:(__ "," VariableDeclaration)* {
       var result = [head];
       for (var i = 0; i < tail.length; i++) {
-        result.push(tail[i][3]);
+        result.push(tail[i][2]);
       }
       return result;
     }
 
 VariableDeclarationListNoIn
-  = head:VariableDeclarationNoIn tail:(__ "," __ VariableDeclarationNoIn)* {
+  = head:VariableDeclarationNoIn tail:(__ "," VariableDeclarationNoIn)* {
       var result = [head];
       for (var i = 0; i < tail.length; i++) {
-        result.push(tail[i][3]);
+        result.push(tail[i][2]);
       }
       return result;
     }
 
 VariableDeclaration
-  = p:Pos name:Identifier value:Initialiser? {
-      return {
+  = p:Pos __empty comments:(Comment __empty)* name:Identifier value:Initialiser? {
+      return addComments({
         type: "var",
         nodes: [name, value !== "" ? value : undefinedNode(p)],
         pos: p
-      };
+      }, comments);
     }
 
 VariableDeclarationNoIn
-  = p:Pos name:Identifier value:InitialiserNoIn? {
+  = p:Pos __empty comments:(Comment __empty)* name:Identifier value:InitialiserNoIn? {
       return {
         type: "var",
         nodes: [name, value !== "" ? value : undefinedNode(p)],
@@ -1589,7 +1589,7 @@ DebuggerStatement
 FunctionDeclaration
   = p:Pos FunctionToken __ name:Identifier __
     "(" __ pp:Pos params:FormalParameterList? __ ")" __
-    "{" __ body:FunctionBody __ "}" {
+    "{" body:FunctionBody __ "}" {
       return {
         type: 'define-function',
         nodes: [name, nodeList(params, pp, 'parameters'), body],

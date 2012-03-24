@@ -24,9 +24,9 @@ module.exports = {
         {
           "type": "nodes",
           "nodes": [],
-          "pos": 17,
-          "line": 2,
-          "column": 1,
+          "pos": 16,
+          "line": 1,
+          "column": 17,
           "comments": []
         }
       ],
@@ -117,9 +117,9 @@ module.exports = {
               "column": 3
             }
           ],
-          "pos": 43,
-          "line": 5,
-          "column": 3,
+          "pos": 40,
+          "line": 4,
+          "column": 21,
           "comments": []
         }
       ],

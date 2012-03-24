@@ -1,0 +1,53 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+    - classes
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    items:
+    - bar
+    - foo
+  classes:
+    type: group
+    key: classes
+    name: Classes
+  bar:
+    type: module
+    key: bar
+    name: bar
+    groups:
+    - modules
+    items:
+    - bar.exports-bar
+  bar.exports-bar:
+    type: module-function
+    constructorFunction: false
+    key: bar.exports-bar
+    params: []
+    groups:
+    - bar
+    name: bar
+    signatures: []
+    api: true
+  foo:
+    type: module
+    key: foo
+    name: foo
+    groups:
+    - modules
+    items:
+    - foo.bar
+  foo.bar:
+    type: function
+    constructorFunction: false
+    key: foo.bar
+    params: []
+    groups:
+    - foo
+    name: bar
+    signatures: []
+    api: true

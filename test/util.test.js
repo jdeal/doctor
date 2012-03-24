@@ -5,6 +5,8 @@ var path = require('path');
 
 var assert = require('assert');
 
+suite('test util module');
+
 test('toArray', function () {
   assert.deepEqual(util.toArray([1, 2]), [1, 2]);
   assert.deepEqual(util.toArray(1), [1]);

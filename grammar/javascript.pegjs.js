@@ -14188,15 +14188,9 @@ module.exports = (function(){
               }
             }
             if (result7 !== null) {
-              var result8 = parse___();
+              var result8 = parse_VariableDeclaration();
               if (result8 !== null) {
-                var result9 = parse_VariableDeclaration();
-                if (result9 !== null) {
-                  var result5 = [result6, result7, result8, result9];
-                } else {
-                  var result5 = null;
-                  pos = savedPos2;
-                }
+                var result5 = [result6, result7, result8];
               } else {
                 var result5 = null;
                 pos = savedPos2;
@@ -14224,15 +14218,9 @@ module.exports = (function(){
                 }
               }
               if (result7 !== null) {
-                var result8 = parse___();
+                var result8 = parse_VariableDeclaration();
                 if (result8 !== null) {
-                  var result9 = parse_VariableDeclaration();
-                  if (result9 !== null) {
-                    var result5 = [result6, result7, result8, result9];
-                  } else {
-                    var result5 = null;
-                    pos = savedPos2;
-                  }
+                  var result5 = [result6, result7, result8];
                 } else {
                   var result5 = null;
                   pos = savedPos2;
@@ -14260,7 +14248,7 @@ module.exports = (function(){
           ? (function(head, tail) {
                 var result = [head];
                 for (var i = 0; i < tail.length; i++) {
-                  result.push(tail[i][3]);
+                  result.push(tail[i][2]);
                 }
                 return result;
               })(result1[0], result1[1])
@@ -14308,15 +14296,9 @@ module.exports = (function(){
               }
             }
             if (result7 !== null) {
-              var result8 = parse___();
+              var result8 = parse_VariableDeclarationNoIn();
               if (result8 !== null) {
-                var result9 = parse_VariableDeclarationNoIn();
-                if (result9 !== null) {
-                  var result5 = [result6, result7, result8, result9];
-                } else {
-                  var result5 = null;
-                  pos = savedPos2;
-                }
+                var result5 = [result6, result7, result8];
               } else {
                 var result5 = null;
                 pos = savedPos2;
@@ -14344,15 +14326,9 @@ module.exports = (function(){
                 }
               }
               if (result7 !== null) {
-                var result8 = parse___();
+                var result8 = parse_VariableDeclarationNoIn();
                 if (result8 !== null) {
-                  var result9 = parse_VariableDeclarationNoIn();
-                  if (result9 !== null) {
-                    var result5 = [result6, result7, result8, result9];
-                  } else {
-                    var result5 = null;
-                    pos = savedPos2;
-                  }
+                  var result5 = [result6, result7, result8];
                 } else {
                   var result5 = null;
                   pos = savedPos2;
@@ -14380,7 +14356,7 @@ module.exports = (function(){
           ? (function(head, tail) {
                 var result = [head];
                 for (var i = 0; i < tail.length; i++) {
-                  result.push(tail[i][3]);
+                  result.push(tail[i][2]);
                 }
                 return result;
               })(result1[0], result1[1])
@@ -14414,12 +14390,55 @@ module.exports = (function(){
         var savedPos1 = pos;
         var result3 = parse_Pos();
         if (result3 !== null) {
-          var result4 = parse_Identifier();
+          var result4 = parse___empty();
           if (result4 !== null) {
-            var result6 = parse_Initialiser();
-            var result5 = result6 !== null ? result6 : '';
+            var result5 = [];
+            var savedPos2 = pos;
+            var result10 = parse_Comment();
+            if (result10 !== null) {
+              var result11 = parse___empty();
+              if (result11 !== null) {
+                var result9 = [result10, result11];
+              } else {
+                var result9 = null;
+                pos = savedPos2;
+              }
+            } else {
+              var result9 = null;
+              pos = savedPos2;
+            }
+            while (result9 !== null) {
+              result5.push(result9);
+              var savedPos2 = pos;
+              var result10 = parse_Comment();
+              if (result10 !== null) {
+                var result11 = parse___empty();
+                if (result11 !== null) {
+                  var result9 = [result10, result11];
+                } else {
+                  var result9 = null;
+                  pos = savedPos2;
+                }
+              } else {
+                var result9 = null;
+                pos = savedPos2;
+              }
+            }
             if (result5 !== null) {
-              var result1 = [result3, result4, result5];
+              var result6 = parse_Identifier();
+              if (result6 !== null) {
+                var result8 = parse_Initialiser();
+                var result7 = result8 !== null ? result8 : '';
+                if (result7 !== null) {
+                  var result1 = [result3, result4, result5, result6, result7];
+                } else {
+                  var result1 = null;
+                  pos = savedPos1;
+                }
+              } else {
+                var result1 = null;
+                pos = savedPos1;
+              }
             } else {
               var result1 = null;
               pos = savedPos1;
@@ -14433,13 +14452,13 @@ module.exports = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(p, name, value) {
-                return {
+          ? (function(p, comments, name, value) {
+                return addComments({
                   type: "var",
                   nodes: [name, value !== "" ? value : undefinedNode(p)],
                   pos: p
-                };
-              })(result1[0], result1[1], result1[2])
+                }, comments);
+              })(result1[0], result1[2], result1[3], result1[4])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -14470,12 +14489,55 @@ module.exports = (function(){
         var savedPos1 = pos;
         var result3 = parse_Pos();
         if (result3 !== null) {
-          var result4 = parse_Identifier();
+          var result4 = parse___empty();
           if (result4 !== null) {
-            var result6 = parse_InitialiserNoIn();
-            var result5 = result6 !== null ? result6 : '';
+            var result5 = [];
+            var savedPos2 = pos;
+            var result10 = parse_Comment();
+            if (result10 !== null) {
+              var result11 = parse___empty();
+              if (result11 !== null) {
+                var result9 = [result10, result11];
+              } else {
+                var result9 = null;
+                pos = savedPos2;
+              }
+            } else {
+              var result9 = null;
+              pos = savedPos2;
+            }
+            while (result9 !== null) {
+              result5.push(result9);
+              var savedPos2 = pos;
+              var result10 = parse_Comment();
+              if (result10 !== null) {
+                var result11 = parse___empty();
+                if (result11 !== null) {
+                  var result9 = [result10, result11];
+                } else {
+                  var result9 = null;
+                  pos = savedPos2;
+                }
+              } else {
+                var result9 = null;
+                pos = savedPos2;
+              }
+            }
             if (result5 !== null) {
-              var result1 = [result3, result4, result5];
+              var result6 = parse_Identifier();
+              if (result6 !== null) {
+                var result8 = parse_InitialiserNoIn();
+                var result7 = result8 !== null ? result8 : '';
+                if (result7 !== null) {
+                  var result1 = [result3, result4, result5, result6, result7];
+                } else {
+                  var result1 = null;
+                  pos = savedPos1;
+                }
+              } else {
+                var result1 = null;
+                pos = savedPos1;
+              }
             } else {
               var result1 = null;
               pos = savedPos1;
@@ -14489,13 +14551,13 @@ module.exports = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(p, name, value) {
+          ? (function(p, comments, name, value) {
                 return {
                   type: "var",
                   nodes: [name, value !== "" ? value : undefinedNode(p)],
                   pos: p
                 };
-              })(result1[0], result1[1], result1[2])
+              })(result1[0], result1[2], result1[3], result1[4])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -17170,8 +17232,8 @@ module.exports = (function(){
                     if (result9 !== null) {
                       var result10 = parse_Pos();
                       if (result10 !== null) {
-                        var result20 = parse_FormalParameterList();
-                        var result11 = result20 !== null ? result20 : '';
+                        var result19 = parse_FormalParameterList();
+                        var result11 = result19 !== null ? result19 : '';
                         if (result11 !== null) {
                           var result12 = parse___();
                           if (result12 !== null) {
@@ -17197,27 +17259,21 @@ module.exports = (function(){
                                   }
                                 }
                                 if (result15 !== null) {
-                                  var result16 = parse___();
+                                  var result16 = parse_FunctionBody();
                                   if (result16 !== null) {
-                                    var result17 = parse_FunctionBody();
+                                    var result17 = parse___();
                                     if (result17 !== null) {
-                                      var result18 = parse___();
+                                      if (input.substr(pos, 1) === "}") {
+                                        var result18 = "}";
+                                        pos += 1;
+                                      } else {
+                                        var result18 = null;
+                                        if (reportMatchFailures) {
+                                          matchFailed("\"}\"");
+                                        }
+                                      }
                                       if (result18 !== null) {
-                                        if (input.substr(pos, 1) === "}") {
-                                          var result19 = "}";
-                                          pos += 1;
-                                        } else {
-                                          var result19 = null;
-                                          if (reportMatchFailures) {
-                                            matchFailed("\"}\"");
-                                          }
-                                        }
-                                        if (result19 !== null) {
-                                          var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12, result13, result14, result15, result16, result17, result18, result19];
-                                        } else {
-                                          var result1 = null;
-                                          pos = savedPos1;
-                                        }
+                                        var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12, result13, result14, result15, result16, result17, result18];
                                       } else {
                                         var result1 = null;
                                         pos = savedPos1;
@@ -17289,7 +17345,7 @@ module.exports = (function(){
                   nodes: [name, nodeList(params, pp, 'parameters'), body],
                   pos: p
                 };
-              })(result1[0], result1[3], result1[7], result1[8], result1[14])
+              })(result1[0], result1[3], result1[7], result1[8], result1[13])
           : null;
         if (result2 !== null) {
           var result0 = result2;

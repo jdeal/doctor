@@ -9,6 +9,8 @@ var parser = peg.buildParser(grammar);
 
 var assert = require('chai').assert;
 
+suite('test comment tags');
+
 test('simple returns tag', function () {
   var comment = "@returns description";
   var ast = parser.parse(comment);

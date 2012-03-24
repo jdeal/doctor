@@ -1,0 +1,35 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+    - classes
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    items:
+    - foo
+  classes:
+    type: group
+    key: classes
+    name: Classes
+  foo:
+    type: module
+    key: foo
+    name: foo
+    groups:
+    - modules
+    items:
+    - foo.exports-bar
+  foo.exports-bar:
+    type: module-function
+    constructorFunction: false
+    key: foo.exports-bar
+    params: []
+    description: <p>bar</p>
+    groups:
+    - foo
+    name: bar
+    signatures: []
+    api: true

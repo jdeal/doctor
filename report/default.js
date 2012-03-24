@@ -80,6 +80,9 @@ create a function report item and any required class items
 @param [item] {Object} override report item for the function
 */
 function functionReportItems(node, fnNode, name, item) {
+  if (node.type === 'var' && node.prev === null) {
+    node = node.parent;
+  }
   if (!fnNode.type) {
     item = name;
     name = fnNode;
@@ -312,7 +315,12 @@ function saveVar(node, name, valueNode) {
 
 function extendVar(node, name, valueNode) {
   var scopeNode = node.item('scopeNode');
-  var savedVarItem = scopeNode.item('var.' + name);
+  var savedVarItem;
+  if (typeof name === 'string') {
+    savedVarItem = scopeNode.item('var.' + name);
+  } else {
+    savedVarItem = findVarItem(name);
+  }
   if (savedVarItem) {
     var valueVarItem = varItem(node, valueNode);
     if (valueVarItem) {
@@ -328,9 +336,17 @@ function exportVarValue(exports, exportName) {
     var item = {api: true};
     if (exportName === 'anonymous') {
       item.type = 'module-function';
-      item.constructorFunction = exports.isConstructor;
-      item.name = exports.name;
-      exportName = 'exports-' + exports.name;
+      if (exports.isConstructor) {
+        item.constructorFunction = exports.isConstructor;
+      }
+      if (exports.name) {
+        item.name = exports.name;
+        exportName = exports.name;
+      } else if (exports.value.name) {
+        item.name = exports.value.name;
+        exportName = exports.value.name;
+      }
+      exportName = 'exports-' + exportName;
     }
     return functionReportItems(node, valueNode, exportName, item);
   } else if (valueNode.type === 'object') {
@@ -368,8 +384,14 @@ function exportModule(exports, exportName) {
   _(items).each(function (item) {
     var key = item.key;
     if (key.indexOf('.') >= 0) {
-      var subKey = key.substring(key.indexOf('.'));
-      item.key = exports.node.item('module') + subKey;
+      var keyModuleName = key.substring(0, key.indexOf('.'));
+      var moduleName = exports.node.item('module');
+      if (keyModuleName !== moduleName) {
+        var subKey = key.substring(key.indexOf('.'));
+        item.key = exports.node.item('module') + subKey;
+        item.groups.push(moduleName);
+        item.groups = _.without(item.groups, keyModuleName);
+      }
     }
   });
   return items;
@@ -642,6 +664,23 @@ rules.push({
 });
 
 /*
+_.extend(...)
+*/
+rules.push({
+  type: 'call',
+  match: function (node) {
+    return node.likeSource('_.extend()');
+  },
+  report: function (node, report) {
+    if (node.nodes[1].nodes.length > 1) {
+      var destNode = node.nodes[1].nodes[0];
+      var sourceNode = node.nodes[1].nodes[1];
+      extendVar(node, destNode, sourceNode);
+    }
+  }
+});
+
+/*
 _.mixin(...)
 */
 rules.push({
@@ -658,6 +697,8 @@ rules.push({
 });
 
 /*
+custom rule; look away
+
 _(module).export(...)
 */
 rules.push({
@@ -680,6 +721,8 @@ rules.push({
 });
 
 /*
+custom rule; look away
+
 extendWithFunctions(obj, ...)
 _.extendWithFunctions(obj, ...)
 */
@@ -791,7 +834,8 @@ rules.push({
 
 module.exports = rules;
 
+// assign to constructor?
+
 // TESTS NEEDED
-// literal prototypes
-// a requires b
 // export top-level function
+// module with index.js
