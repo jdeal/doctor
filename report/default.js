@@ -840,8 +840,5 @@ rules.push({
 
 module.exports = rules;
 
-// assign to constructor?
-
 // TESTS NEEDED
-// export top-level function
 // module with index.js
