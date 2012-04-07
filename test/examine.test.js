@@ -75,7 +75,7 @@ function testFixture(name) {
 suite('test doctor examine function');
 
 fixtureDirs.forEach(function (dir, i) {
-  if (dir.indexOf('__disabled__') < 0) {
+  if (dir.indexOf('__disabled__') < 0 && dir.indexOf('.') !== 0) {
     testFixture(dir);
   }
 });

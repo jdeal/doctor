@@ -1,0 +1,80 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+    - classes
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    items:
+    - foo
+  classes:
+    type: group
+    key: classes
+    name: Classes
+    items:
+    - foo.class.Foo
+  foo:
+    type: module
+    key: foo
+    name: foo
+    groups:
+    - modules
+    items:
+    - foo.bar
+    - foo.baz
+  foo.bar:
+    type: function
+    constructorFunction: false
+    key: foo.bar
+    params: []
+    description: <p>bar</p>
+    groups:
+    - foo
+    name: bar
+    signatures: []
+    api: true
+  foo.baz:
+    type: function
+    constructorFunction: false
+    key: foo.baz
+    params: []
+    description: <p>baz</p>
+    groups:
+    - foo
+    name: baz
+    signatures: []
+    api: true
+  foo.class.Foo:
+    type: class
+    key: foo.class.Foo
+    name: Foo
+    groups:
+    - classes
+    items:
+    - foo.class.Foo.bar
+    - foo.class.Foo.baz
+  foo.class.Foo.bar:
+    type: function
+    constructorFunction: false
+    key: foo.class.Foo.bar
+    params: []
+    description: <p>bar</p>
+    groups:
+    - foo.class.Foo
+    name: bar
+    signatures: []
+    method: true
+  foo.class.Foo.baz:
+    type: function
+    constructorFunction: false
+    key: foo.class.Foo.baz
+    params: []
+    description: <p>baz</p>
+    groups:
+    - foo.class.Foo
+    name: baz
+    signatures: []
+    method: true
