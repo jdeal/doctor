@@ -339,7 +339,10 @@ function exportVarValue(exports, exportName) {
   var node = exports.node;
   var valueNode = exports.value;
   if (valueNode.type === 'function' || valueNode.type === 'define-function') {
-    var item = {api: true};
+    var item = {};
+    if (valueNode.visibility !== 'private') {
+      item.api = true;
+    }
     if (exportName === 'anonymous') {
       item.type = 'module-function';
       if (exports.isConstructor) {
