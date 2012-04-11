@@ -37,9 +37,9 @@ rules.push({
     if (ext === '.js' || ext === '') {
       if (requirePath[0] === '.') {
         requirePath = Path.join(Path.dirname(node.item('fullPath')), requirePath);
-        if (ext === '') {
-          requirePath += '.js';
-        }
+        // if (ext === '') {
+        //   requirePath += '.js';
+        // }
         node.item('requires')[requirePath] = requirePath;
       }
     }

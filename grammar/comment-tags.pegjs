@@ -30,8 +30,9 @@ TagList
 
 Tag
   = __ tag:
-    ( ParamTag / ReturnTag / ClassTag / ConstructorTag / PropertyTag /
-      ExampleTag / VisibilityTag / AbstractTag / ExtendsTag / SignatureTag
+    ( DescriptionTag / ParamTag / ReturnTag / ClassTag / ConstructorTag /
+      PropertyTag / ExampleTag / VisibilityTag / AbstractTag / ExtendsTag / 
+      SignatureTag
     ) {
       return tag
     }
@@ -41,9 +42,14 @@ DefaultValue
     return chars.join('');
   }
 
+DescriptionTag
+  = '@description' Blank+ text:Description {
+    return {name: 'description', value: {description: text}};
+  }
+
 ParamTag
-  = '@param' types:TypeList? Blank+ lbracket:("[" Blank*)? name:Identifier defaultValue:DefaultValue? rbracket:(Blank* "]")? Blank+ text:Description {
-    var tag = {name: 'param', value: {name: name, description: text}};
+  = '@param' types:TypeList? Blank+ lbracket:("[" Blank*)? name:Identifier defaultValue:DefaultValue? rbracket:(Blank* "]")? text:Description? {
+    var tag = {name: 'param', value: {name: name, description: text ? text : ''}};
     if (types !== '') {
       tag.value.types = types;
     }

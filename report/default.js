@@ -135,6 +135,9 @@ function functionReportItems(node, fnNode, name, item) {
 function fullRequirePath(node, requirePath) {
   var fullPath = Path.join(Path.dirname(node.item('fullPath')), requirePath);
   if (!fullPath.match(/\.js$/)) {
+    if (node.item('var.' + fullPath + '/package.json')) {
+      return fullPath + '/package.json';
+    }
     fullPath += '.js';
   }
   return fullPath;
@@ -285,6 +288,7 @@ function saveVar(node, name, valueNode) {
     if (item && item.type === 'function') {
       if (isCapitalized(name)) {
         item.isConstructor = true;
+        node.item('moduleScopeNode').item('var.class:' + name, item);
       }
       item.name = name;
     }
@@ -434,6 +438,9 @@ rules.push({
   report: function (node, report) {
     node.item('module', node.path);
     node.item('fullPath', node.fullPath);
+    if (node.package) {
+      node.item('packagePath', node.package.path);
+    }
     // create a new scope by saving this node as the place to save vars
     node.item('scopeNode', node);
     // save this module scope
@@ -460,16 +467,19 @@ rules.push({
       type: 'object',
       properties: {}
     });
-    return {
+    var item = {
       type: 'module',
       key: node.path,
       name: node.path,
       description: node.description,
       examples: node.examples,
       groups: ['modules'],
-      package: node.package,
       required: node.required
     };
+    if (node.package) {
+      item.package = {name: node.package.name};
+    }
+    return item;
   }
 });
 
@@ -766,6 +776,9 @@ rules.push({
   report: function (node, report) {
     var exportsObj = node.item('var.module').properties.exports;
     node.item('globalScopeNode').item('var.' + node.item('fullPath'), exportsObj);
+    if (node.item('packagePath')) {
+      node.item('globalScopeNode').item('var.' + node.item('packagePath'), exportsObj);
+    }
     return exportModule(exportsObj);
   }
 });
@@ -776,7 +789,7 @@ rules.push({
     var items = [];
     var classes = node.item('classes');
     _(classes).each(function (classDef, className) {
-      var classVar = node.item('var.' + className);
+      var classVar = node.item('var.class:' + className);
       var groupName = node.item('module') + '.class.' + className;
       if (!report.item(groupName)) {
         report.add({

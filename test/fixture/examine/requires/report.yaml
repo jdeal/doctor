@@ -26,4 +26,4 @@ items:
     - modules
     fullPath: files/a.js
     requires:
-    - files/b.js
+    - files/b
