@@ -1,21 +1,36 @@
+var _ = require('underscore');
+
 var rules = [];
 
-function makeHook(options, type, node) {
+function hookInfoString(options, node) {
   var info = {
-    type: node.type === 'file' ? 'module' : 'function',
+    type: 'function',
     line: node.line,
-    column: node.column,
-    name: 'function'
+    column: node.column
   };
   if (node.type === 'file') {
+    info.type = 'module';
     info.name = 'module';
   } else if (node.nodes[0].type === 'name') {
     info.name = node.nodes[0].value;
   }
-  return node.fromSource('__doctor.callHook(' +
+  if (node.type === 'call') {
+    info.type = 'call';
+  }
+  return JSON.stringify(info).replace(/\}$/, ', filename:__filename}');
+}
+
+function hookFilename(options) {
+  return options.hookFilename ? options.hookFilename : '';
+}
+
+function makeHook(options, type, node) {
+  var hookNode = node.fromSource('__doctor.callHook(' +
     JSON.stringify(type) + ',' +
-    JSON.stringify(options.hookFilename ? options.hookFilename : '') + ',' +
-    JSON.stringify(info).replace(/\}$/, ', filename:__filename}') + ')');
+    JSON.stringify(hookFilename(options)) + ',' +
+    hookInfoString(options, node) + ')');
+  hookNode.ignore = true;
+  return hookNode;
 }
 
 rules.push({
@@ -24,7 +39,10 @@ rules.push({
     node.item('modulePath', node.path);
     node.item('functionNode', node);
     node.prepend(makeHook(transform.options, 'enter', node));
-    node.prepend(node.fromSource("var __doctor = require(" + JSON.stringify(transform.options.hookDoctorPath) + ")"));
+    //node.prepend(node.fromSource("var __ = {}"));
+    var drRequire = node.fromSource("var __doctor = require(" + JSON.stringify(transform.options.hookDoctorPath) + ")");
+    drRequire.nodes[0].nodes[1].ignore = true;
+    node.prepend(drRequire);
   }
 });
 
@@ -75,6 +93,34 @@ rules.push({
     //node.before(node.nodeFromSource('return __doctor__return'));
     node.remove();
     //console.log(node.lispify())
+  }
+});
+
+rules.push({
+  type: 'call',
+  match: function (node) {
+    return !node.ignore;
+  },
+  transform: function (node, transform) {
+    var args = node.nodes[1];
+    var wrap = node.nodeFromSource('__doctor.wrapCall(' +
+      JSON.stringify(hookFilename(transform.options)) + ', ' +
+      hookInfoString(transform.options, node) + ')');
+    wrap.line = node.line;
+    var argsArray = node.nodeFromSource('[]');
+    argsArray.line = node.line;
+    _(args.nodes).each(function (argNode) {
+      argsArray.append(argNode);
+    });
+    wrap.nodes[1].prepend(argsArray);
+    if (node.nodes[0].type === 'dot') {
+      wrap.nodes[1].prepend(node.nodes[0].nodes[0]);
+    } else {
+      wrap.nodes[1].prepend({type: 'null'});
+    }
+    wrap.nodes[1].prepend(node.nodes[0]);
+    node.before(wrap);
+    node.remove();
   }
 });
 
