@@ -11,8 +11,15 @@ function hookInfoString(options, node) {
   if (node.type === 'file') {
     info.type = 'module';
     info.name = 'module';
-  } else if (node.nodes[0].type === 'name') {
-    info.name = node.nodes[0].value;
+  }
+  if (node.nodes[0]) {
+    if (node.nodes[0].type === 'name') {
+      info.name = node.nodes[0].value;
+    } else if (node.nodes[0].type === 'dot') {
+      if (node.nodes[0].nodes[1].type === 'name') {
+        info.name = node.nodes[0].nodes[1].value;
+      }
+    }
   }
   if (node.type === 'call') {
     info.type = 'call';
