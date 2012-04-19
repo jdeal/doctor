@@ -7,7 +7,7 @@ function comma(buffer, i) {
 }
 
 var sourceRules = {
-  file: function (node) {
+  script: function (node) {
     return this.source(node.nodes, ';');
   },
   'define-function': function (node) {

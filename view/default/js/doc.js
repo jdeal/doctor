@@ -317,6 +317,11 @@ doc.renderContent = function (report, item, nested) {
     return;
   }
 
+  if (item.type === 'readme') {
+    content.append(item.description);
+    return;
+  }
+
   //doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
   doc.addChild(content, 'h1', doc.itemDisplayName(item), 'contentTitle');
   doc.addChild(content, 'p', item.type, 'contentType');
@@ -413,7 +418,8 @@ doc.itemDisplayName = function (item) {
 doc.tocTypeSet = {
   'group': true,
   'module': true,
-  'class': true
+  'class': true,
+  'readme': true
 };
 
 doc.isTocItem = function (item) {

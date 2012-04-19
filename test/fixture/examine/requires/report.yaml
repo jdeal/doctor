@@ -17,6 +17,7 @@ items:
     groups:
     - modules
     fullPath: files/b.js
+    originalPath: files/b.js
     requires: []
   a:
     type: module
@@ -25,5 +26,6 @@ items:
     groups:
     - modules
     fullPath: files/a.js
+    originalPath: files/a.js
     requires:
     - files/b

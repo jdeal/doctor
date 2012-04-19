@@ -3,7 +3,7 @@ var Path = require('path');
 var rules = [];
 
 rules.push({
-  type: 'file',
+  type: 'script',
   report: function (node, report) {
     node.item('module', node.path);
     node.item('fullPath', node.fullPath);
@@ -21,7 +21,8 @@ rules.push({
       name: node.path,
       groups: ['modules'],
       package: node.package,
-      fullPath: node.fullPath
+      fullPath: node.fullPath,
+      originalPath: node.originalPath
     };
   }
 });
@@ -47,7 +48,7 @@ rules.push({
 });
 
 rules.push({
-  type: 'end-file',
+  type: 'end-script',
   report: function (node, report) {
     report.item(node.item('module')).requires = Object.keys(node.item('requires'));
   }

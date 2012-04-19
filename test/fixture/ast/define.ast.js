@@ -1,5 +1,5 @@
 module.exports = {
-  "type": "file",
+  "type": "script",
   "path": "define.js",
   "nodes": [
     {

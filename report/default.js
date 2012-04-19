@@ -434,7 +434,7 @@ rules.push({
 });
 
 rules.push({
-  type: 'file',
+  type: 'script',
   report: function (node, report) {
     node.item('module', node.path);
     node.item('fullPath', node.fullPath);
@@ -772,7 +772,7 @@ rules.push({
 });
 
 rules.push({
-  type: 'end-file',
+  type: 'end-script',
   report: function (node, report) {
     var exportsObj = node.item('var.module').properties.exports;
     node.item('globalScopeNode').item('var.' + node.item('fullPath'), exportsObj);
@@ -784,7 +784,7 @@ rules.push({
 });
 
 rules.push({
-  type: 'end-file',
+  type: 'end-script',
   report: function (node, report) {
     var items = [];
     var classes = node.item('classes');
@@ -851,6 +851,26 @@ rules.push({
         item.name = item.package.name;
       }
     });
+  }
+});
+
+rules.push({
+  type: 'markdown',
+  report: function (node, report) {
+    if (!report.item('readme')) {
+      report.add({
+        key: 'readme',
+        type: 'group',
+        name: 'README'
+      });
+    }
+    return {
+      key: 'readme.' + node.path,
+      name: node.path,
+      type: 'readme',
+      description: node.description,
+      groups: ['readme']
+    };
   }
 });
 

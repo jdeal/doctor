@@ -1,7 +1,7 @@
 var rules = [];
 
 rules.push({
-  type: 'file',
+  type: 'script',
   report: function (node) {
     return {
       key: node.path,

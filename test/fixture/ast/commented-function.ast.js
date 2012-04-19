@@ -1,5 +1,5 @@
 module.exports = {
-  "type": "file",
+  "type": "script",
   "nodes": [
     {
       "type": "define-function",

@@ -8,7 +8,7 @@ function hookInfoString(options, node) {
     line: node.line,
     column: node.column
   };
-  if (node.type === 'file') {
+  if (node.type === 'script') {
     info.type = 'module';
     info.name = 'module';
   }
@@ -41,7 +41,7 @@ function makeHook(options, type, node) {
 }
 
 rules.push({
-  type: 'file',
+  type: 'script',
   transform: function (node, transform) {
     node.item('modulePath', node.path);
     node.item('functionNode', node);
@@ -167,7 +167,7 @@ rules.push({
 });
 
 rules.push({
-  type: 'end-file',
+  type: 'end-script',
   transform: function (node, transform) {
     node.append(makeHook(transform.options, 'exit', node));
   }
