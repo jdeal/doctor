@@ -104,6 +104,12 @@ You can override the grammar if you feel adenturous:
 doctor myfile1.js myfile2.js --grammar ~/my-better-grammar.pegjs
 ```
 
+You can override the grammar for a specific file extension:
+
+```
+doctor myfile1.js myfile2.foo --grammar.foo foo
+```
+
 You can add your own transform rules:
 
 ```
