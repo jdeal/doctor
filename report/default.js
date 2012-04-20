@@ -223,6 +223,9 @@ Creates an object to represent a variable value.
 function varItem(node, valueNode) {
   var type;
   var properties = {};
+  if (typeof valueNode === 'string') {
+    return node.item('var.' + valueNode);
+  }
   if (valueNode.type === 'object') {
     type = 'object';
     _(valueNode.nodes).each(function (prop) {
@@ -373,7 +376,7 @@ function exportVarValue(exports, exportName) {
   }
 }
 
-function exportModule(exports, exportName) {
+function exportModule(node, exports, exportName) {
   var items = [];
   if (!exports) {
     return [];
@@ -390,20 +393,32 @@ function exportModule(exports, exportName) {
     }
     // don't export prototype of function
     if (key !== 'prototype') {
-      items = items.concat(exportModule(obj, nextExportName));
+      items = items.concat(exportModule(node, obj, nextExportName));
     }
   });
   // re-key items from other modules
+  var moduleName = node.item('module');
+  var keyMap = {};
   _(items).each(function (item) {
     var key = item.key;
     if (key.indexOf('.') >= 0) {
       var keyModuleName = key.substring(0, key.indexOf('.'));
-      var moduleName = exports.node.item('module');
       if (keyModuleName !== moduleName) {
         var subKey = key.substring(key.indexOf('.'));
-        item.key = exports.node.item('module') + subKey;
+        keyMap[item.key] = moduleName + subKey;
+        item.key = moduleName + subKey;
         item.groups.push(moduleName);
         item.groups = _.without(item.groups, keyModuleName);
+        item.groups = item.groups.map(function (group) {
+          if (group in keyMap) {
+            return keyMap[group];
+          } else {
+            return group;
+          }
+        });
+        if (item.type === 'class') {
+          item.module = moduleName;
+        }
       }
     }
   });
@@ -683,6 +698,55 @@ rules.push({
 });
 
 /*
+define([], function () {});
+define(function () {});
+requirejs([], function () {});
+requirejs(function () {});
+*/
+rules.push({
+  type: 'call',
+  match: function (node) {
+    return node.likeSource('define()') ||
+           node.likeSource('requirejs()');
+  },
+  report: function (node, report) {
+    var factoryNode = null;
+    var deps = null;
+    if (node.likeSource('__name__(function(){})')) {
+      factoryNode = node.nodes[1].nodes[0];
+    } else if (node.likeSource('__name__([], function(){})')) {
+      factoryNode = node.nodes[1].nodes[1];
+      deps = node.nodes[1].nodes[0].nodes;
+      var depArgs = factoryNode.nodes[1].nodes;
+      deps = deps.slice(0, depArgs.length);
+      _(deps).each(function (dep, i) {
+        if (dep.value && depArgs[i].value) {
+          saveVar(node, depArgs[i].value, fullRequirePath(node, dep.value));
+        }
+      });
+    }
+    if (factoryNode) {
+      factoryNode.isAmdFactory = true;
+    }
+  }
+});
+
+/*
+return exports from AMD factory
+*/
+rules.push({
+  type: 'return',
+  match: function (node) {
+    return node.nodes.length > 0 && node.nodes[0].type !== 'undefined' &&
+           node.item('scopeNode').isAmdFactory;
+  },
+  report: function (node, report) {
+    var exportValue = node.nodes[0];
+    saveVar(node, ['module', 'exports'], exportValue);
+  }
+});
+
+/*
 _.extend(...)
 */
 rules.push({
@@ -779,7 +843,7 @@ rules.push({
     if (node.item('packagePath')) {
       node.item('globalScopeNode').item('var.' + node.item('packagePath'), exportsObj);
     }
-    return exportModule(exportsObj);
+    return exportModule(node, exportsObj);
   }
 });
 

@@ -1,5 +1,12 @@
 var rules = [];
 
+rules.push({
+  type: 'script',
+  transform: function (node) {
+    node.item('path', node.path);
+  }
+});
+
 /* merge and normalize comments */
 rules.push({
   match: function (node) {
@@ -111,7 +118,7 @@ function commentTransform(node, transform) {
   try {
     return transform.options.commentParser.parse(node.commentText);
   } catch (e) {
-    var file = node.parent.path;
+    var file = node.item('path');
     var comment = node.commentText;
     var msg = 'Error parsing comment tag in file ' + file + ':' + node.line + ' - ' + e +
         ', comment text: ' + comment;

@@ -27,6 +27,19 @@ rules.push({
   }
 });
 
+function addDep(path, node) {
+  var ext = Path.extname(path);
+  if (ext === '.js' || ext === '') {
+    //if (path[0] === '.') {
+      path = Path.join(Path.dirname(node.item('fullPath')), path);
+      // if (ext === '') {
+      //   path += '.js';
+      // }
+      node.item('requires')[path] = path;
+    //}
+  }
+}
+
 rules.push({
   type: 'call',
   match: function (node) {
@@ -34,16 +47,27 @@ rules.push({
   },
   report: function (node, report) {
     var requirePath = node.nodes[1].nodes[0].value;
-    var ext = Path.extname(requirePath);
-    if (ext === '.js' || ext === '') {
-      if (requirePath[0] === '.') {
-        requirePath = Path.join(Path.dirname(node.item('fullPath')), requirePath);
-        // if (ext === '') {
-        //   requirePath += '.js';
-        // }
-        node.item('requires')[requirePath] = requirePath;
+    addDep(requirePath, node);
+  }
+});
+
+/*
+define([], function () {});
+requirejs([], function () {});
+*/
+rules.push({
+  type: 'call',
+  match: function (node) {
+    return node.likeSource('define([], function(){})') ||
+           node.likeSource('requirejs([], function(){})');
+  },
+  report: function (node, report) {
+    var deps = node.nodes[1].nodes[0].nodes;
+    deps.forEach(function (dep) {
+      if (dep.value) {
+        addDep(dep.value, node);
       }
-    }
+    });
   }
 });
 

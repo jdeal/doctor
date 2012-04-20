@@ -1,6 +1,6 @@
 'use strict';
 
-/*global alert: false */
+/*global alert: false, $: false */
 
 SyntaxHighlighter.defaults['gutter'] = false;
 
@@ -318,8 +318,18 @@ doc.renderContent = function (report, item, nested) {
   }
 
   if (item.type === 'readme') {
+    var brushes = ['bash', 'shell', 'cpp', 'c', 'css', 'diff', 'patch',
+                   'js', 'jscript', 'javascript', 'plain', 'text', 'ps',
+                   'powershell', 'sql', 'xml', 'xhtml', 'xslt', 'html',
+                   'xhtml'];
     content.append(item.content);
-    $('.highlight').find('pre[lang=js]').addClass('brush:js');
+    $('.highlight pre').each(function (i, pre) {
+      var brush = $(pre).attr('lang');
+      if (brushes.indexOf(brush) < 0) {
+        brush = 'plain';
+      }
+      $(pre).addClass('brush:' + brush);
+    });
     SyntaxHighlighter.highlight();
     return;
   }
