@@ -318,7 +318,9 @@ doc.renderContent = function (report, item, nested) {
   }
 
   if (item.type === 'readme') {
-    content.append(item.description);
+    content.append(item.content);
+    $('.highlight').find('pre[lang=js]').addClass('brush:js');
+    SyntaxHighlighter.highlight();
     return;
   }
 

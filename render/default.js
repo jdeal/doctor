@@ -17,6 +17,9 @@ function markdownToHtml(nodes) {
       //nodes.description = stripParagraphTag(converter.makeHtml(nodes.description));
       nodes.description = converter.makeHtml(nodes.description);
     }
+    if (nodes.content) {
+      nodes.content = ghm.parse(nodes.content);
+    }
     _(nodes).each(function (value) {
       markdownToHtml(value);
     });

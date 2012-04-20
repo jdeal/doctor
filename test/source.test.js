@@ -27,11 +27,7 @@ function testSource(sourceFile) {
   test(sourceFile, function (done) {
     sourceFile = Path.join(__dirname, 'fixture', 'source', sourceFile + '.js');
     // get a ast from the file
-    console.log("converting " + sourceFile);
-    console.log(util.inspect(process.memoryUsage()));
     nast.astFromFile({}, sourceFile, function (err, ast) {
-      console.log("converted");
-      console.log(util.inspect(process.memoryUsage()));
       // now let doctor turn the file into an ast and then into source code
       doctor.examine({
         files: [sourceFile],
@@ -40,7 +36,6 @@ function testSource(sourceFile) {
         render: 'source',
         follow: false
       }, function (err, report) {
-        console.log("examined");
         //console.log(err);
         var keys = Object.keys(report);
         assert.equal(keys.length, 1);
@@ -49,7 +44,6 @@ function testSource(sourceFile) {
         } else {
           // finally convert that source code to an ast
           nast.astFromSource({}, report[keys[0]], function (err, sourcedAst) {
-            console.log("source to ast");
             //console.log(sourceFile);
             //console.log(report[keys[0]]);
             // console.log(JSON.stringify(ast, null, 2));

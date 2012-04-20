@@ -135,7 +135,7 @@ module.exports = (function(){
           ? (function(lines) {
               return {
                 type: 'markdown',
-                description: lines.join('')
+                content: lines.join('')
               }
             })(result1)
           : null;

@@ -14058,7 +14058,6 @@ module.exports = (function(){
         }
         var result2 = result1 !== null
           ? (function(p, statements) {
-              console.log(p);
               return nodeList(statements, p);
             })(result1[0], result1[1])
           : null;

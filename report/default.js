@@ -868,7 +868,7 @@ rules.push({
       key: 'readme.' + node.path,
       name: node.path,
       type: 'readme',
-      description: node.description,
+      content: node.content,
       groups: ['readme']
     };
   }

@@ -1250,7 +1250,6 @@ Block
 
 StatementList
   = p:Pos statements:CommentedStatement* {
-    console.log(p);
     return nodeList(statements, p);
   }
 

@@ -2,7 +2,7 @@ start
   = lines:(Line / BlankLine)* {
     return {
       type: 'markdown',
-      description: lines.join('')
+      content: lines.join('')
     }
   }
 
