@@ -120,21 +120,21 @@ testSources([
 // travis has become really slow, so disabling these for now
 
   'express/express',
-  // 'express/http',
+  'express/http',
   'express/https',
-  // 'express/request',
-  // 'express/response',
+  'express/request',
+  'express/response',
   'express/utils',
-  // 'express/view',
+  'express/view',
 
-  // 'yamlish/yamlish',
+  'yamlish/yamlish',
   
-  // 'tap/tap-consumer',
+  'tap/tap-consumer',
   'tap/runner',
-  // 'tap/tap-runner',
+  'tap/tap-runner',
 
   'mkdirp/index',
 
-  // 'jade/jade',
-  // 'jade/parser'
+  'jade/jade',
+  'jade/parser'
 ]);
