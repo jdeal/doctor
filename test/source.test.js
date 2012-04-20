@@ -6,6 +6,8 @@ var nast = require('../lib/nice-ast');
 
 var assert = require('assert');
 
+var util = require('util');
+
 function removeEmptyStatements(ast) {
   if (!ast.nodes) {
     return;
@@ -26,8 +28,10 @@ function testSource(sourceFile) {
     sourceFile = Path.join(__dirname, 'fixture', 'source', sourceFile + '.js');
     // get a ast from the file
     console.log("converting " + sourceFile);
+    console.log(util.inspect(process.memoryUsage()));
     nast.astFromFile({}, sourceFile, function (err, ast) {
       console.log("converted");
+      console.log(util.inspect(process.memoryUsage()));
       // now let doctor turn the file into an ast and then into source code
       doctor.examine({
         files: [sourceFile],
