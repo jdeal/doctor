@@ -258,7 +258,6 @@ function source(ast, sep, leader, parent) {
   sep = sep || '';
   leader = leader || '';
   parent = parent || null;
-  console.log(ast.type + ":" + ast.line);
   if (ast.type) {
     var gap = lines(ast, self.line);
     if (ast.line && ast.line > self.line) {
