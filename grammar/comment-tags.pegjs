@@ -1,8 +1,11 @@
 start
-  = description:Description? tags:TagList? {
+  = types:StartTypeList? description:Description? tags:TagList? {
     var tags = tags === '' ? [] : tags;
     if (description !== '') {
       tags = [{name: 'description', value: {description: description}}].concat(tags);
+    }
+    if (types !== '') {
+      tags = tags.concat([{name: 'types', value: types}]);
     }
     return tags;
   }
@@ -59,8 +62,16 @@ DescriptionTag
   }
 
 ParamTag
-  = '@param' types:TypeList? Blank+ lbracket:("[" Blank*)? name:Identifier defaultValue:DefaultValue? rbracket:(Blank* "]")? text:Description? {
-    var tag = {name: 'param', value: {name: name, description: text ? text : ''}};
+  = '@param' types:TypeList? Blank+ lbracket:("[" Blank*)? name:Identifier
+  Blank* prop:PropertyChain? defaultValue:DefaultValue? rbracket:(Blank* "]")?
+  text:Description? {
+    var tag = {
+      name: 'param',
+      value: {
+        name: name,
+        description: text ? text : ''
+      }
+    };
     if (types !== '') {
       tag.value.types = types;
     }
@@ -69,6 +80,9 @@ ParamTag
     }
     if (defaultValue !== '') {
         tag.value.defaultValue = defaultValue;
+    }
+    if (prop) {
+      tag.value.property = prop;
     }
     return tag;
   }
@@ -135,8 +149,28 @@ _
 __
   = (WhiteSpace / LineTerminatorSequence)*
 
+Property
+  = "." name:Identifier {
+    return "." + name;
+  }
+
+PropertyChain
+  = props:Property+ {
+    return props.join('');
+  }
+
+StartTypeList
+  = __ types:DetachedTypeList {
+    return types;
+  }
+
 TypeList
-  = Blank+ "{" Blank* start:Identifier Blank* rest:("|" Blank* Identifier)* Blank* "}" {
+  = Blank+ types:DetachedTypeList {
+    return types;
+  }
+
+DetachedTypeList
+  = "{" Blank* start:Identifier Blank* rest:("|" Blank* Identifier)* Blank* "}" {
     var types = [start];
     rest.forEach(function (item, i) {
       types.push(item[2]);

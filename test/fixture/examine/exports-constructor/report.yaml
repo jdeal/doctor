@@ -4,18 +4,29 @@ items:
     items:
     - modules
     - classes
+    itemTypeCounts:
+      group: 2
+    isSorted: true
   modules:
     type: group
     key: modules
     name: Modules
+    groups:
+    - root
     items:
     - constructor
+    itemTypeCounts:
+      module: 1
   classes:
     type: group
     key: classes
     name: Classes
+    groups:
+    - root
     items:
     - constructor.class.Foo
+    itemTypeCounts:
+      class: 1
   constructor:
     type: module
     key: constructor
@@ -24,6 +35,8 @@ items:
     - modules
     items:
     - constructor.exports-Foo
+    itemTypeCounts:
+      module-function: 1
   constructor.class.Foo:
     type: class
     module: constructor
@@ -33,9 +46,11 @@ items:
     - classes
     items:
     - constructor.exports-Foo
+    itemTypeCounts:
+      module-function: 1
   constructor.exports-Foo:
     type: module-function
-    constructorFunction: true
+    isConstructor: true
     key: constructor.exports-Foo
     params: []
     groups:
@@ -43,4 +58,3 @@ items:
     - constructor.class.Foo
     name: Foo
     signatures: []
-    api: true

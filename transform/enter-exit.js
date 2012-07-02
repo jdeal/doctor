@@ -32,7 +32,7 @@ function hookFilename(options) {
 }
 
 function makeHook(options, type, node) {
-  var hookNode = node.fromSource('__doctor.callHook(' +
+  var hookNode = node.fromSource('__doctor._callHook(' +
     JSON.stringify(type) + ',' +
     JSON.stringify(hookFilename(options)) + ',' +
     hookInfoString(options, node) + ')');
@@ -110,7 +110,7 @@ rules.push({
   },
   transform: function (node, transform) {
     var args = node.nodes[1];
-    var wrap = node.nodeFromSource('__doctor.wrapCall(' +
+    var wrap = node.nodeFromSource('__doctor._wrapCall(' +
       JSON.stringify(hookFilename(transform.options)) + ', ' +
       hookInfoString(transform.options, node) + ')');
     wrap.line = node.line;

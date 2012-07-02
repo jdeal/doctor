@@ -3,17 +3,19 @@ items:
     type: group
     items:
     - modules
-    - classes
+    isSorted: true
+    itemTypeCounts:
+      group: 1
   modules:
     type: group
     key: modules
     name: Modules
+    groups:
+    - root
     items:
     - source
-  classes:
-    type: group
-    key: classes
-    name: Classes
+    itemTypeCounts:
+      module: 1
   source:
     type: module
     key: source
@@ -23,9 +25,11 @@ items:
     items:
     - source.foo
     - source.bar
+    itemTypeCounts:
+      function: 2
   source.foo:
     type: function
-    constructorFunction: false
+    isConstructor: false
     key: source.foo
     params: []
     description: <p>foo comment</p>
@@ -33,10 +37,9 @@ items:
     - source
     name: foo
     signatures: []
-    api: true
   source.bar:
     type: function
-    constructorFunction: false
+    isConstructor: false
     key: source.bar
     params: []
     description: <p>bar comment</p>
@@ -44,4 +47,3 @@ items:
     - source
     name: bar
     signatures: []
-    api: true

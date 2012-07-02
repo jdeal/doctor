@@ -1,14 +1,18 @@
 'use strict';
 
-/*global alert: false, $: false */
+/*global alert: false, $: false, SyntaxHighlighter: false */
 
-SyntaxHighlighter.defaults['gutter'] = false;
-
-function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+SyntaxHighlighter.defaults.gutter = false;
 
 var doc = {}; // namespace
+
+doc.capitalize = function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+doc.idify = function idify(key) {
+  return key.replace(/\//g, '__').replace(/\./g, '--');
+};
 
 doc.addChild = function (parent, childName, text, cssClass) {
   var child = $('<' + childName + '>');
@@ -86,9 +90,9 @@ doc.render = function (report) {
 };
 
 doc.getDisplayType = function (item) {
-  if (item.method) {
+  if (item.isMethod) {
     return "method";
-  } else if (item.constructorFunction) {
+  } else if (item.isConstructor) {
     return "constructor";
   } else {
     return item.type;
@@ -97,14 +101,15 @@ doc.getDisplayType = function (item) {
 
 doc.typesHtml = function (types) {
   if (types && types.length > 0) {
-    return '<span class="types">{' + types.join(', ') + '}</span> ';
+    return '<span class="types">{' + types.join(', ') + '}</span>';
   }
   return '';
 };
 
 doc.paramHtml = function (param) {
-  var html = '<dl class="param"><dt>' + doc.typesHtml(param.types) +
-      '<span class="paramName">' + param.name + '</span>';
+  var html = '<dl class="param"><dt>' +
+    '<span class="paramName">' + param.name + '</span> ' +
+    doc.typesHtml(param.types);
 
   // if (param.optional) {
   //   html += ' Optional';
@@ -113,6 +118,14 @@ doc.paramHtml = function (param) {
     html += '<div>Default: ' + param.defaultValue + '</div>';
   }
   var description = '<div>' + (param.description || '') + '</div>';
+  if (param.properties) {
+    description += '<dl>';
+    param.properties.forEach(function (property) {
+      description += '<dt><span class="paramName">' + property.name + '</span> ' +
+        doc.typesHtml(property.types) + '</dt><dd>' + property.description + '</dd>';
+    });
+    description += '</dl>';
+  }
   html += '</dt><dd>' + description + '</dd>';
   return html;
 };
@@ -168,10 +181,15 @@ doc.renderClassDescription = function (item, parent) {
     doc.addChild(parent, 'p', item.classDescription, 'classDescription');
   }
   if (item.properties && item.properties.length > 0) {
-    var html = '<h3>Properties:</h3>';
-    item.properties.forEach(function (type) {
-      html += doc.paramHtml(type);
+    var html = '';
+    item.properties.forEach(function (prop) {
+      if (doc.isVisible(prop)) {
+        html += doc.paramHtml(prop);
+      }
     });
+    if (html !== '') {
+      html = '<h3>Properties:</h3>' + html;
+    }
     parent.append(html);
   }
 
@@ -262,12 +280,12 @@ doc.isPrivate = function (item) {
 // };
 
 doc.isPublicMethod = function (item) {
-  return item.method && (!item.visibility || item.visibility === 'public');
+  return item.isMethod && (!item.visibility || item.visibility === 'public');
       // || doc.isVisible(doc.getParentItem(report, item));
 };
 
 doc.isVisible = function (item) {
-  return item.api || doc.isPublicMethod(item);
+  return !item.isPrivate || doc.isPublicMethod(item);
   // || item.visibility === 'public';
 };
 
@@ -287,7 +305,7 @@ doc.hasVisibleChildren = function (report, item) {
 };
 
 doc.showClass = function (report, item) {
-  if (item.constructorFunction) {
+  if (item.isConstructor) {
     return doc.isVisible(item) || doc.hasVisibleChildren(report, item);
   }
   return false;
@@ -311,11 +329,28 @@ doc.togglePrivate = function () {
 
 doc.renderContent = function (report, item, nested) {
   var content = $('#content');
-  content.html('');
+
 
   if (!nested) {
+    // if (item.items) {
+    //   item.items.forEach(function (key) {
+    //     var item = report.items[key];
+    //     var title = doc.addChild(content, 'h2', doc.itemDisplayName(item), 'contentTitle');
+    //     title.wrapInner('<a></a>');
+    //     title.click(function () {
+    //       $('#' + doc.idify(item.key)).click();
+    //     });
+    //     doc.addChild(content, 'p', item.type, 'contentType');
+    //   });
+    // }
+
     return;
   }
+
+  content.html('');
+
+  //doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
+  doc.addChild(content, 'h1', doc.itemDisplayName(item), 'contentTitle');
 
   if (item.type === 'readme') {
     var brushes = ['bash', 'shell', 'cpp', 'c', 'css', 'diff', 'patch',
@@ -334,8 +369,7 @@ doc.renderContent = function (report, item, nested) {
     return;
   }
 
-  //doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
-  doc.addChild(content, 'h1', doc.itemDisplayName(item), 'contentTitle');
+
   doc.addChild(content, 'p', item.type, 'contentType');
   if (item.module) {
     var moduleItem = report.items[item.module];
@@ -358,7 +392,7 @@ doc.renderContent = function (report, item, nested) {
 
   var itemKeys = item.items;
   
-  if (item.constructorFunction || item.type === 'module-function') {
+  if (item.isConstructor || item.type === 'module-function') {
     itemKeys = [item.key].concat(itemKeys);
   }
 
@@ -372,17 +406,19 @@ doc.renderContent = function (report, item, nested) {
     items.push(report.items[key]);
   });
 
-  items.sort(function (a, b) {
-    var nameA = doc.itemDisplayName(a);
-    var nameB = doc.itemDisplayName(b);
-    if (nameA < nameB) {
-      return -1;
-    } else if (nameA > nameB) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
+  if (item.key !== 'root') {
+    items.sort(function (a, b) {
+      var nameA = doc.itemDisplayName(a);
+      var nameB = doc.itemDisplayName(b);
+      if (nameA < nameB) {
+        return -1;
+      } else if (nameA > nameB) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
 
   var parentItem = item;
   var showPrivateToggle = false;
@@ -438,12 +474,28 @@ doc.isTocItem = function (item) {
   return doc.tocTypeSet[item.type] ? true : false;
 };
 
+doc.hasTocItems = function (item) {
+  if (item.itemTypeCounts) {
+    for (var itemType in item.itemTypeCounts) {
+      if (item.itemTypeCounts[itemType]) {
+        if (itemType in doc.tocTypeSet) {
+          return true;
+        }
+      }
+    }
+  }
+};
+
 doc.renderToc = function (report, group, element, nested) {
   var ul = $('<ul>');
   element.append(ul);
 
+  var clickedHome = false;
+
   if (group.items) {
-    group.items.sort();
+    if (!group.isSorted) {
+      group.items.sort();
+    }
 
     group.items.forEach(function (itemKey, i) {
       var item = report.items[itemKey];
@@ -451,7 +503,17 @@ doc.renderToc = function (report, group, element, nested) {
         var li = $('<li>');
         ul.append(li);
 
-        var a = $('<a href="#">' + doc.itemDisplayName(item) + '</a>');
+        var expander = '&nbsp;';
+        if (item.items && item.items.length > 0) {
+          expander = '&#9656;&nbsp;';
+        }
+
+        var chevronStyle = "";
+        if (!doc.hasTocItems(item)) {
+          chevronStyle = "display:none";
+        }
+
+        var a = $('<a id="' + doc.idify(itemKey) + '" href="#" class="expanded"><span class="chevron" style="' + chevronStyle + '">&nbsp;<span id="expand_' + itemKey + '">&#9656;</span><span id="contract' + itemKey + '" style="display:none">&#9662;</span></span>&nbsp;' + doc.itemDisplayName(item) + '</a>');
         li.append(a);
 
         a.click(function () {
@@ -464,17 +526,32 @@ doc.renderToc = function (report, group, element, nested) {
           }
 
           if (item.items) {
-            if (a.data('rendered')) {
-              a.nextAll().toggle();
+            if (a.data('expanded')) {
+              a.nextAll().hide();
+              a.data('expanded', false);
+              $('#contract' + itemKey).hide();
+              $('#expand_' + itemKey).show();
             } else {
-              doc.renderToc(report, item, li, true);
-              a.data('rendered', true);
+              if (a.data('rendered')) {
+                a.nextAll().show();
+              } else {
+                doc.renderToc(report, item, li, true);
+              }
+              a.data('expanded', true);
+              $('#expand_' + itemKey).hide();
+              $('#contract' + itemKey).show();
             }
           }
-
           doc.renderContent(report, item, nested);
           SyntaxHighlighter.highlight();
         });
+
+        if (item.isHomePath && !item.clickedHomePath) {
+          item.clickedHomePath = true;
+          setTimeout(function () {
+            a.click();
+          }, 0);
+        }
       }
     });
   }

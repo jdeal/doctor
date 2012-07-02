@@ -3,17 +3,19 @@ items:
     type: group
     items:
     - modules
-    - classes
+    itemTypeCounts:
+      group: 1
+    isSorted: true
   modules:
     type: group
     key: modules
     name: Modules
+    groups:
+    - root
     items:
     - object
-  classes:
-    type: group
-    key: classes
-    name: Classes
+    itemTypeCounts:
+      module: 1
   object:
     type: module
     key: object
@@ -22,13 +24,14 @@ items:
     - modules
     items:
     - object.foo.bar
+    itemTypeCounts:
+      function: 1
   object.foo.bar:
     type: function
-    constructorFunction: false
+    isConstructor: false
     key: object.foo.bar
     params: []
     groups:
     - object
     name: foo.bar
     signatures: []
-    api: true

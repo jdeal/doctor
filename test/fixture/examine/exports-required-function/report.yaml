@@ -3,18 +3,20 @@ items:
     type: group
     items:
     - modules
-    - classes
+    itemTypeCounts:
+      group: 1
+    isSorted: true
   modules:
     type: group
     key: modules
     name: Modules
+    groups:
+    - root
     items:
     - bar
     - foo
-  classes:
-    type: group
-    key: classes
-    name: Classes
+    itemTypeCounts:
+      module: 2
   bar:
     type: module
     key: bar
@@ -23,16 +25,17 @@ items:
     - modules
     items:
     - bar.exports-bar
+    itemTypeCounts:
+      module-function: 1
   bar.exports-bar:
     type: module-function
-    constructorFunction: false
+    isConstructor: false
     key: bar.exports-bar
     params: []
     groups:
     - bar
     name: bar
     signatures: []
-    api: true
   foo:
     type: module
     key: foo
@@ -41,13 +44,14 @@ items:
     - modules
     items:
     - foo.bar
+    itemTypeCounts:
+      function: 1
   foo.bar:
     type: function
-    constructorFunction: false
+    isConstructor: false
     key: foo.bar
     params: []
     groups:
     - foo
     name: bar
     signatures: []
-    api: true

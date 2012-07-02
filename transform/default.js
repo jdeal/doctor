@@ -73,11 +73,32 @@ var commentTagFunctions = {
   "description": function (value, node) {
     node.description = value.description;
   },
+  "types": function (value, node) {
+    node.types = value;
+  },
   "param": function (value, node) {
     if (!node.paramTags) {
       node.paramTags = {};
     }
-    node.paramTags[value.name] = value;
+    var paramTag = {};
+    if (!node.paramTags[value.name]) {
+      node.paramTags[value.name] = paramTag;
+    } else {
+      paramTag = node.paramTags[value.name];
+    }
+    paramTag.name = value.name;
+    if (value.property) {
+      if (!paramTag.properties) {
+        paramTag.properties = [];
+      }
+      value.name = value.property;
+      delete value.property;
+      paramTag.properties.push(value);
+    } else {
+      Object.keys(value).forEach(function (key) {
+        paramTag[key] = value[key];
+      });
+    }
   },
   "returns": function (value, node) {
     node.returnTag = value;
@@ -157,10 +178,10 @@ function transformFunction(node) {
   node.paramIndex = {};
 
   var paramTags = node.paramTags;
-  // for anonymous functions assigned to variables, paramTags are in parent --
+  // for functions assigned to variables, paramTags are in parent --
   // i.e. '/* @param a */ var parent = function (a) {}'
-  if (node.paramTags === undefined && node.name === undefined &&
-      node.parent && node.parent.type === 'assign') {
+  if (node.paramTags === undefined && node.parent &&
+      node.parent.type === 'assign' && node.parent.paramTags) {
     paramTags = node.parent.paramTags;
   }
 
@@ -172,6 +193,9 @@ function transformFunction(node) {
     if (paramTags) {
       if (paramTags[param.name]) {
         var tagValue = paramTags[param.name];
+    // if (node.item('path') === 'cli') {
+    //   console.log(tagValue)
+    // }
         Object.keys(tagValue).forEach(function (key, i) {
           if (key !== 'name') {
             param[key] = tagValue[key];
@@ -181,6 +205,9 @@ function transformFunction(node) {
     }
     node.params.push(param);
   });
+    // if (node.item('path') === 'cli') {
+    //   console.log(node.params)
+    // }
 }
 
 rules.push({

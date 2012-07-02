@@ -4,18 +4,29 @@ items:
     items:
     - modules
     - classes
+    itemTypeCounts:
+      group: 2
+    isSorted: true
   modules:
     type: group
     key: modules
     name: Modules
+    groups:
+    - root
     items:
     - foo
+    itemTypeCounts:
+      module: 1
   classes:
     type: group
     key: classes
     name: Classes
+    groups:
+    - root
     items:
     - foo.class.Foo
+    itemTypeCounts:
+      class: 1
   foo:
     type: module
     key: foo
@@ -24,6 +35,8 @@ items:
     - modules
     items:
     - foo.Foo
+    itemTypeCounts:
+      function: 1
   foo.class.Foo:
     type: class
     module: foo
@@ -34,9 +47,11 @@ items:
     items:
     - foo.Foo
     - foo.class.Foo.bar
+    itemTypeCounts:
+      function: 2
   foo.Foo:
     type: function
-    constructorFunction: true
+    isConstructor: true
     key: foo.Foo
     params: []
     classDescription:
@@ -47,10 +62,9 @@ items:
     - foo.class.Foo
     name: Foo
     signatures: []
-    api: true
   foo.class.Foo.bar:
     type: function
-    constructorFunction: false
+    isConstructor: false
     key: foo.class.Foo.bar
     params: []
     description: <p>bar method</p>
@@ -58,4 +72,4 @@ items:
     - foo.class.Foo
     name: bar
     signatures: []
-    method: true
+    isMethod: true

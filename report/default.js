@@ -1,9 +1,7 @@
 var Path = require('path');
 var _ = require('underscore');
 
-function isCapitalized(string) {
-  return (string && string.match(/^[A-Z]/)) ? true : false;
-}
+var util = require('../lib/util');
 
 // make a set of params to match the signature
 function fixSignatureParams(node, item, signature) {
@@ -98,16 +96,36 @@ function functionReportItems(node, fnNode, name, item) {
   var signatures = [];
   var body = fnNode.nodes[2];
   var items = [];
+  var properties;
+  if (node.properties) {
+    properties = node.properties.slice(0);
+  }
+  if (node.item('classProperties')) {
+    if (!properties) {
+      properties = [];
+    }
+    properties = properties.concat(node.item('classProperties'));
+  }
+  if (properties) {
+    properties = properties.map(function (prop) {
+      if (prop.name.length > 1 && prop.name[0] === '_') {
+        prop.isPrivate = true;
+      }
+      return prop;
+    });
+  }
   var fnItem = {
     type: 'function',
-    constructorFunction: isCapitalized(name),
+    // deprecated
+    //constructorFunction: isCapitalized(name),
+    isConstructor: util.isCapitalized(name),
     key: node.item('module') + '.' + name,
     params: fnNode.params,
     classDescription: node.classDescription,
     returns: node.returns,
     constructorDescription: node.constructorDescription,
     description: node.description,
-    properties: node.properties,
+    properties: properties,
     examples: node.examples,
     visibility: node.visibility,
     extends: node.extends,
@@ -117,7 +135,7 @@ function functionReportItems(node, fnNode, name, item) {
   };
   fnItem = _.extend(fnItem, item);
   functionSignatures(fnNode, body.nodes[0], fnItem, signatures);
-  if (fnItem.constructorFunction) {
+  if (fnItem.isConstructor) {
     var classItem = {
       type: 'class',
       module: node.item('module'),
@@ -289,7 +307,7 @@ function saveVar(node, name, valueNode) {
   if (names.length === 0) {
     var item = varItem(node, valueNode);
     if (item && item.type === 'function') {
-      if (isCapitalized(name)) {
+      if (util.isCapitalized(name)) {
         item.isConstructor = true;
         node.item('moduleScopeNode').item('var.class:' + name, item);
       }
@@ -347,13 +365,14 @@ function exportVarValue(exports, exportName) {
   var valueNode = exports.value;
   if (valueNode.type === 'function' || valueNode.type === 'define-function') {
     var item = {};
-    if (valueNode.visibility !== 'private') {
-      item.api = true;
+    if (valueNode.visibility === 'private' || (exportName.length > 1 &&
+        exportName[0] === '_')) {
+      item.isPrivate = true;
     }
     if (exportName === 'anonymous') {
       item.type = 'module-function';
       if (exports.isConstructor) {
-        item.constructorFunction = exports.isConstructor;
+        item.isConstructor = exports.isConstructor;
       }
       if (exports.name) {
         item.name = exports.name;
@@ -508,6 +527,8 @@ rules.push({
     saveVar(node, name, node);
     // create a new scope by saving this node as the place to save vars
     node.item('scopeNode', node);
+    node.item('functionCommentNode', node);
+    node.item('isConstructor', util.isCapitalized(name));
   }
 });
 
@@ -525,6 +546,8 @@ rules.push({
     var name = node.nodes[0].value;
     var fnNode = node.nodes[1];
     saveVar(node, name, fnNode);
+    node.item('functionCommentNode', node);
+    node.item('isConstructor', util.isCapitalized(name));
   }
 });
 
@@ -533,6 +556,26 @@ rules.push({
   report: function (node, report) {
     // create a new scope by saving this node as the place to save vars
     node.item('scopeNode', node);
+  }
+});
+
+/* pick up properties inside constructor */
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    return node.item('isConstructor') &&
+           node.likeSource('this.__name__ = __any__');
+  },
+  report: function (node, report) {
+    var commentNode = node.item('functionCommentNode');
+    if (!commentNode.item('classProperties')) {
+      commentNode.item('classProperties', []);
+    }
+    commentNode.item('classProperties').push({
+      name: node.nodes[1].nodes[1].value,
+      description: node.description,
+      types: node.types
+    });
   }
 });
 
@@ -866,7 +909,7 @@ rules.push({
       var methods = classVar.properties.prototype.properties;
       _(methods).each(function (method, methodName) {
         items = items.concat(functionReportItems(method.node, method.value, methodName, {
-          method: true,
+          isMethod: true,
           key: node.item('module') + '.class.' + className + '.' + methodName,
           groups: [groupName]
         }));
@@ -915,6 +958,42 @@ rules.push({
         item.name = item.package.name;
       }
     });
+    if (report.items.modules) {
+      var moduleNames = [];
+      report.items.modules.items.forEach(function (itemKey, i) {
+        var item = report.items[itemKey];
+        moduleNames.push(item.name);
+      });
+      moduleNames = util.localizePaths(moduleNames);
+      report.items.modules.items.forEach(function (itemKey, i) {
+        var item = report.items[itemKey];
+        item.name = moduleNames[i];
+      });
+    }
+
+    var sortOrder = ['readme', 'modules', 'classes'];
+    report.item('root').items = _(report.item('root').items).sortBy(function (item) {
+      return sortOrder.indexOf(item);
+    });
+
+    report.item('root').isSorted = true;
+  }
+});
+
+/*
+Remove classes or modules group if not needed.
+*/
+rules.push({
+  type: 'end-files',
+  report: function (node, report) {
+    var modulesGroup = report.item('modules');
+    var classesGroup = report.item('classes');
+    if (!modulesGroup.items || modulesGroup.items.length === 0) {
+      report.remove('modules');
+    }
+    if (!classesGroup.items || classesGroup.items.length === 0) {
+      report.remove('classes');
+    } 
   }
 });
 
@@ -928,13 +1007,17 @@ rules.push({
         name: 'README'
       });
     }
-    return {
+    var item = {
       key: 'readme.' + node.path,
       name: node.path,
       type: 'readme',
       content: node.content,
       groups: ['readme']
     };
+    if (node.path === 'README.md') {
+      item.isHome = true;
+    }
+    return item;
   }
 });
 

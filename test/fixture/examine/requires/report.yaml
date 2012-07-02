@@ -3,13 +3,19 @@ items:
     type: group
     items:
     - modules
+    itemTypeCounts:
+      group: 1
   modules:
     type: group
     key: modules
     name: Modules
+    groups:
+    - root
     items:
     - b
     - a
+    itemTypeCounts:
+      module: 2
   b:
     type: module
     key: b

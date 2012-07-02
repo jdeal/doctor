@@ -4,18 +4,29 @@ items:
     items:
     - modules
     - classes
+    itemTypeCounts:
+      group: 2
+    isSorted: true
   modules:
     type: group
     key: modules
     name: Modules
+    groups:
+    - root
     items:
     - foo
+    itemTypeCounts:
+      module: 1
   classes:
     type: group
     key: classes
     name: Classes
+    groups:
+    - root
     items:
     - foo.class.Foo
+    itemTypeCounts:
+      class: 1
   foo:
     type: module
     key: foo
@@ -30,13 +41,15 @@ items:
     - classes
     items:
     - foo.class.Foo.bar
+    itemTypeCounts:
+      function: 1
   foo.class.Foo.bar:
     type: function
-    constructorFunction: false
+    isConstructor: false
     key: foo.class.Foo.bar
     params: []
     groups:
     - foo.class.Foo
     name: bar
     signatures: []
-    method: true
+    isMethod: true

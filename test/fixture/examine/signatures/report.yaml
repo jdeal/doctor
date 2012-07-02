@@ -3,17 +3,19 @@ items:
     type: group
     items:
     - modules
-    - classes
+    itemTypeCounts:
+      group: 1
+    isSorted: true
   modules:
     type: group
     key: modules
     name: Modules
+    groups:
+    - root
     items:
     - foo
-  classes:
-    type: group
-    key: classes
-    name: Classes
+    itemTypeCounts:
+      module: 1
   foo:
     type: module
     key: foo
@@ -22,9 +24,11 @@ items:
     - modules
     items:
     - foo.item
+    itemTypeCounts:
+      function: 1
   foo.item:
     type: function
-    constructorFunction: false
+    isConstructor: false
     key: foo.item
     params:
     - name: key
@@ -48,4 +52,3 @@ items:
         description: <p>key of item</p>
       - name: value
         description: <p>value of item</p>
-    api: true

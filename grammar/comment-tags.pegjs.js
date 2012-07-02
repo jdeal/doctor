@@ -20,6 +20,7 @@ module.exports = (function(){
         "Description": parse_Description,
         "DescriptionSpan": parse_DescriptionSpan,
         "DescriptionTag": parse_DescriptionTag,
+        "DetachedTypeList": parse_DetachedTypeList,
         "ExampleTag": parse_ExampleTag,
         "ExtendsTag": parse_ExtendsTag,
         "Identifier": parse_Identifier,
@@ -39,9 +40,12 @@ module.exports = (function(){
         "NoAtDescriptionSpan": parse_NoAtDescriptionSpan,
         "NonBlank": parse_NonBlank,
         "ParamTag": parse_ParamTag,
+        "Property": parse_Property,
+        "PropertyChain": parse_PropertyChain,
         "PropertyTag": parse_PropertyTag,
         "ReturnTag": parse_ReturnTag,
         "SignatureTag": parse_SignatureTag,
+        "StartTypeList": parse_StartTypeList,
         "TagList": parse_TagList,
         "TypeList": parse_TypeList,
         "UnicodeCombiningMark": parse_UnicodeCombiningMark,
@@ -133,13 +137,20 @@ module.exports = (function(){
         
         var savedPos0 = pos;
         var savedPos1 = pos;
-        var result6 = parse_Description();
-        var result3 = result6 !== null ? result6 : '';
+        var result8 = parse_StartTypeList();
+        var result3 = result8 !== null ? result8 : '';
         if (result3 !== null) {
-          var result5 = parse_TagList();
-          var result4 = result5 !== null ? result5 : '';
+          var result7 = parse_Description();
+          var result4 = result7 !== null ? result7 : '';
           if (result4 !== null) {
-            var result1 = [result3, result4];
+            var result6 = parse_TagList();
+            var result5 = result6 !== null ? result6 : '';
+            if (result5 !== null) {
+              var result1 = [result3, result4, result5];
+            } else {
+              var result1 = null;
+              pos = savedPos1;
+            }
           } else {
             var result1 = null;
             pos = savedPos1;
@@ -149,13 +160,16 @@ module.exports = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(description, tags) {
+          ? (function(types, description, tags) {
               var tags = tags === '' ? [] : tags;
               if (description !== '') {
                 tags = [{name: 'description', value: {description: description}}].concat(tags);
               }
+              if (types !== '') {
+                tags = tags.concat([{name: 'types', value: types}]);
+              }
               return tags;
-            })(result1[0], result1[1])
+            })(result1[0], result1[1], result1[2])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -985,15 +999,15 @@ module.exports = (function(){
           }
         }
         if (result3 !== null) {
-          var result22 = parse_TypeList();
-          var result4 = result22 !== null ? result22 : '';
+          var result26 = parse_TypeList();
+          var result4 = result26 !== null ? result26 : '';
           if (result4 !== null) {
-            var result21 = parse_Blank();
-            if (result21 !== null) {
+            var result25 = parse_Blank();
+            if (result25 !== null) {
               var result5 = [];
-              while (result21 !== null) {
-                result5.push(result21);
-                var result21 = parse_Blank();
+              while (result25 !== null) {
+                result5.push(result25);
+                var result25 = parse_Blank();
               }
             } else {
               var result5 = null;
@@ -1001,71 +1015,89 @@ module.exports = (function(){
             if (result5 !== null) {
               var savedPos3 = pos;
               if (input.substr(pos, 1) === "[") {
-                var result18 = "[";
+                var result22 = "[";
                 pos += 1;
               } else {
-                var result18 = null;
+                var result22 = null;
                 if (reportMatchFailures) {
                   matchFailed("\"[\"");
                 }
               }
-              if (result18 !== null) {
-                var result19 = [];
-                var result20 = parse_Blank();
-                while (result20 !== null) {
-                  result19.push(result20);
-                  var result20 = parse_Blank();
+              if (result22 !== null) {
+                var result23 = [];
+                var result24 = parse_Blank();
+                while (result24 !== null) {
+                  result23.push(result24);
+                  var result24 = parse_Blank();
                 }
-                if (result19 !== null) {
-                  var result17 = [result18, result19];
+                if (result23 !== null) {
+                  var result21 = [result22, result23];
                 } else {
-                  var result17 = null;
+                  var result21 = null;
                   pos = savedPos3;
                 }
               } else {
-                var result17 = null;
+                var result21 = null;
                 pos = savedPos3;
               }
-              var result6 = result17 !== null ? result17 : '';
+              var result6 = result21 !== null ? result21 : '';
               if (result6 !== null) {
                 var result7 = parse_Identifier();
                 if (result7 !== null) {
-                  var result16 = parse_DefaultValue();
-                  var result8 = result16 !== null ? result16 : '';
+                  var result8 = [];
+                  var result20 = parse_Blank();
+                  while (result20 !== null) {
+                    result8.push(result20);
+                    var result20 = parse_Blank();
+                  }
                   if (result8 !== null) {
-                    var savedPos2 = pos;
-                    var result13 = [];
-                    var result15 = parse_Blank();
-                    while (result15 !== null) {
-                      result13.push(result15);
-                      var result15 = parse_Blank();
-                    }
-                    if (result13 !== null) {
-                      if (input.substr(pos, 1) === "]") {
-                        var result14 = "]";
-                        pos += 1;
-                      } else {
-                        var result14 = null;
-                        if (reportMatchFailures) {
-                          matchFailed("\"]\"");
-                        }
-                      }
-                      if (result14 !== null) {
-                        var result12 = [result13, result14];
-                      } else {
-                        var result12 = null;
-                        pos = savedPos2;
-                      }
-                    } else {
-                      var result12 = null;
-                      pos = savedPos2;
-                    }
-                    var result9 = result12 !== null ? result12 : '';
+                    var result19 = parse_PropertyChain();
+                    var result9 = result19 !== null ? result19 : '';
                     if (result9 !== null) {
-                      var result11 = parse_Description();
-                      var result10 = result11 !== null ? result11 : '';
+                      var result18 = parse_DefaultValue();
+                      var result10 = result18 !== null ? result18 : '';
                       if (result10 !== null) {
-                        var result1 = [result3, result4, result5, result6, result7, result8, result9, result10];
+                        var savedPos2 = pos;
+                        var result15 = [];
+                        var result17 = parse_Blank();
+                        while (result17 !== null) {
+                          result15.push(result17);
+                          var result17 = parse_Blank();
+                        }
+                        if (result15 !== null) {
+                          if (input.substr(pos, 1) === "]") {
+                            var result16 = "]";
+                            pos += 1;
+                          } else {
+                            var result16 = null;
+                            if (reportMatchFailures) {
+                              matchFailed("\"]\"");
+                            }
+                          }
+                          if (result16 !== null) {
+                            var result14 = [result15, result16];
+                          } else {
+                            var result14 = null;
+                            pos = savedPos2;
+                          }
+                        } else {
+                          var result14 = null;
+                          pos = savedPos2;
+                        }
+                        var result11 = result14 !== null ? result14 : '';
+                        if (result11 !== null) {
+                          var result13 = parse_Description();
+                          var result12 = result13 !== null ? result13 : '';
+                          if (result12 !== null) {
+                            var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12];
+                          } else {
+                            var result1 = null;
+                            pos = savedPos1;
+                          }
+                        } else {
+                          var result1 = null;
+                          pos = savedPos1;
+                        }
                       } else {
                         var result1 = null;
                         pos = savedPos1;
@@ -1099,8 +1131,14 @@ module.exports = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(types, lbracket, name, defaultValue, rbracket, text) {
-              var tag = {name: 'param', value: {name: name, description: text ? text : ''}};
+          ? (function(types, lbracket, name, prop, defaultValue, rbracket, text) {
+              var tag = {
+                name: 'param',
+                value: {
+                  name: name,
+                  description: text ? text : ''
+                }
+              };
               if (types !== '') {
                 tag.value.types = types;
               }
@@ -1110,8 +1148,11 @@ module.exports = (function(){
               if (defaultValue !== '') {
                   tag.value.defaultValue = defaultValue;
               }
+              if (prop) {
+                tag.value.property = prop;
+              }
               return tag;
-            })(result1[1], result1[3], result1[4], result1[5], result1[6], result1[7])
+            })(result1[1], result1[3], result1[4], result1[6], result1[7], result1[8], result1[9])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -1891,6 +1932,145 @@ module.exports = (function(){
         return result0;
       }
       
+      function parse_Property() {
+        var cacheKey = 'Property@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        if (input.substr(pos, 1) === ".") {
+          var result3 = ".";
+          pos += 1;
+        } else {
+          var result3 = null;
+          if (reportMatchFailures) {
+            matchFailed("\".\"");
+          }
+        }
+        if (result3 !== null) {
+          var result4 = parse_Identifier();
+          if (result4 !== null) {
+            var result1 = [result3, result4];
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(name) {
+              return "." + name;
+            })(result1[1])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_PropertyChain() {
+        var cacheKey = 'PropertyChain@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var result3 = parse_Property();
+        if (result3 !== null) {
+          var result1 = [];
+          while (result3 !== null) {
+            result1.push(result3);
+            var result3 = parse_Property();
+          }
+        } else {
+          var result1 = null;
+        }
+        var result2 = result1 !== null
+          ? (function(props) {
+              return props.join('');
+            })(result1)
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_StartTypeList() {
+        var cacheKey = 'StartTypeList@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        var result3 = parse___();
+        if (result3 !== null) {
+          var result4 = parse_DetachedTypeList();
+          if (result4 !== null) {
+            var result1 = [result3, result4];
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(types) {
+              return types;
+            })(result1[1])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
       function parse_TypeList() {
         var cacheKey = 'TypeList@' + pos;
         var cachedResult = cache[cacheKey];
@@ -1902,136 +2082,175 @@ module.exports = (function(){
         
         var savedPos0 = pos;
         var savedPos1 = pos;
-        var result19 = parse_Blank();
-        if (result19 !== null) {
+        var result5 = parse_Blank();
+        if (result5 !== null) {
           var result3 = [];
-          while (result19 !== null) {
-            result3.push(result19);
-            var result19 = parse_Blank();
+          while (result5 !== null) {
+            result3.push(result5);
+            var result5 = parse_Blank();
           }
         } else {
           var result3 = null;
         }
         if (result3 !== null) {
-          if (input.substr(pos, 1) === "{") {
-            var result4 = "{";
-            pos += 1;
+          var result4 = parse_DetachedTypeList();
+          if (result4 !== null) {
+            var result1 = [result3, result4];
           } else {
-            var result4 = null;
-            if (reportMatchFailures) {
-              matchFailed("\"{\"");
-            }
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(types) {
+              return types;
+            })(result1[1])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_DetachedTypeList() {
+        var cacheKey = 'DetachedTypeList@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        if (input.substr(pos, 1) === "{") {
+          var result3 = "{";
+          pos += 1;
+        } else {
+          var result3 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"{\"");
+          }
+        }
+        if (result3 !== null) {
+          var result4 = [];
+          var result17 = parse_Blank();
+          while (result17 !== null) {
+            result4.push(result17);
+            var result17 = parse_Blank();
           }
           if (result4 !== null) {
-            var result5 = [];
-            var result18 = parse_Blank();
-            while (result18 !== null) {
-              result5.push(result18);
-              var result18 = parse_Blank();
-            }
+            var result5 = parse_Identifier();
             if (result5 !== null) {
-              var result6 = parse_Identifier();
+              var result6 = [];
+              var result16 = parse_Blank();
+              while (result16 !== null) {
+                result6.push(result16);
+                var result16 = parse_Blank();
+              }
               if (result6 !== null) {
                 var result7 = [];
-                var result17 = parse_Blank();
-                while (result17 !== null) {
-                  result7.push(result17);
-                  var result17 = parse_Blank();
+                var savedPos2 = pos;
+                if (input.substr(pos, 1) === "|") {
+                  var result12 = "|";
+                  pos += 1;
+                } else {
+                  var result12 = null;
+                  if (reportMatchFailures) {
+                    matchFailed("\"|\"");
+                  }
                 }
-                if (result7 !== null) {
-                  var result8 = [];
+                if (result12 !== null) {
+                  var result13 = [];
+                  var result15 = parse_Blank();
+                  while (result15 !== null) {
+                    result13.push(result15);
+                    var result15 = parse_Blank();
+                  }
+                  if (result13 !== null) {
+                    var result14 = parse_Identifier();
+                    if (result14 !== null) {
+                      var result11 = [result12, result13, result14];
+                    } else {
+                      var result11 = null;
+                      pos = savedPos2;
+                    }
+                  } else {
+                    var result11 = null;
+                    pos = savedPos2;
+                  }
+                } else {
+                  var result11 = null;
+                  pos = savedPos2;
+                }
+                while (result11 !== null) {
+                  result7.push(result11);
                   var savedPos2 = pos;
                   if (input.substr(pos, 1) === "|") {
-                    var result13 = "|";
+                    var result12 = "|";
                     pos += 1;
                   } else {
-                    var result13 = null;
+                    var result12 = null;
                     if (reportMatchFailures) {
                       matchFailed("\"|\"");
                     }
                   }
-                  if (result13 !== null) {
-                    var result14 = [];
-                    var result16 = parse_Blank();
-                    while (result16 !== null) {
-                      result14.push(result16);
-                      var result16 = parse_Blank();
+                  if (result12 !== null) {
+                    var result13 = [];
+                    var result15 = parse_Blank();
+                    while (result15 !== null) {
+                      result13.push(result15);
+                      var result15 = parse_Blank();
                     }
-                    if (result14 !== null) {
-                      var result15 = parse_Identifier();
-                      if (result15 !== null) {
-                        var result12 = [result13, result14, result15];
+                    if (result13 !== null) {
+                      var result14 = parse_Identifier();
+                      if (result14 !== null) {
+                        var result11 = [result12, result13, result14];
                       } else {
-                        var result12 = null;
+                        var result11 = null;
                         pos = savedPos2;
                       }
                     } else {
-                      var result12 = null;
+                      var result11 = null;
                       pos = savedPos2;
                     }
                   } else {
-                    var result12 = null;
+                    var result11 = null;
                     pos = savedPos2;
                   }
-                  while (result12 !== null) {
-                    result8.push(result12);
-                    var savedPos2 = pos;
-                    if (input.substr(pos, 1) === "|") {
-                      var result13 = "|";
-                      pos += 1;
-                    } else {
-                      var result13 = null;
-                      if (reportMatchFailures) {
-                        matchFailed("\"|\"");
-                      }
-                    }
-                    if (result13 !== null) {
-                      var result14 = [];
-                      var result16 = parse_Blank();
-                      while (result16 !== null) {
-                        result14.push(result16);
-                        var result16 = parse_Blank();
-                      }
-                      if (result14 !== null) {
-                        var result15 = parse_Identifier();
-                        if (result15 !== null) {
-                          var result12 = [result13, result14, result15];
-                        } else {
-                          var result12 = null;
-                          pos = savedPos2;
-                        }
-                      } else {
-                        var result12 = null;
-                        pos = savedPos2;
-                      }
-                    } else {
-                      var result12 = null;
-                      pos = savedPos2;
-                    }
+                }
+                if (result7 !== null) {
+                  var result8 = [];
+                  var result10 = parse_Blank();
+                  while (result10 !== null) {
+                    result8.push(result10);
+                    var result10 = parse_Blank();
                   }
                   if (result8 !== null) {
-                    var result9 = [];
-                    var result11 = parse_Blank();
-                    while (result11 !== null) {
-                      result9.push(result11);
-                      var result11 = parse_Blank();
+                    if (input.substr(pos, 1) === "}") {
+                      var result9 = "}";
+                      pos += 1;
+                    } else {
+                      var result9 = null;
+                      if (reportMatchFailures) {
+                        matchFailed("\"}\"");
+                      }
                     }
                     if (result9 !== null) {
-                      if (input.substr(pos, 1) === "}") {
-                        var result10 = "}";
-                        pos += 1;
-                      } else {
-                        var result10 = null;
-                        if (reportMatchFailures) {
-                          matchFailed("\"}\"");
-                        }
-                      }
-                      if (result10 !== null) {
-                        var result1 = [result3, result4, result5, result6, result7, result8, result9, result10];
-                      } else {
-                        var result1 = null;
-                        pos = savedPos1;
-                      }
+                      var result1 = [result3, result4, result5, result6, result7, result8, result9];
                     } else {
                       var result1 = null;
                       pos = savedPos1;
@@ -2067,7 +2286,7 @@ module.exports = (function(){
                 types.push(item[2]);
               });
               return types;
-            })(result1[3], result1[5])
+            })(result1[2], result1[4])
           : null;
         if (result2 !== null) {
           var result0 = result2;
