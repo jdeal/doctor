@@ -46,7 +46,7 @@ KnownTag
   = __ tag:
     ( DescriptionTag / ParamTag / ReturnTag / ClassTag / ConstructorTag /
       PropertyTag / ExampleTag / VisibilityTag / AbstractTag / ExtendsTag / 
-      SignatureTag
+      SignatureTag / CopyTag
     ) {
       return tag
     }
@@ -134,6 +134,11 @@ ExtendsTag
 SignatureTag
   = '@signature' text:Description? {
     return {name: 'signature', value: {description: text} };
+  }
+
+CopyTag
+  = '@copy' Blank+ copyFrom:Identifier {
+    return {name: 'copy', value: copyFrom};
   }
 
 Identifier

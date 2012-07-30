@@ -19,6 +19,10 @@ html {
   font-weight: bold;
   text-decoration: none;
 }
+a,
+a:visited {
+  color: #2e7db2;
+}
 h1 {
   border-color: #aaa;
   border-style: solid;
@@ -73,3 +77,4 @@ dd {
   padding-right: 2px;
   display: inline-block;
 }
+

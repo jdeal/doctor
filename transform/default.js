@@ -4,6 +4,7 @@ rules.push({
   type: 'script',
   transform: function (node) {
     node.item('path', node.path);
+    node.item('functions', {});
   }
 });
 
@@ -132,6 +133,9 @@ var commentTagFunctions = {
       node.description = value.description;
     }
     node.checksSignature = true;
+  },
+  "copy": function (value, node) {
+    node.copyTags = value;
   }
 };
 
@@ -174,6 +178,9 @@ function transformFunction(node) {
   var nameNode = node.nodes[0];
   var paramsNodes = node.nodes[1] ? node.nodes[1].nodes : [];
   node.name = nameNode.value;
+  if (node.name) {
+    node.item('functions')[node.name] = node;
+  }
   node.params = [];
   node.paramIndex = {};
 
@@ -183,6 +190,19 @@ function transformFunction(node) {
   if (node.paramTags === undefined && node.parent &&
       node.parent.type === 'assign' && node.parent.paramTags) {
     paramTags = node.parent.paramTags;
+  }
+  node.item('paramTags', paramTags);
+
+  if (node.copyTags) {
+    var tagSource = node.item('functions')[node.copyTags];
+    if (tagSource) {
+      if (!node.description && tagSource.description) {
+        node.description = tagSource.description;
+      }
+      if (!paramTags && tagSource.item('paramTags')) {
+        paramTags = tagSource.item('paramTags');
+      }
+    }
   }
 
   paramsNodes.forEach(function (paramNode, i) {

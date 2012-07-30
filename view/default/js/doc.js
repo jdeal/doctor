@@ -17,7 +17,7 @@ doc.idify = function idify(key) {
 doc.addChild = function (parent, childName, text, cssClass) {
   var child = $('<' + childName + '>');
   if (text) {
-    child.text(text);
+    child.html(text);
   }
   if (cssClass) {
     child.addClass(cssClass);
@@ -101,7 +101,15 @@ doc.getDisplayType = function (item) {
 
 doc.typesHtml = function (types) {
   if (types && types.length > 0) {
-    return '<span class="types">{' + types.join(', ') + '}</span>';
+    var html = '<span class="types">{';
+    types.forEach(function (type, i) {
+      if (i > 0) {
+        html += ', ';
+      }
+      html += '<span class="class-link" data-class-name="' + type + '">' + type + '</span>';
+    });
+    html += '}</span>';
+    return html;
   }
   return '';
 };
@@ -230,7 +238,12 @@ doc.renderFunction = function (report, group, item, parent) {
         paramsString += ' [';
       }
       if (i > 0) {
-        paramsString += ', ';
+        paramsString += ',';
+        if (param.optional) {
+          paramsString += '&nbsp;';
+        } else {
+          paramsString += ' ';
+        }
       }
       paramsString += param.name;
       if (param.optional) {
@@ -238,7 +251,7 @@ doc.renderFunction = function (report, group, item, parent) {
       }
     });
     if (params.length > 0) {
-      paramsString = ' ' + paramsString + ' ';
+      paramsString = ' ' + paramsString + '&nbsp;';
     }
     //var nameDiv = doc.addDiv(parent, '', 'itemName');
     var nameDiv = doc.addChild(parent, 'h2', '', 'itemName');
@@ -365,6 +378,19 @@ doc.renderContent = function (report, item, nested) {
       }
       $(pre).addClass('brush:' + brush);
     });
+    $('pre > code').each(function (i, code) {
+      code = $(code);
+      var brush;
+      if (code.attr('class')) {
+        brush = code.attr('class');
+        brush = brush.substring(brush.indexOf('lang-') + 'lang-'.length);
+      }
+      if (brushes.indexOf(brush) < 0) {
+        brush = 'plain';
+      }
+      code.parent().addClass('brush:' + brush);
+      code.contents().unwrap();
+    });
     SyntaxHighlighter.highlight();
     return;
   }
@@ -486,7 +512,22 @@ doc.hasTocItems = function (item) {
   }
 };
 
-doc.renderToc = function (report, group, element, nested) {
+doc.classNavMap = {};
+
+doc.classNav = function (className) {
+  if (className in doc.classNavMap) {
+    return doc.classNavMap[className];
+  }
+  var nav = $('.nav-' + className);
+  if (nav.length === 1) {
+    doc.classNavMap[className] = nav;
+  } else {
+    doc.classNavMap[className] = null;
+  }
+  return doc.classNavMap[className];
+};
+
+doc.renderToc = function (report, group, element, nested, hide) {
   var ul = $('<ul>');
   element.append(ul);
 
@@ -513,7 +554,16 @@ doc.renderToc = function (report, group, element, nested) {
           chevronStyle = "display:none";
         }
 
-        var a = $('<a id="' + doc.idify(itemKey) + '" href="#" class="expanded"><span class="chevron" style="' + chevronStyle + '">&nbsp;<span id="expand_' + itemKey + '">&#9656;</span><span id="contract' + itemKey + '" style="display:none">&#9662;</span></span>&nbsp;' + doc.itemDisplayName(item) + '</a>');
+        var a = $('<a id="' + doc.idify(itemKey) + '" class="nav-' +
+          doc.itemDisplayName(item) +
+          ' expanded" + " href="#"><span class="chevron" style="' +
+          chevronStyle + '">&nbsp;<span id="expand_' + itemKey +
+          '">&#9656;</span><span id="contract_' + itemKey +
+          '" style="display:none">&#9662;</span></span>&nbsp;' +
+          doc.itemDisplayName(item) + '</a>');
+        if (hide) {
+          a.nextAll();
+        }
         li.append(a);
 
         a.click(function () {
@@ -529,22 +579,46 @@ doc.renderToc = function (report, group, element, nested) {
             if (a.data('expanded')) {
               a.nextAll().hide();
               a.data('expanded', false);
-              $('#contract' + itemKey).hide();
+              $('#contract_' + itemKey).hide();
               $('#expand_' + itemKey).show();
             } else {
-              if (a.data('rendered')) {
+              //if (a.data('rendered')) {
                 a.nextAll().show();
-              } else {
-                doc.renderToc(report, item, li, true);
-              }
+              //} else {
+              //  console.log("*");
+              //  doc.renderToc(report, item, li, true);
+              //}
               a.data('expanded', true);
               $('#expand_' + itemKey).hide();
-              $('#contract' + itemKey).show();
+              $('#contract_' + itemKey).show();
             }
           }
           doc.renderContent(report, item, nested);
           SyntaxHighlighter.highlight();
+
+          $('.class-link').each(function (i, linkNode) {
+            var link = $(linkNode);
+            var className = link.data('class-name');
+            var classNav = doc.classNav(className);
+            if (classNav) {
+              link.wrap('<a href="#"></a>');
+              link.click(function () {
+                if (!$('#classes').data('expanded')) {
+                  $('#classes').click();
+                }
+                setTimeout(function () {
+                  $('.nav-' + link.data('class-name')).click();
+                });
+              });
+            }
+          });
         });
+
+        if (!a.data('rendered')) {
+          doc.renderToc(report, item, li, true, true);
+          a.nextAll().hide();
+          a.data('rendered', true);
+        }
 
         if (item.isHomePath && !item.clickedHomePath) {
           item.clickedHomePath = true;

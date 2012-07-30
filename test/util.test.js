@@ -15,15 +15,15 @@ test('toArray', function () {
   assert.deepEqual(util.toArray(undefined), []);
 });
 
-test('clone', function () {
-  var obj = { a: "a", b: "b" };
-  var result = util.clone(obj);
+// test('clone', function () {
+//   var obj = { a: "a", b: "b" };
+//   var result = util.clone(obj);
   
-  assert.deepEqual(obj, result);
-  obj.a = "not a";
-  assert.equal(obj.a, "not a");
-  assert.equal(result.a, "a");
-});
+//   assert.deepEqual(obj, result);
+//   obj.a = "not a";
+//   assert.equal(obj.a, "not a");
+//   assert.equal(result.a, "a");
+// });
 
 test('findFile exists', function (done) {
   util.findFile(['doesNotExist', __filename], function (file) {

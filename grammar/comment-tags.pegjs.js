@@ -16,6 +16,7 @@ module.exports = (function(){
         "Blank": parse_Blank,
         "ClassTag": parse_ClassTag,
         "ConstructorTag": parse_ConstructorTag,
+        "CopyTag": parse_CopyTag,
         "DefaultValue": parse_DefaultValue,
         "Description": parse_Description,
         "DescriptionSpan": parse_DescriptionSpan,
@@ -723,51 +724,56 @@ module.exports = (function(){
         var savedPos1 = pos;
         var result3 = parse___();
         if (result3 !== null) {
-          var result15 = parse_DescriptionTag();
-          if (result15 !== null) {
-            var result4 = result15;
+          var result16 = parse_DescriptionTag();
+          if (result16 !== null) {
+            var result4 = result16;
           } else {
-            var result14 = parse_ParamTag();
-            if (result14 !== null) {
-              var result4 = result14;
+            var result15 = parse_ParamTag();
+            if (result15 !== null) {
+              var result4 = result15;
             } else {
-              var result13 = parse_ReturnTag();
-              if (result13 !== null) {
-                var result4 = result13;
+              var result14 = parse_ReturnTag();
+              if (result14 !== null) {
+                var result4 = result14;
               } else {
-                var result12 = parse_ClassTag();
-                if (result12 !== null) {
-                  var result4 = result12;
+                var result13 = parse_ClassTag();
+                if (result13 !== null) {
+                  var result4 = result13;
                 } else {
-                  var result11 = parse_ConstructorTag();
-                  if (result11 !== null) {
-                    var result4 = result11;
+                  var result12 = parse_ConstructorTag();
+                  if (result12 !== null) {
+                    var result4 = result12;
                   } else {
-                    var result10 = parse_PropertyTag();
-                    if (result10 !== null) {
-                      var result4 = result10;
+                    var result11 = parse_PropertyTag();
+                    if (result11 !== null) {
+                      var result4 = result11;
                     } else {
-                      var result9 = parse_ExampleTag();
-                      if (result9 !== null) {
-                        var result4 = result9;
+                      var result10 = parse_ExampleTag();
+                      if (result10 !== null) {
+                        var result4 = result10;
                       } else {
-                        var result8 = parse_VisibilityTag();
-                        if (result8 !== null) {
-                          var result4 = result8;
+                        var result9 = parse_VisibilityTag();
+                        if (result9 !== null) {
+                          var result4 = result9;
                         } else {
-                          var result7 = parse_AbstractTag();
-                          if (result7 !== null) {
-                            var result4 = result7;
+                          var result8 = parse_AbstractTag();
+                          if (result8 !== null) {
+                            var result4 = result8;
                           } else {
-                            var result6 = parse_ExtendsTag();
-                            if (result6 !== null) {
-                              var result4 = result6;
+                            var result7 = parse_ExtendsTag();
+                            if (result7 !== null) {
+                              var result4 = result7;
                             } else {
-                              var result5 = parse_SignatureTag();
-                              if (result5 !== null) {
-                                var result4 = result5;
+                              var result6 = parse_SignatureTag();
+                              if (result6 !== null) {
+                                var result4 = result6;
                               } else {
-                                var result4 = null;;
+                                var result5 = parse_CopyTag();
+                                if (result5 !== null) {
+                                  var result4 = result5;
+                                } else {
+                                  var result4 = null;;
+                                };
                               };
                             };
                           };
@@ -1741,6 +1747,74 @@ module.exports = (function(){
           ? (function(text) {
               return {name: 'signature', value: {description: text} };
             })(result1[1])
+          : null;
+        if (result2 !== null) {
+          var result0 = result2;
+        } else {
+          var result0 = null;
+          pos = savedPos0;
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_CopyTag() {
+        var cacheKey = 'CopyTag@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        var savedPos0 = pos;
+        var savedPos1 = pos;
+        if (input.substr(pos, 5) === "@copy") {
+          var result3 = "@copy";
+          pos += 5;
+        } else {
+          var result3 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"@copy\"");
+          }
+        }
+        if (result3 !== null) {
+          var result6 = parse_Blank();
+          if (result6 !== null) {
+            var result4 = [];
+            while (result6 !== null) {
+              result4.push(result6);
+              var result6 = parse_Blank();
+            }
+          } else {
+            var result4 = null;
+          }
+          if (result4 !== null) {
+            var result5 = parse_Identifier();
+            if (result5 !== null) {
+              var result1 = [result3, result4, result5];
+            } else {
+              var result1 = null;
+              pos = savedPos1;
+            }
+          } else {
+            var result1 = null;
+            pos = savedPos1;
+          }
+        } else {
+          var result1 = null;
+          pos = savedPos1;
+        }
+        var result2 = result1 !== null
+          ? (function(copyFrom) {
+              return {name: 'copy', value: copyFrom};
+            })(result1[2])
           : null;
         if (result2 !== null) {
           var result0 = result2;
