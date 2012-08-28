@@ -63,7 +63,7 @@ DescriptionTag
 
 ParamTag
   = '@param' types:TypeList? Blank+ lbracket:("[" Blank*)? name:Identifier
-  Blank* prop:PropertyChain? defaultValue:DefaultValue? rbracket:(Blank* "]")?
+  Blank* prop:PropertyChain? defaultValue:DefaultValue? rbracket:(Blank* "]")? Blank* '-'?
   text:Description? {
     var tag = {
       name: 'param',
@@ -107,7 +107,7 @@ ConstructorTag
   }
 
 PropertyTag
-  = '@property' types:TypeList? Blank+ name:Identifier Blank+ text:Description {
+  = '@property' types:TypeList? Blank+ name:Identifier Blank+ '-'? text:Description {
     return {name: 'property', value: {name: name, description: text, types: types}};
   }
 
