@@ -40,16 +40,24 @@ TagList
   }
 
 AnyTag
-  = __ '@' (UnicodeLetter / UnicodeDigit)+
+  = __ '@' chars:NonBlank+ {
+  return chars.join('');
+  }
 
 KnownTag
   = __ tag:
     ( DescriptionTag / ParamTag / ReturnTag / ClassTag / ConstructorTag /
       PropertyTag / ExampleTag / VisibilityTag / AbstractTag / ExtendsTag / 
       SignatureTag / CopyTag
+      /UnknownTag
     ) {
       return tag
     }
+
+UnknownTag
+  = tag:AnyTag Blank+ text:Description {
+    return {name: tag, value: {description: text}};
+  }
 
 DefaultValue 
   = Blank* "=" Blank* chars:[^\]]+ {

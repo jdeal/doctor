@@ -118,3 +118,14 @@ test('extends', function () {
   assert.equal(tag.name, 'extends');
   assert.equal(tag.value, 'SuperClass');
 });
+
+test('unknow tag', function() {
+  var comment = '@caribou hello desc';
+
+  var ast = parser.parse(comment);
+  assert.equal(ast.length, 1);
+  
+  var tag = ast[0];
+  assert.equal(tag.name, 'caribou');
+  assert.equal(tag.value.description, 'hello desc');
+});
