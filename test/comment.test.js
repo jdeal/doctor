@@ -95,7 +95,7 @@ test('properties', function () {
   assert.equal(prop2.value.types[0], 'String');
 });
 
-test('description separated by dash in param tag', function() {
+test('description separated by dash in property tag', function() {
  var comment = "@property propTwo - property two description";
  var ast = parser.parse(comment);
 
