@@ -71,6 +71,10 @@ rules.push({
 });
 
 var commentTagFunctions = {
+  "_unknown" : function (tagName, value, node) {
+    node.unknownTags = node.unknownTags || [];
+    node.unknownTags.push({name : tagName, value : value});
+  },
   "description": function (value, node) {
     node.description = value.description;
   },
@@ -169,6 +173,12 @@ rules.push({
     node.commentTags.forEach(function (tag, i) {
       if (tag.name in commentTagFunctions) {
         commentTagFunctions[tag.name](tag.value, node);
+      } else {
+        //we don't know the tag
+        if(!transform.options.allowUnknownTags)
+          throw new Error('Tag @'+tag.name+' unknown.');
+        else
+          commentTagFunctions._unknown(tag.name, tag.value, node);
       }
     });
   }
