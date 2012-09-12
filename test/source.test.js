@@ -130,7 +130,7 @@ testSources([
   'express/view',
 
   'yamlish/yamlish',
-  
+
   'tap/tap-consumer',
   'tap/runner',
   'tap/tap-runner',
@@ -138,5 +138,6 @@ testSources([
   'mkdirp/index',
 
   'jade/jade',
-  'jade/parser'
+  'jade/parser',
+  'dynamic-constructor'
 ]);
