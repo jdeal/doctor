@@ -906,14 +906,16 @@ rules.push({
           groups: ['classes']
         });
       }
-      var methods = classVar.properties.prototype.properties;
-      _(methods).each(function (method, methodName) {
-        items = items.concat(functionReportItems(method.node, method.value, methodName, {
-          isMethod: true,
-          key: node.item('module') + '.class.' + className + '.' + methodName,
-          groups: [groupName]
-        }));
-      });
+      if (classVar.properties.prototype && classVar.properties.prototype.properties) {
+        var methods = classVar.properties.prototype.properties;
+        _(methods).each(function (method, methodName) {
+          items = items.concat(functionReportItems(method.node, method.value, methodName, {
+            isMethod: true,
+            key: node.item('module') + '.class.' + className + '.' + methodName,
+            groups: [groupName]
+          }));
+        });
+      }
     });
     return items;
   }
