@@ -4,7 +4,7 @@
 
 __Doctor is still under development, so be careful.__
 
-![pinch](https://github.com/jdeal/doctor/raw/master/README/pinch-points-warning-143.png)
+![pinch](https://github.com/jdeal/doctor/raw/master/images/pinch-points-warning-143.png)
 
 Doctor converts JavaScript source to documentation, using rules to rely on
 conventions so that comment tags are (mostly) not needed.
@@ -13,7 +13,7 @@ conventions so that comment tags are (mostly) not needed.
 
 Maybe a picture will help:
 
-![pipeline](https://github.com/jdeal/doctor/raw/master/README/doctor-pipeline.png)
+![pipeline](https://github.com/jdeal/doctor/raw/master/images/doctor-pipeline.png)
 
 Okay, maybe that needs some explanation.
 
