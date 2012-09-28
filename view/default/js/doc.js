@@ -83,10 +83,10 @@ doc.render = function (report) {
   doc.renderToc(report, root, $('#toc'));
 
   // Expand the first group.
-  if (root.items.length === 1) {
-    var firstLink  = $('#toc a:first');
-    firstLink.click();
-  }
+  // if (root.items.length === 1) {
+  //   var firstLink  = $('#toc a:first');
+  //   firstLink.click();
+  // }
 };
 
 doc.getDisplayType = function (item) {
@@ -344,7 +344,7 @@ doc.renderContent = function (report, item, nested) {
   var content = $('#content');
 
 
-  if (!nested) {
+  if (!nested || item.type === 'group') {
     // if (item.items) {
     //   item.items.forEach(function (key) {
     //     var item = report.items[key];
@@ -363,9 +363,11 @@ doc.renderContent = function (report, item, nested) {
   content.html('');
 
   //doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
-  doc.addChild(content, 'h1', doc.itemDisplayName(item), 'contentTitle');
+  if (item.type !== 'document') {
+    doc.addChild(content, 'h1', doc.itemDisplayName(item), 'contentTitle');
+  }
 
-  if (item.type === 'readme') {
+  if (item.type === 'document') {
     var brushes = ['bash', 'shell', 'cpp', 'c', 'css', 'diff', 'patch',
                    'js', 'jscript', 'javascript', 'plain', 'text', 'ps',
                    'powershell', 'sql', 'xml', 'xhtml', 'xslt', 'html',
@@ -493,7 +495,7 @@ doc.tocTypeSet = {
   'group': true,
   'module': true,
   'class': true,
-  'readme': true
+  'document': true
 };
 
 doc.isTocItem = function (item) {
@@ -530,8 +532,6 @@ doc.classNav = function (className) {
 doc.renderToc = function (report, group, element, nested, hide) {
   var ul = $('<ul>');
   element.append(ul);
-
-  var clickedHome = false;
 
   if (group.items) {
     if (!group.isSorted) {
@@ -613,13 +613,11 @@ doc.renderToc = function (report, group, element, nested, hide) {
             }
           });
         });
-
         if (!a.data('rendered')) {
           doc.renderToc(report, item, li, true, true);
           a.nextAll().hide();
           a.data('rendered', true);
         }
-
         if (item.isHomePath && !item.clickedHomePath) {
           item.clickedHomePath = true;
           setTimeout(function () {

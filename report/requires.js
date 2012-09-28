@@ -1,4 +1,5 @@
 var Path = require('path');
+var marked = require('marked');
 
 var rules = [];
 

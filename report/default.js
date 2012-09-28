@@ -452,16 +452,19 @@ rules.push({
     // save this global scope
     node.item('globalScopeNode', node);
     node.item('scopeNode', node);
+    node.item('documentToTocItem', {});
     return [
       {
         type: 'group',
         key: 'modules',
-        name: 'Modules'
+        name: 'Modules',
+        items: []
       },
       {
         type: 'group',
         key: 'classes',
-        name: 'Classes'
+        name: 'Classes',
+        items: []
       }
     ];
   }
@@ -906,14 +909,16 @@ rules.push({
           groups: ['classes']
         });
       }
-      var methods = classVar.properties.prototype.properties;
-      _(methods).each(function (method, methodName) {
-        items = items.concat(functionReportItems(method.node, method.value, methodName, {
-          isMethod: true,
-          key: node.item('module') + '.class.' + className + '.' + methodName,
-          groups: [groupName]
-        }));
-      });
+      if (classVar.properties.prototype && classVar.properties.prototype.properties) {
+        var methods = classVar.properties.prototype.properties;
+        _(methods).each(function (method, methodName) {
+          items = items.concat(functionReportItems(method.node, method.value, methodName, {
+            isMethod: true,
+            key: node.item('module') + '.class.' + className + '.' + methodName,
+            groups: [groupName]
+          }));
+        });
+      }
     });
     return items;
   }
@@ -971,7 +976,7 @@ rules.push({
       });
     }
 
-    var sortOrder = ['readme', 'modules', 'classes'];
+    var sortOrder = ['documents', 'modules', 'classes'];
     report.item('root').items = _(report.item('root').items).sortBy(function (item) {
       return sortOrder.indexOf(item);
     });
@@ -1000,26 +1005,144 @@ rules.push({
 rules.push({
   type: 'markdown',
   report: function (node, report) {
-    if (!report.item('readme')) {
+    if (!report.item('documents')) {
       report.add({
-        key: 'readme',
+        key: 'documents',
         type: 'group',
-        name: 'README'
+        name: 'Documents'
       });
     }
+    // var content = [];
+    var groups = ['documents'];
+    // if (report.item('toc.' + node.path)) {
+    //   groups = ['toc.' + node.path];
+    // }
+    var name = node.path;
+    var isSorted = true;
+    if (node.item('documentToTocItem')[node.path]) {
+      name = node.item('documentToTocItem')[node.path].name;
+      groups = [node.item('documentToTocItem')[node.path].group];
+      isSorted = true;
+    }
     var item = {
-      key: 'readme.' + node.path,
-      name: node.path,
-      type: 'readme',
+      key: 'document.' + node.path,
+      name: name,
+      type: 'document',
       content: node.content,
-      groups: ['readme']
+      groups: groups,
+      isSorted: true
     };
+    // node.item('document-content', content);
+    // node.item('document-item', item);
     if (node.path === 'README.md') {
       item.isHome = true;
     }
-    return item;
+    if (node.path === 'TOC.md') {
+      node.item('isToc', true);
+      node.item('toc', node);
+      node.item('tocLevels', []);
+      node.item('tocKeys', []);
+    } else {
+      return item;
+    }
   }
 });
+
+rules.push({
+  type: 'markdown-heading',
+  match: function (node, report) {
+    return node.item('isToc');
+  },
+  report: function (node, report) {
+    var level = node.nodes[0].value;
+    var tocLevels = node.item('tocLevels');
+    var tocKeys = node.item('tocKeys');
+    var parentKey = 'documents';
+    var i;
+    if (tocLevels.length > level) {
+      for (i = tocLevels.length; i > level; i--) {
+        tocLevels.pop();
+      }
+    }
+    if (tocLevels.length === level) {
+      tocLevels[level - 1]++;
+    } else if (tocLevels.length < level) {
+      tocLevels.push(1);
+      level = tocLevels.length;
+    }
+    var tocKey = 'toc';
+    for (i = 0; i < tocLevels.length; i++) {
+      tocKey += '.' + tocLevels[i];
+    }
+    tocKeys[level - 1] = tocKey;
+    if (level > 1) {
+      parentKey = tocKeys[level - 2];
+    }
+    var nodes = node.nodes[1].nodes;
+    if (nodes.length > 0 && nodes[0].type === 'markdown-link') {
+      var link = nodes[0];
+      if (link.nodes[0].type === 'markdown-content' &&
+          link.nodes[1].type === 'markdown-url') {
+        var label = link.nodes[0].value;
+        var url = link.nodes[1].value;
+        tocKeys[level - 1] = 'toc.' + url;
+        node.item('documentToTocItem')[url] = {name: label, group: parentKey};
+      }
+    } else if (nodes[0].type === 'markdown-content') {
+      var item = {
+        key: tocKey,
+        name: nodes[0].value,
+        type: 'group',
+        groups: [parentKey],
+        isSorted: true
+      };
+      return item;
+    }
+  }
+});
+
+// rules.push({
+//   type: 'markdown-link',
+//   report: function (node, report) {
+//     var isToc = node.item('isToc');
+//     if (isToc) {
+//       if (node.nodes && node.nodes[0] && node.nodes[0].value) {
+//         return {
+//           key: ''
+//         }
+//       }
+//       console.log(node.nodes[0].value)
+//     }
+//   }
+// });
+
+// rules.push({
+//   type: 'markdown-content',
+//   report: function (node, report) {
+//     var content = node.item('document-content');
+//     content.push(node.value);
+//   }
+// });
+
+// rules.push({
+//   type: 'end-markdown',
+//   report: function (node, report) {
+//     var content = node.item('document-content');
+//     content = content.join('');
+//     var item = node.item('document-item');
+//     item.content = content;
+//   }
+// });
+
+  // rules.push({
+//   type: '',
+//   match: function (node) {
+//     return node.type.substring(0, 'markdown-'.length) === 'markdown-';
+//   },
+//   report: function (node, report) {
+//     console.log("begin:" + node.type);
+//   }
+// });
 
 module.exports = rules;
 

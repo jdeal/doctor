@@ -27,8 +27,8 @@ function markdownToHtml(nodes) {
       nodes.description = stripTrailingNewline(marked(nodes.description));
     }
     if (nodes.content) {
-      //nodes.content = ghm.parse(nodes.content);
       nodes.content = stripTrailingNewline(marked(nodes.content));
+      //nodes.content = ghm.parse(nodes.content);
     }
     _(nodes).each(function (value) {
       markdownToHtml(value);
