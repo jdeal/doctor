@@ -1005,15 +1005,15 @@ module.exports = (function(){
           }
         }
         if (result3 !== null) {
-          var result26 = parse_TypeList();
-          var result4 = result26 !== null ? result26 : '';
+          var result30 = parse_TypeList();
+          var result4 = result30 !== null ? result30 : '';
           if (result4 !== null) {
-            var result25 = parse_Blank();
-            if (result25 !== null) {
+            var result29 = parse_Blank();
+            if (result29 !== null) {
               var result5 = [];
-              while (result25 !== null) {
-                result5.push(result25);
-                var result25 = parse_Blank();
+              while (result29 !== null) {
+                result5.push(result29);
+                var result29 = parse_Blank();
               }
             } else {
               var result5 = null;
@@ -1021,81 +1021,107 @@ module.exports = (function(){
             if (result5 !== null) {
               var savedPos3 = pos;
               if (input.substr(pos, 1) === "[") {
-                var result22 = "[";
+                var result26 = "[";
                 pos += 1;
               } else {
-                var result22 = null;
+                var result26 = null;
                 if (reportMatchFailures) {
                   matchFailed("\"[\"");
                 }
               }
-              if (result22 !== null) {
-                var result23 = [];
-                var result24 = parse_Blank();
-                while (result24 !== null) {
-                  result23.push(result24);
-                  var result24 = parse_Blank();
+              if (result26 !== null) {
+                var result27 = [];
+                var result28 = parse_Blank();
+                while (result28 !== null) {
+                  result27.push(result28);
+                  var result28 = parse_Blank();
                 }
-                if (result23 !== null) {
-                  var result21 = [result22, result23];
+                if (result27 !== null) {
+                  var result25 = [result26, result27];
                 } else {
-                  var result21 = null;
+                  var result25 = null;
                   pos = savedPos3;
                 }
               } else {
-                var result21 = null;
+                var result25 = null;
                 pos = savedPos3;
               }
-              var result6 = result21 !== null ? result21 : '';
+              var result6 = result25 !== null ? result25 : '';
               if (result6 !== null) {
                 var result7 = parse_Identifier();
                 if (result7 !== null) {
                   var result8 = [];
-                  var result20 = parse_Blank();
-                  while (result20 !== null) {
-                    result8.push(result20);
-                    var result20 = parse_Blank();
+                  var result24 = parse_Blank();
+                  while (result24 !== null) {
+                    result8.push(result24);
+                    var result24 = parse_Blank();
                   }
                   if (result8 !== null) {
-                    var result19 = parse_PropertyChain();
-                    var result9 = result19 !== null ? result19 : '';
+                    var result23 = parse_PropertyChain();
+                    var result9 = result23 !== null ? result23 : '';
                     if (result9 !== null) {
-                      var result18 = parse_DefaultValue();
-                      var result10 = result18 !== null ? result18 : '';
+                      var result22 = parse_DefaultValue();
+                      var result10 = result22 !== null ? result22 : '';
                       if (result10 !== null) {
                         var savedPos2 = pos;
-                        var result15 = [];
-                        var result17 = parse_Blank();
-                        while (result17 !== null) {
-                          result15.push(result17);
-                          var result17 = parse_Blank();
+                        var result19 = [];
+                        var result21 = parse_Blank();
+                        while (result21 !== null) {
+                          result19.push(result21);
+                          var result21 = parse_Blank();
                         }
-                        if (result15 !== null) {
+                        if (result19 !== null) {
                           if (input.substr(pos, 1) === "]") {
-                            var result16 = "]";
+                            var result20 = "]";
                             pos += 1;
                           } else {
-                            var result16 = null;
+                            var result20 = null;
                             if (reportMatchFailures) {
                               matchFailed("\"]\"");
                             }
                           }
-                          if (result16 !== null) {
-                            var result14 = [result15, result16];
+                          if (result20 !== null) {
+                            var result18 = [result19, result20];
                           } else {
-                            var result14 = null;
+                            var result18 = null;
                             pos = savedPos2;
                           }
                         } else {
-                          var result14 = null;
+                          var result18 = null;
                           pos = savedPos2;
                         }
-                        var result11 = result14 !== null ? result14 : '';
+                        var result11 = result18 !== null ? result18 : '';
                         if (result11 !== null) {
-                          var result13 = parse_Description();
-                          var result12 = result13 !== null ? result13 : '';
+                          var result12 = [];
+                          var result17 = parse_Blank();
+                          while (result17 !== null) {
+                            result12.push(result17);
+                            var result17 = parse_Blank();
+                          }
                           if (result12 !== null) {
-                            var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12];
+                            if (input.substr(pos, 1) === "-") {
+                              var result16 = "-";
+                              pos += 1;
+                            } else {
+                              var result16 = null;
+                              if (reportMatchFailures) {
+                                matchFailed("\"-\"");
+                              }
+                            }
+                            var result13 = result16 !== null ? result16 : '';
+                            if (result13 !== null) {
+                              var result15 = parse_Description();
+                              var result14 = result15 !== null ? result15 : '';
+                              if (result14 !== null) {
+                                var result1 = [result3, result4, result5, result6, result7, result8, result9, result10, result11, result12, result13, result14];
+                              } else {
+                                var result1 = null;
+                                pos = savedPos1;
+                              }
+                            } else {
+                              var result1 = null;
+                              pos = savedPos1;
+                            }
                           } else {
                             var result1 = null;
                             pos = savedPos1;
@@ -1158,7 +1184,7 @@ module.exports = (function(){
                 tag.value.property = prop;
               }
               return tag;
-            })(result1[1], result1[3], result1[4], result1[6], result1[7], result1[8], result1[9])
+            })(result1[1], result1[3], result1[4], result1[6], result1[7], result1[8], result1[11])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -1416,15 +1442,15 @@ module.exports = (function(){
           }
         }
         if (result3 !== null) {
-          var result11 = parse_TypeList();
-          var result4 = result11 !== null ? result11 : '';
+          var result13 = parse_TypeList();
+          var result4 = result13 !== null ? result13 : '';
           if (result4 !== null) {
-            var result10 = parse_Blank();
-            if (result10 !== null) {
+            var result12 = parse_Blank();
+            if (result12 !== null) {
               var result5 = [];
-              while (result10 !== null) {
-                result5.push(result10);
-                var result10 = parse_Blank();
+              while (result12 !== null) {
+                result5.push(result12);
+                var result12 = parse_Blank();
               }
             } else {
               var result5 = null;
@@ -1432,20 +1458,35 @@ module.exports = (function(){
             if (result5 !== null) {
               var result6 = parse_Identifier();
               if (result6 !== null) {
-                var result9 = parse_Blank();
-                if (result9 !== null) {
+                var result11 = parse_Blank();
+                if (result11 !== null) {
                   var result7 = [];
-                  while (result9 !== null) {
-                    result7.push(result9);
-                    var result9 = parse_Blank();
+                  while (result11 !== null) {
+                    result7.push(result11);
+                    var result11 = parse_Blank();
                   }
                 } else {
                   var result7 = null;
                 }
                 if (result7 !== null) {
-                  var result8 = parse_Description();
+                  if (input.substr(pos, 1) === "-") {
+                    var result10 = "-";
+                    pos += 1;
+                  } else {
+                    var result10 = null;
+                    if (reportMatchFailures) {
+                      matchFailed("\"-\"");
+                    }
+                  }
+                  var result8 = result10 !== null ? result10 : '';
                   if (result8 !== null) {
-                    var result1 = [result3, result4, result5, result6, result7, result8];
+                    var result9 = parse_Description();
+                    if (result9 !== null) {
+                      var result1 = [result3, result4, result5, result6, result7, result8, result9];
+                    } else {
+                      var result1 = null;
+                      pos = savedPos1;
+                    }
                   } else {
                     var result1 = null;
                     pos = savedPos1;
@@ -1473,7 +1514,7 @@ module.exports = (function(){
         var result2 = result1 !== null
           ? (function(types, name, text) {
               return {name: 'property', value: {name: name, description: text, types: types}};
-            })(result1[1], result1[3], result1[5])
+            })(result1[1], result1[3], result1[6])
           : null;
         if (result2 !== null) {
           var result0 = result2;

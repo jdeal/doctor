@@ -50,6 +50,17 @@ test('optional param tag', function () {
   assert.equal(tag.value.description, 'description');
 });
 
+test('description separated by dash in param tag', function() {
+ var comment = "@param s - description";
+ var ast = parser.parse(comment);
+
+ assert.equal(ast.length, 1);
+
+ var tag = ast[0];
+ assert.equal(tag.value.name, 's');
+ assert.equal(tag.value.description, 'description');
+});
+
 test('class and constructor description', function () {
   var comment = "@class class description\n" +
       "@constructor constructor description";
@@ -82,6 +93,17 @@ test('properties', function () {
   assert.equal(prop2.value.description, 'property two description');
   assert.equal(prop2.value.types.length, 1);
   assert.equal(prop2.value.types[0], 'String');
+});
+
+test('description separated by dash in property tag', function() {
+ var comment = "@property propTwo - property two description";
+ var ast = parser.parse(comment);
+
+ assert.equal(ast.length, 1);
+
+ var tag = ast[0];
+ assert.equal(tag.value.name, 'propTwo');
+ assert.equal(tag.value.description, 'property two description');
 });
 
 test('example', function () {
