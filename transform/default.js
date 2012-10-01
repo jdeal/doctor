@@ -175,7 +175,7 @@ rules.push({
         commentTagFunctions[tag.name](tag.value, node);
       } else {
         //we don't know the tag
-        if(!transform.options.allowUnknownTags)
+        if(!transform.options.unknown)
           throw new Error('Tag @'+tag.name+' unknown.');
         else
           commentTagFunctions._unknown(tag.name, tag.value, node);
