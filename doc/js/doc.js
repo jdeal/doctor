@@ -1,19 +1,23 @@
 'use strict';
 
-/*global alert: false */
+/*global alert: false, $: false, SyntaxHighlighter: false */
 
-SyntaxHighlighter.defaults['gutter'] = false;
-
-function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+SyntaxHighlighter.defaults.gutter = false;
 
 var doc = {}; // namespace
+
+doc.capitalize = function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+doc.idify = function idify(key) {
+  return key.replace(/\//g, '__').replace(/\./g, '--');
+};
 
 doc.addChild = function (parent, childName, text, cssClass) {
   var child = $('<' + childName + '>');
   if (text) {
-    child.text(text);
+    child.html(text);
   }
   if (cssClass) {
     child.addClass(cssClass);
@@ -79,16 +83,16 @@ doc.render = function (report) {
   doc.renderToc(report, root, $('#toc'));
 
   // Expand the first group.
-  if (root.items.length === 1) {
-    var firstLink  = $('#toc a:first');
-    firstLink.click();
-  }
+  // if (root.items.length === 1) {
+  //   var firstLink  = $('#toc a:first');
+  //   firstLink.click();
+  // }
 };
 
 doc.getDisplayType = function (item) {
-  if (item.method) {
+  if (item.isMethod) {
     return "method";
-  } else if (item.constructorFunction) {
+  } else if (item.isConstructor) {
     return "constructor";
   } else {
     return item.type;
@@ -97,14 +101,23 @@ doc.getDisplayType = function (item) {
 
 doc.typesHtml = function (types) {
   if (types && types.length > 0) {
-    return '<span class="types">{' + types.join(', ') + '}</span> ';
+    var html = '<span class="types">{';
+    types.forEach(function (type, i) {
+      if (i > 0) {
+        html += ', ';
+      }
+      html += '<span class="class-link" data-class-name="' + type + '">' + type + '</span>';
+    });
+    html += '}</span>';
+    return html;
   }
   return '';
 };
 
 doc.paramHtml = function (param) {
-  var html = '<dl class="param"><dt>' + doc.typesHtml(param.types) +
-      '<span class="paramName">' + param.name + '</span>';
+  var html = '<dl class="param"><dt>' +
+    '<span class="paramName">' + param.name + '</span> ' +
+    doc.typesHtml(param.types);
 
   // if (param.optional) {
   //   html += ' Optional';
@@ -113,6 +126,14 @@ doc.paramHtml = function (param) {
     html += '<div>Default: ' + param.defaultValue + '</div>';
   }
   var description = '<div>' + (param.description || '') + '</div>';
+  if (param.properties) {
+    description += '<dl>';
+    param.properties.forEach(function (property) {
+      description += '<dt><span class="paramName">' + property.name + '</span> ' +
+        doc.typesHtml(property.types) + '</dt><dd>' + property.description + '</dd>';
+    });
+    description += '</dl>';
+  }
   html += '</dt><dd>' + description + '</dd>';
   return html;
 };
@@ -168,10 +189,15 @@ doc.renderClassDescription = function (item, parent) {
     doc.addChild(parent, 'p', item.classDescription, 'classDescription');
   }
   if (item.properties && item.properties.length > 0) {
-    var html = '<h3>Properties:</h3>';
-    item.properties.forEach(function (type) {
-      html += doc.paramHtml(type);
+    var html = '';
+    item.properties.forEach(function (prop) {
+      if (doc.isVisible(prop)) {
+        html += doc.paramHtml(prop);
+      }
     });
+    if (html !== '') {
+      html = '<h3>Properties:</h3>' + html;
+    }
     parent.append(html);
   }
 
@@ -212,7 +238,12 @@ doc.renderFunction = function (report, group, item, parent) {
         paramsString += ' [';
       }
       if (i > 0) {
-        paramsString += ', ';
+        paramsString += ',';
+        if (param.optional) {
+          paramsString += '&nbsp;';
+        } else {
+          paramsString += ' ';
+        }
       }
       paramsString += param.name;
       if (param.optional) {
@@ -220,7 +251,7 @@ doc.renderFunction = function (report, group, item, parent) {
       }
     });
     if (params.length > 0) {
-      paramsString = ' ' + paramsString + ' ';
+      paramsString = ' ' + paramsString + '&nbsp;';
     }
     //var nameDiv = doc.addDiv(parent, '', 'itemName');
     var nameDiv = doc.addChild(parent, 'h2', '', 'itemName');
@@ -262,12 +293,12 @@ doc.isPrivate = function (item) {
 // };
 
 doc.isPublicMethod = function (item) {
-  return item.method && (!item.visibility || item.visibility === 'public');
+  return item.isMethod && (!item.visibility || item.visibility === 'public');
       // || doc.isVisible(doc.getParentItem(report, item));
 };
 
 doc.isVisible = function (item) {
-  return item.api || doc.isPublicMethod(item);
+  return !item.isPrivate || doc.isPublicMethod(item);
   // || item.visibility === 'public';
 };
 
@@ -287,7 +318,7 @@ doc.hasVisibleChildren = function (report, item) {
 };
 
 doc.showClass = function (report, item) {
-  if (item.constructorFunction) {
+  if (item.isConstructor) {
     return doc.isVisible(item) || doc.hasVisibleChildren(report, item);
   }
   return false;
@@ -311,14 +342,62 @@ doc.togglePrivate = function () {
 
 doc.renderContent = function (report, item, nested) {
   var content = $('#content');
-  content.html('');
 
-  if (!nested) {
+
+  if (!nested || item.type === 'group') {
+    // if (item.items) {
+    //   item.items.forEach(function (key) {
+    //     var item = report.items[key];
+    //     var title = doc.addChild(content, 'h2', doc.itemDisplayName(item), 'contentTitle');
+    //     title.wrapInner('<a></a>');
+    //     title.click(function () {
+    //       $('#' + doc.idify(item.key)).click();
+    //     });
+    //     doc.addChild(content, 'p', item.type, 'contentType');
+    //   });
+    // }
+
     return;
   }
 
+  content.html('');
+
   //doc.addDiv(content, doc.itemDisplayName(item), 'contentTitle');
-  doc.addChild(content, 'h1', doc.itemDisplayName(item), 'contentTitle');
+  if (item.type !== 'document') {
+    doc.addChild(content, 'h1', doc.itemDisplayName(item), 'contentTitle');
+  }
+
+  if (item.type === 'document') {
+    var brushes = ['bash', 'shell', 'cpp', 'c', 'css', 'diff', 'patch',
+                   'js', 'jscript', 'javascript', 'plain', 'text', 'ps',
+                   'powershell', 'sql', 'xml', 'xhtml', 'xslt', 'html',
+                   'xhtml'];
+    content.append(item.content);
+    $('.highlight pre').each(function (i, pre) {
+      var brush = $(pre).attr('lang');
+      if (brushes.indexOf(brush) < 0) {
+        brush = 'plain';
+      }
+      $(pre).addClass('brush:' + brush);
+    });
+    $('pre > code').each(function (i, code) {
+      code = $(code);
+      var brush;
+      if (code.attr('class')) {
+        brush = code.attr('class');
+        brush = brush.substring(brush.indexOf('lang-') + 'lang-'.length);
+      }
+      if (brushes.indexOf(brush) < 0) {
+        brush = 'plain';
+      }
+      code.parent().addClass('brush:' + brush);
+      code.contents().unwrap();
+    });
+    SyntaxHighlighter.highlight();
+    return;
+  }
+
+
   doc.addChild(content, 'p', item.type, 'contentType');
   if (item.module) {
     var moduleItem = report.items[item.module];
@@ -341,7 +420,7 @@ doc.renderContent = function (report, item, nested) {
 
   var itemKeys = item.items;
   
-  if (item.constructorFunction || item.type === 'module-function') {
+  if (item.isConstructor || item.type === 'module-function') {
     itemKeys = [item.key].concat(itemKeys);
   }
 
@@ -355,17 +434,19 @@ doc.renderContent = function (report, item, nested) {
     items.push(report.items[key]);
   });
 
-  items.sort(function (a, b) {
-    var nameA = doc.itemDisplayName(a);
-    var nameB = doc.itemDisplayName(b);
-    if (nameA < nameB) {
-      return -1;
-    } else if (nameA > nameB) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
+  if (item.key !== 'root') {
+    items.sort(function (a, b) {
+      var nameA = doc.itemDisplayName(a);
+      var nameB = doc.itemDisplayName(b);
+      if (nameA < nameB) {
+        return -1;
+      } else if (nameA > nameB) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
 
   var parentItem = item;
   var showPrivateToggle = false;
@@ -413,19 +494,49 @@ doc.itemDisplayName = function (item) {
 doc.tocTypeSet = {
   'group': true,
   'module': true,
-  'class': true
+  'class': true,
+  'document': true
 };
 
 doc.isTocItem = function (item) {
   return doc.tocTypeSet[item.type] ? true : false;
 };
 
-doc.renderToc = function (report, group, element, nested) {
+doc.hasTocItems = function (item) {
+  if (item.itemTypeCounts) {
+    for (var itemType in item.itemTypeCounts) {
+      if (item.itemTypeCounts[itemType]) {
+        if (itemType in doc.tocTypeSet) {
+          return true;
+        }
+      }
+    }
+  }
+};
+
+doc.classNavMap = {};
+
+doc.classNav = function (className) {
+  if (className in doc.classNavMap) {
+    return doc.classNavMap[className];
+  }
+  var nav = $('.nav-' + className);
+  if (nav.length === 1) {
+    doc.classNavMap[className] = nav;
+  } else {
+    doc.classNavMap[className] = null;
+  }
+  return doc.classNavMap[className];
+};
+
+doc.renderToc = function (report, group, element, nested, hide) {
   var ul = $('<ul>');
   element.append(ul);
 
   if (group.items) {
-    group.items.sort();
+    if (!group.isSorted) {
+      group.items.sort();
+    }
 
     group.items.forEach(function (itemKey, i) {
       var item = report.items[itemKey];
@@ -433,7 +544,26 @@ doc.renderToc = function (report, group, element, nested) {
         var li = $('<li>');
         ul.append(li);
 
-        var a = $('<a href="#">' + doc.itemDisplayName(item) + '</a>');
+        var expander = '&nbsp;';
+        if (item.items && item.items.length > 0) {
+          expander = '&#9656;&nbsp;';
+        }
+
+        var chevronStyle = "";
+        if (!doc.hasTocItems(item)) {
+          chevronStyle = "display:none";
+        }
+
+        var a = $('<a id="' + doc.idify(itemKey) + '" class="nav-' +
+          doc.itemDisplayName(item) +
+          ' expanded" + " href="#"><span class="chevron" style="' +
+          chevronStyle + '">&nbsp;<span id="expand_' + itemKey +
+          '">&#9656;</span><span id="contract_' + itemKey +
+          '" style="display:none">&#9662;</span></span>&nbsp;' +
+          doc.itemDisplayName(item) + '</a>');
+        if (hide) {
+          a.nextAll();
+        }
         li.append(a);
 
         a.click(function () {
@@ -446,17 +576,54 @@ doc.renderToc = function (report, group, element, nested) {
           }
 
           if (item.items) {
-            if (a.data('rendered')) {
-              a.nextAll().toggle();
+            if (a.data('expanded')) {
+              a.nextAll().hide();
+              a.data('expanded', false);
+              $('#contract_' + itemKey).hide();
+              $('#expand_' + itemKey).show();
             } else {
-              doc.renderToc(report, item, li, true);
-              a.data('rendered', true);
+              //if (a.data('rendered')) {
+                a.nextAll().show();
+              //} else {
+              //  console.log("*");
+              //  doc.renderToc(report, item, li, true);
+              //}
+              a.data('expanded', true);
+              $('#expand_' + itemKey).hide();
+              $('#contract_' + itemKey).show();
             }
           }
-
           doc.renderContent(report, item, nested);
           SyntaxHighlighter.highlight();
+
+          $('.class-link').each(function (i, linkNode) {
+            var link = $(linkNode);
+            var className = link.data('class-name');
+            var classNav = doc.classNav(className);
+            if (classNav) {
+              link.wrap('<a href="#"></a>');
+              link.click(function () {
+                if (!$('#classes').data('expanded')) {
+                  $('#classes').click();
+                }
+                setTimeout(function () {
+                  $('.nav-' + link.data('class-name')).click();
+                });
+              });
+            }
+          });
         });
+        if (!a.data('rendered')) {
+          doc.renderToc(report, item, li, true, true);
+          a.nextAll().hide();
+          a.data('rendered', true);
+        }
+        if (item.isHomePath && !item.clickedHomePath) {
+          item.clickedHomePath = true;
+          setTimeout(function () {
+            a.click();
+          }, 0);
+        }
       }
     });
   }

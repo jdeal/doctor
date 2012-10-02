@@ -3,88 +3,1219 @@
     "root": {
       "type": "group",
       "items": [
+        "documents",
         "modules",
         "classes"
-      ]
+      ],
+      "itemTypeCounts": {
+        "group": 3
+      },
+      "isSorted": true,
+      "isHomePath": true
     },
     "modules": {
       "type": "group",
       "key": "modules",
       "name": "Modules",
       "items": [
-        "ast-node",
-        "cli",
-        "doctor",
-        "nice-ast",
-        "post-process",
-        "render",
-        "report",
-        "transform",
-        "util"
-      ]
+        "lib/util",
+        "lib/nice-ast",
+        "lib/ast-node",
+        "lib/render",
+        "lib/report",
+        "lib/transform",
+        "lib/doctor",
+        "lib/cli"
+      ],
+      "groups": [
+        "root"
+      ],
+      "itemTypeCounts": {
+        "module": 8
+      }
     },
     "classes": {
       "type": "group",
       "key": "classes",
       "name": "Classes",
       "items": [
-        "ast-node.class.AstNode",
-        "report.class.Report"
-      ]
+        "lib/ast-node.class.AstNode",
+        "lib/report.class.Report"
+      ],
+      "groups": [
+        "root"
+      ],
+      "itemTypeCounts": {
+        "class": 2
+      }
     },
-    "ast-node": {
+    "documents": {
+      "key": "documents",
+      "type": "group",
+      "name": "Documents",
+      "groups": [
+        "root"
+      ],
+      "items": [
+        "document.README.md"
+      ],
+      "itemTypeCounts": {
+        "document": 1
+      },
+      "isHomePath": true
+    },
+    "lib/util": {
       "type": "module",
-      "key": "ast-node",
+      "key": "lib/util",
+      "name": "util",
+      "description": "<p>This module contains various utility functions used by doctor.\n\n</p>\n<p>It notably contains some nasty synchronous versions of asynchronous modules.\n\n</p>\n<p>Say what?\n\n</p>\n<p>Yeah, that&#39;s right. This is so doctor can run synchronously or ansynhronously.\nDoctor wants to run asynchronously, so when we have to run synchronously (such\nas during that ugly startup phase where you have to deal with synchronous\nrequire), we have to fake it out with synchronous versions of asynchronous\nmodules. This is ugly, but it&#39;s better than having to write two different\nversions of doctor.</p>",
+      "groups": [
+        "modules"
+      ],
+      "items": [
+        "lib/util.findRules",
+        "lib/util.findFunctions",
+        "lib/util.findFile",
+        "lib/util.findDir",
+        "lib/util.compareFileDates",
+        "lib/util.toArray",
+        "lib/util.localizePaths",
+        "lib/util.cleanUndefinedProperties",
+        "lib/util.isCapitalized",
+        "lib/util.sync.findRules",
+        "lib/util.sync.findFunctions",
+        "lib/util.sync.findFile",
+        "lib/util.sync.findDir",
+        "lib/util.sync.compareFileDates",
+        "lib/util.sync.toArray",
+        "lib/util.sync.localizePaths",
+        "lib/util.sync.cleanUndefinedProperties",
+        "lib/util.sync.isCapitalized",
+        "lib/util.sync.async.forEachSeries",
+        "lib/util.sync.async.detect",
+        "lib/util.sync.async.some",
+        "lib/util.sync.async.forEach"
+      ],
+      "itemTypeCounts": {
+        "function": 22
+      }
+    },
+    "lib/util.findRules": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.findRules",
+      "params": [
+        {
+          "name": "optionRules",
+          "description": "<p>Rule modules.</p>",
+          "types": [
+            "Array",
+            "string"
+          ]
+        },
+        {
+          "name": "defaultDir",
+          "description": "<p>Default directory for rules.</p>",
+          "types": [
+            "string"
+          ]
+        }
+      ],
+      "description": "<p>Require the specified rule modules, either from the default location or from\nthe user-specified location.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "findRules",
+      "signatures": []
+    },
+    "lib/util.findFunctions": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.findFunctions",
+      "params": [
+        {
+          "name": "optionFunctions"
+        },
+        {
+          "name": "defaultDir"
+        }
+      ],
+      "description": "<p>Require the specified function modules, either in the default location or\nthe user-specified location.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "findFunctions",
+      "signatures": []
+    },
+    "lib/util.findFile": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.findFile",
+      "params": [
+        {
+          "name": "fileList",
+          "description": "<p>Possible files to find.</p>",
+          "types": [
+            "Array"
+          ]
+        },
+        {
+          "name": "ifCb",
+          "description": "<p>If one is found, do this.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "elseCb",
+          "description": "<p>If one is not found, do this.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "sync",
+          "description": "<p>Flag to force function to run synchronously.</p>",
+          "types": [
+            "boolean"
+          ]
+        }
+      ],
+      "description": "<p>Find one of a list of files.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "findFile",
+      "signatures": []
+    },
+    "lib/util.findDir": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.findDir",
+      "params": [
+        {
+          "name": "dirList",
+          "description": "<p>Possible directories to find.</p>",
+          "types": [
+            "Array"
+          ]
+        },
+        {
+          "name": "ifCb",
+          "description": "<p>If one is found, do this.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "elseCb",
+          "description": "<p>If one is not found, do this.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "sync",
+          "description": "<p>Flag to force function to run synchronously.</p>",
+          "types": [
+            "boolean"
+          ]
+        }
+      ],
+      "description": "<p>Find one of a list of directories.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "findDir",
+      "signatures": []
+    },
+    "lib/util.compareFileDates": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.compareFileDates",
+      "params": [
+        {
+          "name": "a",
+          "description": "<p>Path to first file.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "b",
+          "description": "<p>Path to second file.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call with comparison value.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "sync",
+          "description": "<p>Flag to force function to run synchronously.</p>",
+          "types": [
+            "boolean"
+          ]
+        }
+      ],
+      "description": "<p>Compare the modified time stamps of two files.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "compareFileDates",
+      "signatures": []
+    },
+    "lib/util.toArray": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.toArray",
+      "params": [
+        {
+          "name": "maybeArray",
+          "description": "<p>Array or value.</p>"
+        }
+      ],
+      "description": "<p>Take an array or a value, and if it&#39;s a value, wrap it in an array.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "toArray",
+      "signatures": []
+    },
+    "lib/util.localizePaths": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.localizePaths",
+      "params": [
+        {
+          "name": "pathList",
+          "description": "<p>List of absolute paths.</p>",
+          "types": [
+            "Array"
+          ]
+        }
+      ],
+      "description": "<p>Compress absolute paths down to minimal non-colliding lengths.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "localizePaths",
+      "signatures": []
+    },
+    "lib/util.cleanUndefinedProperties": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.cleanUndefinedProperties",
+      "params": [
+        {
+          "name": "obj",
+          "description": "<p>Object to copy.</p>"
+        }
+      ],
+      "description": "<p>Create a copy of the object without the undefined properties.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "cleanUndefinedProperties",
+      "signatures": []
+    },
+    "lib/util.isCapitalized": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.isCapitalized",
+      "params": [
+        {
+          "name": "string",
+          "description": "<p>String to check.</p>",
+          "types": [
+            "string"
+          ]
+        }
+      ],
+      "description": "<p>Check if string starts with a captial letter.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "isCapitalized",
+      "signatures": []
+    },
+    "lib/util.sync.findRules": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.findRules",
+      "params": [
+        {
+          "name": "optionRules",
+          "description": "<p>Rule modules.</p>",
+          "types": [
+            "Array",
+            "string"
+          ]
+        },
+        {
+          "name": "defaultDir",
+          "description": "<p>Default directory for rules.</p>",
+          "types": [
+            "string"
+          ]
+        }
+      ],
+      "description": "<p>Require the specified rule modules, either from the default location or from\nthe user-specified location.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.findRules",
+      "signatures": []
+    },
+    "lib/util.sync.findFunctions": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.findFunctions",
+      "params": [
+        {
+          "name": "optionFunctions"
+        },
+        {
+          "name": "defaultDir"
+        }
+      ],
+      "description": "<p>Require the specified function modules, either in the default location or\nthe user-specified location.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.findFunctions",
+      "signatures": []
+    },
+    "lib/util.sync.findFile": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.findFile",
+      "params": [
+        {
+          "name": "fileList",
+          "description": "<p>Possible files to find.</p>",
+          "types": [
+            "Array"
+          ]
+        },
+        {
+          "name": "ifCb",
+          "description": "<p>If one is found, do this.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "elseCb",
+          "description": "<p>If one is not found, do this.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Find one of a list of files.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.findFile",
+      "signatures": []
+    },
+    "lib/util.sync.findDir": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.findDir",
+      "params": [
+        {
+          "name": "dirList",
+          "description": "<p>Possible directories to find.</p>",
+          "types": [
+            "Array"
+          ]
+        },
+        {
+          "name": "ifCb",
+          "description": "<p>If one is found, do this.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "elseCb",
+          "description": "<p>If one is not found, do this.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Find one of a list of directories.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.findDir",
+      "signatures": []
+    },
+    "lib/util.sync.compareFileDates": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.compareFileDates",
+      "params": [
+        {
+          "name": "a",
+          "description": "<p>Path to first file.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "b",
+          "description": "<p>Path to second file.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call with comparison value.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Compare the modified time stamps of two files.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.compareFileDates",
+      "signatures": []
+    },
+    "lib/util.sync.toArray": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.toArray",
+      "params": [
+        {
+          "name": "maybeArray",
+          "description": "<p>Array or value.</p>"
+        }
+      ],
+      "description": "<p>Take an array or a value, and if it&#39;s a value, wrap it in an array.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.toArray",
+      "signatures": []
+    },
+    "lib/util.sync.localizePaths": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.localizePaths",
+      "params": [
+        {
+          "name": "pathList",
+          "description": "<p>List of absolute paths.</p>",
+          "types": [
+            "Array"
+          ]
+        }
+      ],
+      "description": "<p>Compress absolute paths down to minimal non-colliding lengths.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.localizePaths",
+      "signatures": []
+    },
+    "lib/util.sync.cleanUndefinedProperties": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.cleanUndefinedProperties",
+      "params": [
+        {
+          "name": "obj",
+          "description": "<p>Object to copy.</p>"
+        }
+      ],
+      "description": "<p>Create a copy of the object without the undefined properties.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.cleanUndefinedProperties",
+      "signatures": []
+    },
+    "lib/util.sync.isCapitalized": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.isCapitalized",
+      "params": [
+        {
+          "name": "string",
+          "description": "<p>String to check.</p>",
+          "types": [
+            "string"
+          ]
+        }
+      ],
+      "description": "<p>Check if string starts with a captial letter.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.isCapitalized",
+      "signatures": []
+    },
+    "lib/util.sync.async.forEachSeries": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.async.forEachSeries",
+      "params": [
+        {
+          "name": "array"
+        },
+        {
+          "name": "eachCb"
+        },
+        {
+          "name": "finalCb"
+        }
+      ],
+      "description": "<p>Synchronous forEachSeries, with an asynchronous signature. Because it&#39;s\nsynchronous, it can also be used as the forEach function.\n\n</p>\n<p>See the async module for details.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.async.forEachSeries",
+      "signatures": []
+    },
+    "lib/util.sync.async.detect": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.async.detect",
+      "params": [
+        {
+          "name": "array"
+        },
+        {
+          "name": "passCb"
+        },
+        {
+          "name": "resultCb"
+        }
+      ],
+      "description": "<p>Synchronous detect, with an asynchronous signature.\n\n</p>\n<p>See the async module for details.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.async.detect",
+      "signatures": []
+    },
+    "lib/util.sync.async.some": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.async.some",
+      "params": [
+        {
+          "name": "array"
+        },
+        {
+          "name": "passCb"
+        },
+        {
+          "name": "doneCb"
+        }
+      ],
+      "description": "<p>Synchronous some, with an asynchronous signature.\n\n</p>\n<p>See the async module for details.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.async.some",
+      "signatures": []
+    },
+    "lib/util.sync.async.forEach": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/util.sync.async.forEach",
+      "params": [
+        {
+          "name": "array"
+        },
+        {
+          "name": "eachCb"
+        },
+        {
+          "name": "finalCb"
+        }
+      ],
+      "description": "<p>Synchronous forEachSeries, with an asynchronous signature. Because it&#39;s\nsynchronous, it can also be used as the forEach function.\n\n</p>\n<p>See the async module for details.</p>",
+      "groups": [
+        "lib/util"
+      ],
+      "name": "sync.async.forEach",
+      "signatures": []
+    },
+    "lib/nice-ast": {
+      "type": "module",
+      "key": "lib/nice-ast",
+      "name": "nice-ast",
+      "groups": [
+        "modules"
+      ],
+      "items": [
+        "lib/nice-ast.walk",
+        "lib/nice-ast.walkEnd",
+        "lib/nice-ast.extendAst",
+        "lib/nice-ast.cleanAst",
+        "lib/nice-ast.astFromFile",
+        "lib/nice-ast.astFromSource",
+        "lib/nice-ast.walkWithRules",
+        "lib/nice-ast.pegParser",
+        "lib/nice-ast.lispify",
+        "lib/nice-ast.like",
+        "lib/nice-ast.equal",
+        "lib/nice-ast.parserForGrammar"
+      ],
+      "itemTypeCounts": {
+        "function": 12
+      }
+    },
+    "lib/nice-ast.walk": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.walk",
+      "params": [
+        {
+          "name": "node",
+          "description": "<p>AST node to walk.</p>",
+          "types": [
+            "AstNode",
+            "Object"
+          ],
+          "properties": [
+            {
+              "name": ".type",
+              "description": "<p>Each AST node needs a type.</p>",
+              "types": [
+                "String"
+              ]
+            },
+            {
+              "name": ".nodes",
+              "description": "<p>Each AST node can optionally have a list of nodes to recurse.</p>",
+              "types": [
+                "Array"
+              ],
+              "optional": true
+            },
+            {
+              "name": ".type",
+              "description": "<p>Each AST node needs a type.</p>",
+              "types": [
+                "String"
+              ]
+            },
+            {
+              "name": ".nodes",
+              "description": "<p>Each AST node can optionally have a list of nodes to recurse.</p>",
+              "types": [
+                "Array"
+              ],
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "beforeCb",
+          "description": "<p>Function to call before recursing into node.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "afterCb",
+          "description": "<p>Function to call after recursing into node.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Walks a tree of AST nodes.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "walk",
+      "signatures": []
+    },
+    "lib/nice-ast.walkEnd": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.walkEnd",
+      "params": [
+        {
+          "name": "node",
+          "description": "<p>AST node to walk.</p>",
+          "types": [
+            "AstNode",
+            "Object"
+          ],
+          "properties": [
+            {
+              "name": ".type",
+              "description": "<p>Each AST node needs a type.</p>",
+              "types": [
+                "String"
+              ]
+            },
+            {
+              "name": ".nodes",
+              "description": "<p>Each AST node can optionally have a list of nodes to\nrecurse.</p>",
+              "types": [
+                "Array"
+              ],
+              "optional": true
+            },
+            {
+              "name": ".type",
+              "description": "<p>Each AST node needs a type.</p>",
+              "types": [
+                "String"
+              ]
+            },
+            {
+              "name": ".nodes",
+              "description": "<p>Each AST node can optionally have a list of nodes to\nrecurse.</p>",
+              "types": [
+                "Array"
+              ],
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call before and after recursing into node.\nAfter recursing node, pseudo-node of type &quot;end&quot; will be passed to callback.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Walks a tree of AST nodes.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "walkEnd",
+      "signatures": []
+    },
+    "lib/nice-ast.extendAst": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.extendAst",
+      "params": [
+        {
+          "name": "node",
+          "description": "<p>Plain object representing a node.</p>",
+          "types": [
+            "Object"
+          ],
+          "properties": [
+            {
+              "name": ".type",
+              "description": "<p>Type of the node.</p>",
+              "types": [
+                "String"
+              ]
+            },
+            {
+              "name": ".nodes",
+              "description": "<p>Child nodes that will also be converted.</p>",
+              "types": [
+                "Array"
+              ],
+              "optional": true
+            },
+            {
+              "name": ".type",
+              "description": "<p>Type of the node.</p>",
+              "types": [
+                "String"
+              ]
+            },
+            {
+              "name": ".nodes",
+              "description": "<p>Child nodes that will also be converted.</p>",
+              "types": [
+                "Array"
+              ],
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "parent",
+          "description": "<p>Parent AstNode in the tree.</p>",
+          "types": [
+            "AstNode"
+          ]
+        }
+      ],
+      "description": "<p>Takes a plain object representing a node, converts it to an AstNode and attaches\nit to a parent in an AstNode tree.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "extendAst",
+      "signatures": []
+    },
+    "lib/nice-ast.cleanAst": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.cleanAst",
+      "params": [
+        {
+          "name": "node",
+          "description": "<p>Node to convert.</p>",
+          "types": [
+            "AstNode"
+          ]
+        }
+      ],
+      "description": "<p>Converts a node (and its descendants) into plain objects that can be serialized.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "cleanAst",
+      "signatures": []
+    },
+    "lib/nice-ast.astFromFile": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.astFromFile",
+      "params": [
+        {
+          "name": "options",
+          "description": "<p>Doctor options.</p>",
+          "types": [
+            "Object"
+          ]
+        },
+        {
+          "name": "file",
+          "description": "<p>File name.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call with AST.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Convert file to AST.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "astFromFile",
+      "signatures": []
+    },
+    "lib/nice-ast.astFromSource": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.astFromSource",
+      "params": [
+        {
+          "name": "options",
+          "description": "<p>Doctor options.</p>",
+          "types": [
+            "Object"
+          ]
+        },
+        {
+          "name": "source",
+          "description": "<p>Source code.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "extension",
+          "description": "<p>File extension for source file.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call with AST.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Convert source code to an AST.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "astFromSource",
+      "signatures": []
+    },
+    "lib/nice-ast.walkWithRules": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.walkWithRules",
+      "params": [
+        {
+          "name": "options",
+          "description": "<p>Doctor options.</p>",
+          "types": [
+            "Object"
+          ]
+        },
+        {
+          "name": "rules",
+          "description": "<p>One or more rules file names.</p>",
+          "types": [
+            "Array",
+            "String"
+          ]
+        },
+        {
+          "name": "defaultDir",
+          "description": "<p>Default location for rules modules.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "ast",
+          "description": "<p>Root of AST.</p>",
+          "types": [
+            "AstNode"
+          ]
+        },
+        {
+          "name": "nodeCb",
+          "description": "<p>Function to call for each node.</p>",
+          "types": [
+            "function"
+          ]
+        },
+        {
+          "name": "finalCb",
+          "description": "<p>Function to call when finished walking.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Walk a tree of AST nodes and apply rules.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "walkWithRules",
+      "signatures": []
+    },
+    "lib/nice-ast.pegParser": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.pegParser",
+      "params": [
+        {
+          "name": "options",
+          "description": "<p>Doctor options.</p>",
+          "types": [
+            "Object"
+          ]
+        },
+        {
+          "name": "extension",
+          "description": "<p>File extension.</p>",
+          "types": [
+            "String"
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call with peg parser.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Given doctor options and a file extension, retrieve an appropriate peg parser.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "pegParser",
+      "signatures": []
+    },
+    "lib/nice-ast.lispify": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.lispify",
+      "params": [
+        {
+          "name": "node",
+          "description": "<p>AST node to lispify.</p>",
+          "types": [
+            "AstNode",
+            "Object"
+          ]
+        }
+      ],
+      "description": "<p>Convert a node to a lisp-like string, useful for debugging rules.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "lispify",
+      "signatures": []
+    },
+    "lib/nice-ast.like": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.like",
+      "params": [
+        {
+          "name": "a",
+          "description": "<p>Node to test for comparison. Must have all the\nproperties of node b.</p>",
+          "types": [
+            "AstNode",
+            "Object"
+          ]
+        },
+        {
+          "name": "b",
+          "description": "<p>Node that has a partial set of node a&#39;s properties.</p>",
+          "types": [
+            "AstNode",
+            "Object"
+          ]
+        }
+      ],
+      "description": "<p>Determine if a node is &quot;like&quot; another node, meaning it has all the properties of\nthat node.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "like",
+      "signatures": []
+    },
+    "lib/nice-ast.equal": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.equal",
+      "params": [
+        {
+          "name": "a",
+          "description": "<p>Example node.</p>",
+          "types": [
+            "AstNode"
+          ]
+        },
+        {
+          "name": "b",
+          "description": "<p>Node that should match a&#39;s properties.</p>",
+          "types": [
+            "AstNode"
+          ]
+        },
+        {
+          "name": "diff"
+        }
+      ],
+      "description": "<p>Tests two AST nodes for equality.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "equal",
+      "signatures": []
+    },
+    "lib/nice-ast.parserForGrammar": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/nice-ast.parserForGrammar",
+      "params": [
+        {
+          "name": "grammarFile",
+          "description": "<p>Name of grammar file.</p>",
+          "types": [
+            "String"
+          ]
+        }
+      ],
+      "description": "<p>Return the PEG parser for a given grammar file.</p>",
+      "groups": [
+        "lib/nice-ast"
+      ],
+      "name": "parserForGrammar",
+      "signatures": []
+    },
+    "lib/ast-node": {
+      "type": "module",
+      "key": "lib/ast-node",
       "name": "ast-node",
       "groups": [
         "modules"
       ],
       "items": [
-        "ast-node.AstNode",
-        "ast-node.getNodeItem"
-      ]
+        "lib/ast-node.exports-AstNode"
+      ],
+      "itemTypeCounts": {
+        "module-function": 1
+      }
     },
-    "ast-node.class.AstNode": {
+    "lib/ast-node.class.AstNode": {
       "type": "class",
-      "module": "ast-node",
-      "key": "ast-node.class.AstNode",
+      "module": "lib/ast-node",
+      "key": "lib/ast-node.class.AstNode",
       "name": "AstNode",
       "groups": [
         "classes"
       ],
       "items": [
-        "ast-node.AstNode",
-        "ast-node.AstNode.item",
-        "ast-node.AstNode.fix",
-        "ast-node.AstNode.index",
-        "ast-node.AstNode.walk",
-        "ast-node.AstNode.after",
-        "ast-node.AstNode.before",
-        "ast-node.AstNode.prepend",
-        "ast-node.AstNode.append",
-        "ast-node.AstNode.remove",
-        "ast-node.AstNode.lispify",
-        "ast-node.AstNode.like",
-        "ast-node.AstNode.equal",
-        "ast-node.AstNode.parser",
-        "ast-node.AstNode.likeSource",
-        "ast-node.AstNode.ast",
-        "ast-node.AstNode.fromSource",
-        "ast-node.AstNode.nodeFromSource"
-      ]
+        "lib/ast-node.exports-AstNode",
+        "lib/ast-node.class.AstNode.item",
+        "lib/ast-node.class.AstNode.fix",
+        "lib/ast-node.class.AstNode.index",
+        "lib/ast-node.class.AstNode.walk",
+        "lib/ast-node.class.AstNode.after",
+        "lib/ast-node.class.AstNode.before",
+        "lib/ast-node.class.AstNode.prepend",
+        "lib/ast-node.class.AstNode.append",
+        "lib/ast-node.class.AstNode.remove",
+        "lib/ast-node.class.AstNode.lispify",
+        "lib/ast-node.class.AstNode.like",
+        "lib/ast-node.class.AstNode.equal",
+        "lib/ast-node.class.AstNode.parser",
+        "lib/ast-node.class.AstNode.likeSource",
+        "lib/ast-node.class.AstNode.ast",
+        "lib/ast-node.class.AstNode.fromSource",
+        "lib/ast-node.class.AstNode.nodeFromSource"
+      ],
+      "itemTypeCounts": {
+        "module-function": 1,
+        "function": 17
+      }
     },
-    "ast-node.AstNode": {
+    "lib/ast-node.exports-AstNode": {
       "type": "module-function",
-      "constructorFunction": true,
-      "key": "ast-node.AstNode",
+      "isConstructor": true,
+      "key": "lib/ast-node.exports-AstNode",
       "params": [
         {
           "name": "node",
-          "description": "<p>Plain object to use as template for node.</p>"
+          "description": "<p>Plain object to use as template for node.</p>",
+          "types": [
+            "Object"
+          ]
         },
         {
           "name": "parent",
           "description": "<p>Parent node of this node.</p>",
+          "types": [
+            "AstNode"
+          ],
           "optional": true
         }
       ],
@@ -96,97 +1227,93 @@
         {
           "name": "parent",
           "description": "<p>Parent of this node.</p>",
-          "types": ""
+          "types": [
+            "AstNode"
+          ]
         },
         {
           "name": "prev",
           "description": "<p>Previous sibling of this node.</p>",
-          "types": ""
+          "types": [
+            "AstNode"
+          ]
         },
         {
           "name": "next",
           "description": "<p>Next sibling of this node.</p>",
-          "types": ""
+          "types": [
+            "AstNode"
+          ]
+        },
+        {
+          "name": "_items",
+          "isPrivate": true
         }
       ],
       "examples": [
+        "var node = new AstNode({type: 'string', value: 'Hello, world!'});",
         "var node = new AstNode({type: 'string', value: 'Hello, world!'});"
       ],
       "groups": [
-        "ast-node",
-        "ast-node.class.AstNode"
+        "lib/ast-node",
+        "lib/ast-node.class.AstNode"
       ],
       "name": "AstNode",
-      "signatures": [],
-      "api": true
-    },
-    "ast-node.getNodeItem": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.getNodeItem",
-      "params": [
-        {
-          "name": "key"
-        }
-      ],
-      "groups": [
-        "ast-node"
-      ],
-      "name": "getNodeItem",
       "signatures": []
     },
-    "ast-node.AstNode.item": {
+    "lib/ast-node.class.AstNode.item": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.item",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.item",
       "params": [
         {
-          "name": "key"
+          "name": "key",
+          "description": "<p>Item key.</p>"
         },
         {
           "name": "value",
-          "description": "<p>Set value to this value.</p>",
-          "optional": true
+          "description": "<p>Item value.</p>"
         }
       ],
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "item",
       "signatures": [
         {
-          "description": "<p>Gets an item value from a node.</p>",
+          "description": "<p>Gets an item value from a node. If the node doesn&#39;t have the item\nkey, a recursive search will continue up through the parents.</p>",
           "returns": {
             "description": "<p>Value for this item.</p>"
           },
           "arity": 1,
           "params": [
             {
-              "name": "key"
+              "name": "key",
+              "description": "<p>Item key.</p>"
             }
           ]
         },
         {
-          "description": "<p>Sets an item value for a particular node.</p>",
+          "description": "<p>Sets an item value for a particular node. Node items act like scoped\nvariables. Values set for a parent node can be seen by children nodes.</p>",
           "arity": 2,
           "params": [
             {
-              "name": "key"
+              "name": "key",
+              "description": "<p>Item key.</p>"
             },
             {
               "name": "value",
-              "description": "<p>Set value to this value.</p>",
-              "optional": true
+              "description": "<p>Item value.</p>"
             }
           ]
         }
       ],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.fix": {
+    "lib/ast-node.class.AstNode.fix": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.fix",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.fix",
       "params": [
         {
           "name": "index"
@@ -194,16 +1321,16 @@
       ],
       "description": "<p>Properly connect siblings to this node.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "fix",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.index": {
+    "lib/ast-node.class.AstNode.index": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.index",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.index",
       "params": [],
       "returns": {
         "description": "",
@@ -213,114 +1340,134 @@
       },
       "description": "<p>Get the index of a node.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "index",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.walk": {
+    "lib/ast-node.class.AstNode.walk": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.walk",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.walk",
       "params": [
         {
-          "name": "node"
+          "name": "node",
+          "description": "<p>Node to walk.</p>",
+          "types": [
+            "AstNode"
+          ]
         }
       ],
       "description": "<p>Walk this node and its children, using the registered walk method. When a\nnode is appended, this is used to run all the rules for the appended node and\nits children.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "walk",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.after": {
+    "lib/ast-node.class.AstNode.after": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.after",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.after",
       "params": [
         {
-          "name": "node"
+          "name": "node",
+          "description": "<p>Node to insert.</p>",
+          "types": [
+            "AstNode"
+          ]
         }
       ],
       "description": "<p>Insert node after this one.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "after",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.before": {
+    "lib/ast-node.class.AstNode.before": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.before",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.before",
       "params": [
         {
-          "name": "node"
+          "name": "node",
+          "description": "<p>Node to insert.</p>",
+          "types": [
+            "AstNode"
+          ]
         }
       ],
       "description": "<p>Insert node before this one.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "before",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.prepend": {
+    "lib/ast-node.class.AstNode.prepend": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.prepend",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.prepend",
       "params": [
         {
-          "name": "node"
+          "name": "node",
+          "description": "<p>Node to prepend.</p>",
+          "types": [
+            "AstNode"
+          ]
         }
       ],
       "description": "<p>Insert a new child node before any other child nodes.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "prepend",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.append": {
+    "lib/ast-node.class.AstNode.append": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.append",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.append",
       "params": [
         {
-          "name": "node"
+          "name": "node",
+          "description": "<p>Node to append.</p>",
+          "types": [
+            "AstNode"
+          ]
         }
       ],
       "description": "<p>Insert a new child node after any other child nodes.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "append",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.remove": {
+    "lib/ast-node.class.AstNode.remove": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.remove",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.remove",
       "params": [],
       "description": "<p>Remove this node.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "remove",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.lispify": {
+    "lib/ast-node.class.AstNode.lispify": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.lispify",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.lispify",
       "params": [],
       "returns": {
         "description": "",
@@ -328,21 +1475,25 @@
           "string"
         ]
       },
-      "description": "<p>Return a lisp-like representation of this node. Useful while creating rules.\nGives you a terse look at the AST.</p>",
+      "description": "<p>Return a lisp-like representation of this node. Useful for debugging rules.\nGives you a terse look at the AST.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "lispify",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.like": {
+    "lib/ast-node.class.AstNode.like": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.like",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.like",
       "params": [
         {
-          "name": "node"
+          "name": "node",
+          "description": "<p>Node that has a subset of nodes/properties.</p>",
+          "types": [
+            "AstNode"
+          ]
         }
       ],
       "returns": {
@@ -353,19 +1504,23 @@
       },
       "description": "<p>Returns true if this node has everything that node has.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "like",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.equal": {
+    "lib/ast-node.class.AstNode.equal": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.equal",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.equal",
       "params": [
         {
-          "name": "node"
+          "name": "node",
+          "description": "<p>Node that has identical nodes/properties.</p>",
+          "types": [
+            "AstNode"
+          ]
         }
       ],
       "returns": {
@@ -376,127 +1531,418 @@
       },
       "description": "<p>Return true if this node is idential to node.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "equal",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.parser": {
+    "lib/ast-node.class.AstNode.parser": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.parser",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.parser",
       "params": [],
       "returns": {
-        "description": "<p>The PEG parser used in creating this AST.</p>"
+        "description": "<p>PEG parser.</p>"
       },
+      "description": "<p>Get the PEG parser used to create this AST.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "parser",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.likeSource": {
+    "lib/ast-node.class.AstNode.likeSource": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.likeSource",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.likeSource",
       "params": [
         {
-          "name": "source"
+          "name": "source",
+          "description": "<p>Source code to parse and compare to this node.</p>",
+          "types": [
+            "string"
+          ]
         }
       ],
       "description": "<p>Compare this node to some arbitrary source. The source string will be\ncompiled to an AST, using the same grammar that was used to create this node.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "likeSource",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.ast": {
+    "lib/ast-node.class.AstNode.ast": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.ast",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.ast",
       "params": [],
+      "returns": {
+        "description": "<p>Plain object.</p>",
+        "types": [
+          "Object"
+        ]
+      },
       "description": "<p>Return an AST without the sibling and parent references.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "ast",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.fromSource": {
+    "lib/ast-node.class.AstNode.fromSource": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.fromSource",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.fromSource",
       "params": [
         {
-          "name": "source"
+          "name": "source",
+          "description": "<p>Source code.</p>",
+          "types": [
+            "string"
+          ]
         }
       ],
+      "returns": {
+        "description": "<p>AST.</p>",
+        "types": [
+          "Object"
+        ]
+      },
+      "description": "<p>Create an AST from source code.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "fromSource",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "ast-node.AstNode.nodeFromSource": {
+    "lib/ast-node.class.AstNode.nodeFromSource": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "ast-node.AstNode.nodeFromSource",
+      "isConstructor": false,
+      "key": "lib/ast-node.class.AstNode.nodeFromSource",
       "params": [
         {
-          "name": "source"
+          "name": "source",
+          "description": "<p>Source code.</p>",
+          "types": [
+            "string"
+          ]
         }
       ],
+      "returns": {
+        "description": "<p>AST node.</p>",
+        "types": [
+          "Object"
+        ]
+      },
+      "description": "<p>Create an AST node from source code.</p>",
       "groups": [
-        "ast-node.class.AstNode"
+        "lib/ast-node.class.AstNode"
       ],
       "name": "nodeFromSource",
       "signatures": [],
-      "method": true
+      "isMethod": true
     },
-    "cli": {
+    "lib/render": {
       "type": "module",
-      "key": "cli",
-      "name": "cli",
+      "key": "lib/render",
+      "name": "render",
       "groups": [
         "modules"
       ],
       "items": [
-        "cli.anonymous",
-        "cli.options"
-      ]
+        "lib/render.exports-render"
+      ],
+      "itemTypeCounts": {
+        "module-function": 1
+      }
     },
-    "cli.anonymous": {
+    "lib/render.exports-render": {
       "type": "module-function",
-      "key": "cli.anonymous",
+      "isConstructor": false,
+      "key": "lib/render.exports-render",
       "params": [
         {
-          "name": "argv"
+          "name": "options",
+          "description": "<p>Doctor options.</p>",
+          "types": [
+            "Object"
+          ]
+        },
+        {
+          "name": "report",
+          "description": "<p>Report generated by doctor.</p>",
+          "types": [
+            "Object"
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call when rendering is complete.</p>",
+          "types": [
+            "function"
+          ]
         }
       ],
-      "description": "<p>Map command-line arguments to doctor's examine function.</p>",
-      "api": true,
+      "description": "<p>Render the report with the render modules supplied in the options.</p>",
       "groups": [
-        "cli"
+        "lib/render"
       ],
-      "name": "anonymous"
+      "name": "render",
+      "signatures": []
     },
-    "cli.options": {
-      "type": "var",
-      "key": "cli.options",
-      "groups": [
-        "cli"
-      ],
-      "name": "options"
-    },
-    "doctor": {
+    "lib/report": {
       "type": "module",
-      "key": "doctor",
+      "key": "lib/report",
+      "name": "report",
+      "groups": [
+        "modules"
+      ],
+      "items": [
+        "lib/report.exports-run"
+      ],
+      "itemTypeCounts": {
+        "module-function": 1
+      }
+    },
+    "lib/report.exports-run": {
+      "type": "module-function",
+      "isConstructor": false,
+      "key": "lib/report.exports-run",
+      "params": [
+        {
+          "name": "options",
+          "description": "<p>Doctor options.</p>",
+          "types": [
+            "Object"
+          ]
+        },
+        {
+          "name": "ast",
+          "description": "<p>AST.</p>",
+          "types": [
+            "AstNode"
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call when finished.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Run an AST through a set of rules and return a report in a callback.</p>",
+      "groups": [
+        "lib/report"
+      ],
+      "name": "run",
+      "signatures": []
+    },
+    "lib/report.class.Report": {
+      "type": "class",
+      "key": "lib/report.class.Report",
+      "name": "Report",
+      "groups": [
+        "classes"
+      ],
+      "items": [
+        "lib/report.class.Report.run",
+        "lib/report.class.Report.item",
+        "lib/report.class.Report.remove",
+        "lib/report.class.Report.add",
+        "lib/report.class.Report.home"
+      ],
+      "itemTypeCounts": {
+        "function": 5
+      }
+    },
+    "lib/report.class.Report.run": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/report.class.Report.run",
+      "params": [
+        {
+          "name": "cb",
+          "description": "<p>Function to call when finished walking and applying rules\nto the AST.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Run the report through the supplied report rules.</p>",
+      "groups": [
+        "lib/report.class.Report"
+      ],
+      "name": "run",
+      "signatures": [],
+      "isMethod": true
+    },
+    "lib/report.class.Report.item": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/report.class.Report.item",
+      "params": [
+        {
+          "name": "key",
+          "description": "<p>Key of report item.</p>",
+          "types": [
+            "String"
+          ]
+        }
+      ],
+      "returns": {
+        "description": "<p>Object representing a report item.</p>",
+        "types": [
+          "Object"
+        ]
+      },
+      "description": "<p>Returns a report item.</p>",
+      "groups": [
+        "lib/report.class.Report"
+      ],
+      "name": "item",
+      "signatures": [],
+      "isMethod": true
+    },
+    "lib/report.class.Report.remove": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/report.class.Report.remove",
+      "params": [
+        {
+          "name": "key",
+          "description": "<p>Key of report item.</p>",
+          "types": [
+            "String"
+          ]
+        }
+      ],
+      "description": "<p>Removes a report item.</p>",
+      "groups": [
+        "lib/report.class.Report"
+      ],
+      "name": "remove",
+      "signatures": [],
+      "isMethod": true
+    },
+    "lib/report.class.Report.add": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/report.class.Report.add",
+      "params": [
+        {
+          "name": "item",
+          "description": "<p>Report item.</p>",
+          "types": [
+            "String"
+          ]
+        }
+      ],
+      "description": "<p>Adds a report item.</p>",
+      "groups": [
+        "lib/report.class.Report"
+      ],
+      "name": "add",
+      "signatures": [],
+      "isMethod": true
+    },
+    "lib/report.class.Report.home": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/report.class.Report.home",
+      "params": [
+        {
+          "name": "item"
+        }
+      ],
+      "groups": [
+        "lib/report.class.Report"
+      ],
+      "name": "home",
+      "signatures": [
+        {
+          "description": "<p>Gets the key of the home item for the report.</p>",
+          "returns": {
+            "description": "<p>Key of the home item.</p>",
+            "types": [
+              "String"
+            ]
+          },
+          "arity": 0,
+          "params": []
+        },
+        {
+          "description": "<p>Sets the key of the home item for the report.</p>",
+          "arity": 1,
+          "params": [
+            {
+              "name": "item",
+              "description": "<p>Key of the home item.</p>",
+              "types": [
+                "String"
+              ]
+            }
+          ]
+        }
+      ],
+      "isMethod": true
+    },
+    "lib/transform": {
+      "type": "module",
+      "key": "lib/transform",
+      "name": "transform",
+      "groups": [
+        "modules"
+      ],
+      "items": [
+        "lib/transform.exports-transform"
+      ],
+      "itemTypeCounts": {
+        "module-function": 1
+      }
+    },
+    "lib/transform.exports-transform": {
+      "type": "module-function",
+      "isConstructor": false,
+      "key": "lib/transform.exports-transform",
+      "params": [
+        {
+          "name": "options",
+          "description": "<p>Doctor options.</p>",
+          "types": [
+            "Object"
+          ]
+        },
+        {
+          "name": "ast",
+          "description": "<p>AST.</p>",
+          "types": [
+            "AstNode"
+          ]
+        },
+        {
+          "name": "cb",
+          "description": "<p>Function to call when transformation is complete.</p>",
+          "types": [
+            "function"
+          ]
+        }
+      ],
+      "description": "<p>Transform the AST with the supplied transform rules.</p>",
+      "groups": [
+        "lib/transform"
+      ],
+      "name": "transform",
+      "signatures": []
+    },
+    "lib/doctor": {
+      "type": "module",
+      "key": "lib/doctor",
       "name": "doctor",
       "description": "<p>Main module.</p>",
       "examples": [
@@ -506,392 +1952,198 @@
         "modules"
       ],
       "items": [
-        "doctor.getAst",
-        "doctor.transformAst",
-        "doctor.ast",
-        "doctor.makeReport",
-        "doctor.pickupRequiredFiles",
-        "doctor.examine",
-        "doctor.finish",
-        "doctor.writeOutput",
-        "doctor.writeFile",
-        "doctor.renderReport",
-        "doctor.postProcess",
-        "doctor.followRequired",
-        "doctor.doMakeReport",
-        "doctor.doTransformAst",
-        "doctor.doGetAst",
-        "doctor.getCommentParser",
-        "doctor.copyView",
-        "doctor.eachView",
-        "doctor.checkOutputDir",
-        "doctor.harmony",
-        "doctor.compiler",
-        "doctor.options",
-        "doctor.hookEnterExit",
-        "doctor.includeFile",
-        "doctor.compiler",
-        "doctor.callEnterHook",
-        "doctor.callExitHook",
-        "doctor.enterExitHooks",
-        "doctor.callHook",
-        "doctor.insertEnterExitHooksSync"
-      ]
+        "lib/doctor.examine",
+        "lib/doctor.harmony",
+        "lib/doctor.hookEnterExit",
+        "lib/doctor._callEnterHook",
+        "lib/doctor._callExitHook",
+        "lib/doctor.insertEnterExitHooksSync",
+        "lib/doctor._callHook",
+        "lib/doctor._wrapCall"
+      ],
+      "itemTypeCounts": {
+        "function": 8
+      }
     },
-    "doctor.getAst": {
+    "lib/doctor.examine": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.getAst",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "astList"
-        },
-        {
-          "name": "astPathList"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "getAst",
-      "signatures": []
-    },
-    "doctor.transformAst": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.transformAst",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "astList"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "transformAst",
-      "signatures": []
-    },
-    "doctor.ast": {
-      "type": "var",
-      "key": "doctor.ast",
-      "groups": [
-        "doctor"
-      ],
-      "name": "ast"
-    },
-    "doctor.makeReport": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.makeReport",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "ast"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "makeReport",
-      "signatures": []
-    },
-    "doctor.pickupRequiredFiles": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.pickupRequiredFiles",
-      "params": [
-        {
-          "name": "originalOptions"
-        },
-        {
-          "name": "astList"
-        },
-        {
-          "name": "astPathList"
-        },
-        {
-          "name": "result"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "pickupRequiredFiles",
-      "signatures": []
-    },
-    "doctor.examine": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.examine",
+      "isConstructor": false,
+      "key": "lib/doctor.examine",
       "params": [
         {
           "name": "options",
-          "description": "<p>{Object}</p>"
+          "description": "<p>Options for doctor.</p>",
+          "types": [
+            "Object"
+          ],
+          "properties": [
+            {
+              "name": ".files",
+              "description": "<p>One or more source files to inspect.</p>",
+              "types": [
+                "Array",
+                "String"
+              ]
+            },
+            {
+              "name": ".output",
+              "description": "<p>Directory or filename for where to output the report file. If true, uses\n    default output directory name of &quot;output&quot;.</p>",
+              "types": [
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".view",
+              "description": "<p>One or more view directories to merge into output directory. If true, uses\n    default view.</p>",
+              "types": [
+                "Array",
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".report",
+              "description": "<p>One or more report modules. If true, uses default report module.</p>",
+              "types": [
+                "Array",
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".transform",
+              "description": "<p>One or more transform modules. If true, uses default transform module.</p>",
+              "types": [
+                "Array",
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".render",
+              "description": "<p>One or more render modules. If true, uses default render module.</p>",
+              "types": [
+                "Array",
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".grammar",
+              "description": "<p>Grammar file to use or a map of grammar files to use for each source\n    extension.</p>",
+              "types": [
+                "String",
+                "Object"
+              ]
+            },
+            {
+              "name": ".files",
+              "description": "<p>One or more source files to inspect.</p>",
+              "types": [
+                "Array",
+                "String"
+              ]
+            },
+            {
+              "name": ".output",
+              "description": "<p>Directory or filename for where to output the report file. If true, uses\n    default output directory name of &quot;output&quot;.</p>",
+              "types": [
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".view",
+              "description": "<p>One or more view directories to merge into output directory. If true, uses\n    default view.</p>",
+              "types": [
+                "Array",
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".report",
+              "description": "<p>One or more report modules. If true, uses default report module.</p>",
+              "types": [
+                "Array",
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".transform",
+              "description": "<p>One or more transform modules. If true, uses default transform module.</p>",
+              "types": [
+                "Array",
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".render",
+              "description": "<p>One or more render modules. If true, uses default render module.</p>",
+              "types": [
+                "Array",
+                "String",
+                "boolean"
+              ]
+            },
+            {
+              "name": ".grammar",
+              "description": "<p>Grammar file to use or a map of grammar files to use for each source\n    extension.</p>",
+              "types": [
+                "String",
+                "Object"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "progressCb",
+          "description": "<p>Function to call with progress messages.</p>",
+          "types": [
+            "function"
+          ],
+          "optional": true
         },
         {
           "name": "cb",
-          "description": "<p>{function} Function to call when doctor is finished.</p>"
+          "description": "<p>Function to call when doctor is finished.</p>",
+          "types": [
+            "function"
+          ]
         }
       ],
       "description": "<p>Parses the AST of a set of JavaScript files, uses report rules to convert the\nAST into a report, and optionally combines the report with the view or\nrenders the report into an output format.</p>",
       "examples": [
+        "var doctor = require('doctor');\nvar options = {\n  files: ['package.json'],\n  view: ['default', 'doctor']\n};\ndoctor.examine(options, function (err, report) {\n  console.log(JSON.stringify(report));\n})",
         "var doctor = require('doctor');\nvar options = {\n  files: ['package.json'],\n  view: ['default', 'doctor']\n};\ndoctor.examine(options, function (err, report) {\n  console.log(JSON.stringify(report));\n})"
       ],
       "groups": [
-        "doctor"
+        "lib/doctor"
       ],
       "name": "examine",
-      "signatures": [],
-      "api": true
-    },
-    "doctor.finish": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.finish",
-      "params": [
-        {
-          "name": "result"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "finish",
       "signatures": []
     },
-    "doctor.writeOutput": {
+    "lib/doctor.harmony": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.writeOutput",
-      "params": [
-        {
-          "name": "result"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "writeOutput",
-      "signatures": []
-    },
-    "doctor.writeFile": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.writeFile",
-      "params": [
-        {
-          "name": "file"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "writeFile",
-      "signatures": []
-    },
-    "doctor.renderReport": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.renderReport",
-      "params": [
-        {
-          "name": "result"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "renderReport",
-      "signatures": []
-    },
-    "doctor.postProcess": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.postProcess",
-      "params": [
-        {
-          "name": "result"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "postProcess",
-      "signatures": []
-    },
-    "doctor.followRequired": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.followRequired",
-      "params": [
-        {
-          "name": "result"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "followRequired",
-      "signatures": []
-    },
-    "doctor.doMakeReport": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.doMakeReport",
-      "params": [
-        {
-          "name": "ast"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "doMakeReport",
-      "signatures": []
-    },
-    "doctor.doTransformAst": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.doTransformAst",
-      "params": [],
-      "groups": [
-        "doctor"
-      ],
-      "name": "doTransformAst",
-      "signatures": []
-    },
-    "doctor.doGetAst": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.doGetAst",
-      "params": [],
-      "groups": [
-        "doctor"
-      ],
-      "name": "doGetAst",
-      "signatures": []
-    },
-    "doctor.getCommentParser": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.getCommentParser",
-      "params": [],
-      "groups": [
-        "doctor"
-      ],
-      "name": "getCommentParser",
-      "signatures": []
-    },
-    "doctor.copyView": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.copyView",
-      "params": [],
-      "description": "<p>this will not run synchronously</p>",
-      "groups": [
-        "doctor"
-      ],
-      "name": "copyView",
-      "signatures": []
-    },
-    "doctor.eachView": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.eachView",
-      "params": [
-        {
-          "name": "view"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "eachView",
-      "signatures": []
-    },
-    "doctor.checkOutputDir": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.checkOutputDir",
-      "params": [],
-      "groups": [
-        "doctor"
-      ],
-      "name": "checkOutputDir",
-      "signatures": []
-    },
-    "doctor.harmony": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.harmony",
+      "isConstructor": false,
+      "key": "lib/doctor.harmony",
       "params": [],
       "description": "<p><strong>EXPERIMENTAL!</strong> <strong>(and not even close to finished)</strong> Registers a compiler\nfor the .js extension that will compile harmony files to ECMAScript 5.</p>",
+      "visibility": "private",
       "groups": [
-        "doctor"
+        "lib/doctor"
       ],
       "name": "harmony",
       "signatures": [],
-      "api": true
+      "isPrivate": true
     },
-    "doctor.compiler": {
+    "lib/doctor.hookEnterExit": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.compiler",
-      "params": [
-        {
-          "name": "module"
-        },
-        {
-          "name": "filename"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "compiler",
-      "signatures": []
-    },
-    "doctor.options": {
-      "type": "var",
-      "key": "doctor.options",
-      "groups": [
-        "doctor"
-      ],
-      "name": "options"
-    },
-    "doctor.hookEnterExit": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.hookEnterExit",
+      "isConstructor": false,
+      "key": "lib/doctor.hookEnterExit",
       "params": [
         {
           "name": "options",
@@ -899,7 +2151,7 @@
         },
         {
           "name": "enterCb",
-          "description": "<p>{Function} Calls this function (passing it info) when a\nfunction is entered.</p>"
+          "description": "<p>{function} Calls this function (passing it info) when a\nfunction is entered.</p>"
         },
         {
           "name": "exitCb",
@@ -908,66 +2160,78 @@
       ],
       "description": "<p><strong>EXPERIMENTAL!</strong> Registers a compiler for the .js extension that will catch\nfunction entry/exit.</p>",
       "examples": [
+        "var doctor = require('doctor');\n\nfunction hookMessage(title, info) {\n  return title + \" \" + info.name + \":\\n\" +\n    \"  type:   \" + info.type + \"\\n\" +\n    \"  line:   \" + info.line + \"\\n\" +\n    \"  column: \" + info.column + \"\\n\" +\n    \"  path:   \" + info.filename;\n}\n\ndoctor.hookEnterExit(\n  /foobar/,\n  function (info) {\n    console.log(hookMessage(\"Enter\", info));\n  },\n  function (info) {\n    console.log(hookMessage(\"Exit\", info));\n  }\n);\n\nrequire('./foobar');",
         "var doctor = require('doctor');\n\nfunction hookMessage(title, info) {\n  return title + \" \" + info.name + \":\\n\" +\n    \"  type:   \" + info.type + \"\\n\" +\n    \"  line:   \" + info.line + \"\\n\" +\n    \"  column: \" + info.column + \"\\n\" +\n    \"  path:   \" + info.filename;\n}\n\ndoctor.hookEnterExit(\n  /foobar/,\n  function (info) {\n    console.log(hookMessage(\"Enter\", info));\n  },\n  function (info) {\n    console.log(hookMessage(\"Exit\", info));\n  }\n);\n\nrequire('./foobar');"
       ],
       "groups": [
-        "doctor"
+        "lib/doctor"
       ],
       "name": "hookEnterExit",
-      "signatures": [],
-      "api": true
-    },
-    "doctor.includeFile": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.includeFile",
-      "params": [
-        {
-          "name": "filename"
-        }
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "includeFile",
       "signatures": []
     },
-    "doctor.callEnterHook": {
+    "lib/doctor._callEnterHook": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.callEnterHook",
+      "isConstructor": false,
+      "key": "lib/doctor._callEnterHook",
       "params": [],
       "groups": [
-        "doctor"
+        "lib/doctor"
       ],
-      "name": "callEnterHook",
+      "name": "_callEnterHook",
       "signatures": [],
-      "api": true
+      "isPrivate": true
     },
-    "doctor.callExitHook": {
+    "lib/doctor._callExitHook": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.callExitHook",
+      "isConstructor": false,
+      "key": "lib/doctor._callExitHook",
       "params": [],
       "groups": [
-        "doctor"
+        "lib/doctor"
       ],
-      "name": "callExitHook",
+      "name": "_callExitHook",
       "signatures": [],
-      "api": true
+      "isPrivate": true
     },
-    "doctor.enterExitHooks": {
-      "type": "var",
-      "key": "doctor.enterExitHooks",
-      "groups": [
-        "doctor"
-      ],
-      "name": "enterExitHooks"
-    },
-    "doctor.callHook": {
+    "lib/doctor.insertEnterExitHooksSync": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.callHook",
+      "isConstructor": false,
+      "key": "lib/doctor.insertEnterExitHooksSync",
+      "params": [
+        {
+          "name": "filename",
+          "description": "<p>{String} Filename of file to trasform. Callback hooks are\nregistered to this filename.</p>"
+        },
+        {
+          "name": "enterCb",
+          "description": "<p>{function} Function to call when entering function. If exitCb\nis not defined, enterCb will be called for exit as well.</p>"
+        },
+        {
+          "name": "exitCb",
+          "description": "<p>{function} Function to call when exiting function.</p>",
+          "optional": true
+        },
+        {
+          "name": "sourceCb",
+          "description": "<p>{function} Function to call when building the source for a function.</p>",
+          "optional": true
+        }
+      ],
+      "description": "<p><strong>EXPERIMENTAL</strong> Inserts enter/exit hooks into a JavaScript file. Registers\ncallback hooks for that file.</p>",
+      "examples": [
+        "var doctor = require('doctor');\n\nvar source = doctor.insertEnterExitHooksSync('foobar.js', function (info) {\n  console.log(JSON.stringify(info, null, 2));\n});\n\neval(source);",
+        "var doctor = require('doctor');\n\nvar source = doctor.insertEnterExitHooksSync('foobar.js', function (info) {\n  console.log(JSON.stringify(info, null, 2));\n});\n\neval(source);"
+      ],
+      "groups": [
+        "lib/doctor"
+      ],
+      "name": "insertEnterExitHooksSync",
+      "signatures": []
+    },
+    "lib/doctor._callHook": {
+      "type": "function",
+      "isConstructor": false,
+      "key": "lib/doctor._callHook",
       "params": [
         {
           "name": "type"
@@ -980,1361 +2244,87 @@
         }
       ],
       "groups": [
-        "doctor"
+        "lib/doctor"
       ],
-      "name": "callHook",
+      "name": "_callHook",
       "signatures": [],
-      "api": true
+      "isPrivate": true
     },
-    "doctor.insertEnterExitHooksSync": {
+    "lib/doctor._wrapCall": {
       "type": "function",
-      "constructorFunction": false,
-      "key": "doctor.insertEnterExitHooksSync",
-      "params": [
-        {
-          "name": "filename",
-          "description": "<p>{String} Filename of file to trasform. Callback hooks are\nregistered to this filename.</p>"
-        },
-        {
-          "name": "enterCb",
-          "description": "<p>{Function} Function to call when entering function. If exitCb\nis not defined, enterCb will be called for exit as well.</p>"
-        },
-        {
-          "name": "exitCb",
-          "description": "<p>{Function} Function to call when exiting function.</p>"
-        }
-      ],
-      "description": "<p><strong>EXPERIMENTAL</strong> Inserts enter/exit hooks into a JavaScript file. Registers\ncallback hooks for that file.</p>",
-      "examples": [
-        "var doctor = require('doctor');\n\nvar source = doctor.insertEnterExitHooksSync('foobar.js', function (info) {\n  console.log(JSON.stringify(info, null, 2));\n});\n\neval(source);"
-      ],
-      "groups": [
-        "doctor"
-      ],
-      "name": "insertEnterExitHooksSync",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast": {
-      "type": "module",
-      "key": "nice-ast",
-      "name": "nice-ast",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "nice-ast.pegParsers",
-        "nice-ast.walk",
-        "nice-ast.walkEnd",
-        "nice-ast.extendAst",
-        "nice-ast.cleanAst",
-        "nice-ast.copy",
-        "nice-ast.parseCommentNode",
-        "nice-ast.pegParser",
-        "nice-ast.existsNewerCompiledGrammarFile",
-        "nice-ast.findGrammarFile",
-        "nice-ast.addLineNumbers",
-        "nice-ast.astFromSource",
-        "nice-ast.astFromFile",
-        "nice-ast.convertSourceFile",
-        "nice-ast.convertPackage",
-        "nice-ast.prepareRules",
-        "nice-ast.typeToRules",
-        "nice-ast.walkWithRules",
-        "nice-ast.eachNode",
-        "nice-ast.lispify",
-        "nice-ast.isValueNode",
-        "nice-ast.like",
-        "nice-ast.equalDiff",
-        "nice-ast.equal",
-        "nice-ast.parserForGrammar"
-      ]
-    },
-    "nice-ast.pegParsers": {
-      "type": "var",
-      "key": "nice-ast.pegParsers",
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "pegParsers"
-    },
-    "nice-ast.walk": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.walk",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "beforeCb"
-        },
-        {
-          "name": "afterCb"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "walk",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.walkEnd": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.walkEnd",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "walkEnd",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.extendAst": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.extendAst",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "parent"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "extendAst",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.cleanAst": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.cleanAst",
-      "params": [
-        {
-          "name": "node"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "cleanAst",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.copy": {
-      "type": "var",
-      "key": "nice-ast.copy",
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "copy"
-    },
-    "nice-ast.parseCommentNode": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.parseCommentNode",
-      "params": [
-        {
-          "name": "node"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "parseCommentNode",
-      "signatures": []
-    },
-    "nice-ast.pegParser": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.pegParser",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "pegParser",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.existsNewerCompiledGrammarFile": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.existsNewerCompiledGrammarFile",
-      "params": [
-        {
-          "name": "grammarFile"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "existsNewerCompiledGrammarFile",
-      "signatures": []
-    },
-    "nice-ast.findGrammarFile": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.findGrammarFile",
-      "params": [
-        {
-          "name": "grammarFile"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "findGrammarFile",
-      "signatures": []
-    },
-    "nice-ast.addLineNumbers": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.addLineNumbers",
-      "params": [
-        {
-          "name": "ast"
-        },
-        {
-          "name": "source"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "addLineNumbers",
-      "signatures": []
-    },
-    "nice-ast.astFromSource": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.astFromSource",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "source"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "astFromSource",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.astFromFile": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.astFromFile",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "file"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "astFromFile",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.convertSourceFile": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.convertSourceFile",
-      "params": [
-        {
-          "name": "file"
-        },
-        {
-          "name": "packageName"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "convertSourceFile",
-      "signatures": []
-    },
-    "nice-ast.convertPackage": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.convertPackage",
-      "params": [],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "convertPackage",
-      "signatures": []
-    },
-    "nice-ast.prepareRules": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.prepareRules",
-      "params": [
-        {
-          "name": "rules"
-        },
-        {
-          "name": "defaultDir"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "prepareRules",
-      "signatures": []
-    },
-    "nice-ast.typeToRules": {
-      "type": "var",
-      "key": "nice-ast.typeToRules",
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "typeToRules"
-    },
-    "nice-ast.walkWithRules": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.walkWithRules",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "rules"
-        },
-        {
-          "name": "defaultDir"
-        },
-        {
-          "name": "ast"
-        },
-        {
-          "name": "nodeCb"
-        },
-        {
-          "name": "finalCb"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "walkWithRules",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.eachNode": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.eachNode",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "queue"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "eachNode",
-      "signatures": []
-    },
-    "nice-ast.lispify": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.lispify",
-      "params": [
-        {
-          "name": "node"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "lispify",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.isValueNode": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.isValueNode",
-      "params": [
-        {
-          "name": "node"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "isValueNode",
-      "signatures": []
-    },
-    "nice-ast.like": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.like",
-      "params": [
-        {
-          "name": "a"
-        },
-        {
-          "name": "b"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "like",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.equalDiff": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.equalDiff",
-      "params": [
-        {
-          "name": "a"
-        },
-        {
-          "name": "b"
-        },
-        {
-          "name": "diff"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "equalDiff",
-      "signatures": []
-    },
-    "nice-ast.equal": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.equal",
-      "params": [
-        {
-          "name": "a"
-        },
-        {
-          "name": "b"
-        },
-        {
-          "name": "diff"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "equal",
-      "signatures": [],
-      "api": true
-    },
-    "nice-ast.parserForGrammar": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "nice-ast.parserForGrammar",
-      "params": [
-        {
-          "name": "grammarFile"
-        }
-      ],
-      "groups": [
-        "nice-ast"
-      ],
-      "name": "parserForGrammar",
-      "signatures": [],
-      "api": true
-    },
-    "post-process": {
-      "type": "module",
-      "key": "post-process",
-      "name": "post-process",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "post-process.renamePackageItems",
-        "post-process.getParent",
-        "post-process.hoistRequiredItems",
-        "post-process.postProcessReport"
-      ]
-    },
-    "post-process.renamePackageItems": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.renamePackageItems",
-      "params": [
-        {
-          "name": "report"
-        }
-      ],
-      "description": "<p>Rename modules to their corresponding package names, if provided, via a\npackage.json file.</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "renamePackageItems",
-      "signatures": []
-    },
-    "post-process.getParent": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.getParent",
-      "params": [
-        {
-          "name": "report"
-        },
-        {
-          "name": "item"
-        }
-      ],
-      "groups": [
-        "post-process"
-      ],
-      "name": "getParent",
-      "signatures": []
-    },
-    "post-process.hoistRequiredItems": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.hoistRequiredItems",
-      "params": [
-        {
-          "name": "report"
-        }
-      ],
-      "description": "<p>If a module exports another required module, treat the required module as if\nits exports were owned by this module.</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "hoistRequiredItems",
-      "signatures": []
-    },
-    "post-process.postProcessReport": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "post-process.postProcessReport",
-      "params": [
-        {
-          "name": "inputReport"
-        }
-      ],
-      "description": "<p>Use package names if available, and handle cases like:<br/>\nmodule.exports = require('foo');</p>",
-      "groups": [
-        "post-process"
-      ],
-      "name": "postProcessReport",
-      "signatures": [],
-      "api": true
-    },
-    "render": {
-      "type": "module",
-      "key": "render",
-      "name": "render",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "render.render",
-        "render.files",
-        "render.eachRender"
-      ]
-    },
-    "render.render": {
-      "type": "module-function",
-      "constructorFunction": false,
-      "key": "render.render",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "report"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "description": "<p>Render the report with the render modules supplied in the options.</p>",
-      "groups": [
-        "render"
-      ],
-      "name": "render",
-      "signatures": [],
-      "api": true
-    },
-    "render.files": {
-      "type": "var",
-      "key": "render.files",
-      "groups": [
-        "render"
-      ],
-      "name": "files"
-    },
-    "render.eachRender": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "render.eachRender",
+      "isConstructor": false,
+      "key": "lib/doctor._wrapCall",
       "params": [
         {
           "name": "fn"
         },
         {
-          "name": "cb"
+          "name": "ctx"
+        },
+        {
+          "name": "args"
+        },
+        {
+          "name": "filename"
+        },
+        {
+          "name": "info"
         }
       ],
       "groups": [
-        "render"
+        "lib/doctor"
       ],
-      "name": "eachRender",
-      "signatures": []
+      "name": "_wrapCall",
+      "signatures": [],
+      "isPrivate": true
     },
-    "report": {
+    "lib/cli": {
       "type": "module",
-      "key": "report",
-      "name": "report",
+      "key": "lib/cli",
+      "name": "cli",
+      "description": "<p>Command-line interface into doctor.</p>",
       "groups": [
         "modules"
       ],
       "items": [
-        "report.Report",
-        "report.walk",
-        "report.eachNode",
-        "report.finishRules",
-        "report.finalReport",
-        "report.run"
-      ]
+        "lib/cli.exports-cli"
+      ],
+      "itemTypeCounts": {
+        "module-function": 1
+      }
     },
-    "report.class.Report": {
-      "type": "class",
-      "module": "report",
-      "key": "report.class.Report",
-      "name": "Report",
-      "groups": [
-        "classes"
-      ],
-      "items": [
-        "report.Report",
-        "report.Report.run",
-        "report.Report.item",
-        "report.Report.ref",
-        "report.Report.remove",
-        "report.Report.add"
-      ]
-    },
-    "report.Report": {
-      "type": "function",
-      "constructorFunction": true,
-      "key": "report.Report",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "ast"
-        }
-      ],
-      "groups": [
-        "report",
-        "report.class.Report"
-      ],
-      "name": "Report",
-      "signatures": []
-    },
-    "report.walk": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.walk",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "report"
-      ],
-      "name": "walk",
-      "signatures": []
-    },
-    "report.Report.run": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.Report.run",
-      "params": [
-        {
-          "name": "cb"
-        }
-      ],
-      "description": "<p>Run the report through the supplied report rules.</p>",
-      "groups": [
-        "report.class.Report"
-      ],
-      "name": "run",
-      "signatures": [],
-      "method": true
-    },
-    "report.eachNode": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.eachNode",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "rule"
-        }
-      ],
-      "groups": [
-        "report"
-      ],
-      "name": "eachNode",
-      "signatures": []
-    },
-    "report.finishRules": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.finishRules",
-      "params": [
-        {
-          "name": "err"
-        }
-      ],
-      "groups": [
-        "report"
-      ],
-      "name": "finishRules",
-      "signatures": []
-    },
-    "report.finalReport": {
-      "type": "var",
-      "key": "report.finalReport",
-      "groups": [
-        "report"
-      ],
-      "name": "finalReport"
-    },
-    "report.Report.item": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.Report.item",
-      "params": [
-        {
-          "name": "key"
-        }
-      ],
-      "groups": [
-        "report.class.Report"
-      ],
-      "name": "item",
-      "signatures": [],
-      "method": true
-    },
-    "report.Report.ref": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.Report.ref",
-      "params": [
-        {
-          "name": "key"
-        }
-      ],
-      "groups": [
-        "report.class.Report"
-      ],
-      "name": "ref",
-      "signatures": [],
-      "method": true
-    },
-    "report.Report.remove": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.Report.remove",
-      "params": [
-        {
-          "name": "key"
-        }
-      ],
-      "groups": [
-        "report.class.Report"
-      ],
-      "name": "remove",
-      "signatures": [],
-      "method": true
-    },
-    "report.Report.add": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "report.Report.add",
-      "params": [
-        {
-          "name": "item"
-        }
-      ],
-      "groups": [
-        "report.class.Report"
-      ],
-      "name": "add",
-      "signatures": [],
-      "method": true
-    },
-    "report.run": {
+    "lib/cli.exports-cli": {
       "type": "module-function",
-      "constructorFunction": false,
-      "key": "report.run",
+      "isConstructor": false,
+      "key": "lib/cli.exports-cli",
       "params": [
         {
-          "name": "options"
-        },
-        {
-          "name": "ast"
-        },
-        {
-          "name": "cb"
+          "name": "argv",
+          "description": "<p>Just the command-line arguments. In other words,\nprocess.argv.slice(2).</p>",
+          "types": [
+            "Object"
+          ]
         }
       ],
+      "description": "<p>Map command-line arguments to doctor&#39;s examine function.</p>",
       "groups": [
-        "report"
+        "lib/cli"
       ],
-      "name": "run",
-      "signatures": [],
-      "api": true
-    },
-    "transform": {
-      "type": "module",
-      "key": "transform",
-      "name": "transform",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "transform.transform",
-        "transform.transformObj",
-        "transform.queueNodeWalk",
-        "transform.eachNodeRule"
-      ]
-    },
-    "transform.transform": {
-      "type": "module-function",
-      "constructorFunction": false,
-      "key": "transform.transform",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "ast"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "description": "<p>Transform the AST with the supplied transform rules.</p>",
-      "groups": [
-        "transform"
-      ],
-      "name": "transform",
-      "signatures": [],
-      "api": true
-    },
-    "transform.transformObj": {
-      "type": "var",
-      "key": "transform.transformObj",
-      "groups": [
-        "transform"
-      ],
-      "name": "transformObj"
-    },
-    "transform.queueNodeWalk": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "transform.queueNodeWalk",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "transform"
-      ],
-      "name": "queueNodeWalk",
+      "name": "cli",
       "signatures": []
     },
-    "transform.eachNodeRule": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "transform.eachNodeRule",
-      "params": [
-        {
-          "name": "node"
-        },
-        {
-          "name": "rule"
-        }
-      ],
+    "document.README.md": {
+      "key": "document.README.md",
+      "name": "Overview",
+      "type": "document",
+      "content": "<h1>doctor</h1>\n<p><a href=\"http://travis-ci.org/jdeal/doctor\"><img src=\"https://secure.travis-ci.org/jdeal/doctor.png\" alt=\"Build Status\"></a>\n\n</p>\n<p><strong>Doctor is still under development, so be careful.</strong> It is probably stable enough to be useful, but no promises.\n\n</p>\n<p><img src=\"https://github.com/jdeal/doctor/raw/master/images/pinch-points-warning-143.png\" alt=\"pinch\">\n\n</p>\n<p>Doctor converts JavaScript source to documentation, using rules to rely on\nconventions so that comment tags are (mostly) not needed.\n\n</p>\n<h2>Say what?</h2>\n<p>Maybe a picture will help:\n\n</p>\n<p><img src=\"https://github.com/jdeal/doctor/raw/master/images/doctor-pipeline.png\" alt=\"pipeline\">\n\n</p>\n<p>Okay, maybe that needs some explanation.\n\n</p>\n<p>Source files are parsed using a JavaScript grammar. This pushes out a plain\nLisp-like AST. This is refined with some transform rules. The default transform\nrules also use a grammar to parse the JSDoc-style comment tags. This is to add\nin things that cannot be inferred from the JavaScript source, such as function\ndescription and parameter types.\n\n</p>\n<p>Rules are applied to the refined AST to output a report, which is just a flat\nJSON object containing items and groups of items. The report is optionally run\nthrough a render module to convert the report to some format other than a single\nJSON file.\n\n</p>\n<p>Doctor also provides an option that takes a number of view directories and\nmerges them together into a single output directory, along with the report\nfile(s). A default HTML/JavaScript view is provided to view the default report\nas HTML.\n\n</p>\n<p>Doctor has initial (rough) support for markdown as well, integrating that into\nthe report if passed along with the source.\n\n</p>\n<p>Because of its modular and somewhat pluggable design, you can hack in your own\ngrammars, rules, etc. and use it as a general-purpose AST analysis tool.\n\n</p>\n<h2>Installation</h2>\n<pre><code>npm install doctor</code></pre>\n<p>or if you want the latest\n\n</p>\n<pre><code>npm install git:github.com/jdeal/doctor.git</code></pre>\n<h2>Examples, please!</h2>\n<p>Note that these examples assume a shell that expands wildcards.\n\n</p>\n<p>This is how doctor documents itself from the command-line:\n\n</p>\n<pre><code>doctor lib/*.js *.md -v default -v doctor -o doc</code></pre>\n<p>You can see the documentation <a href=\"http://jdeal.github.com/doctor/doc\">here</a>.\n\n</p>\n<h2>Command-line usage</h2>\n<p>Dump a report file to the console:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js</code></pre>\n<p>To write out the report file, give it a directory:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js -o output</code></pre>\n<p>And it will write the report to a file named report.json. If you prefer a\ndifferent name:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js -o output/myreport.json</code></pre>\n<p>You can also pass package.json files to doctor. It will use the main property to\nfind the source file:\n\n</p>\n<pre><code>doctor package.json -o output</code></pre>\n<p>To output the default viewer along with your report:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js -o output -v default</code></pre>\n<p>To merge in your own files into the view, pass multiple views:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js -o output -v default -v ~/my-view</code></pre>\n<p>You can override the grammar if you feel adenturous:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js --grammar ~/my-better-grammar.pegjs</code></pre>\n<p>You can override the grammar for a specific file extension:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.foo --grammar.foo foo</code></pre>\n<p>You can add your own transform rules:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js -t default -t ~/more-tranform-rules.js</code></pre>\n<p>Or your own report rules:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js -r default -r ~/more-report-rules.js</code></pre>\n<p>You can use a custom renderer:\n\n</p>\n<pre><code>doctor myfile1.js myfile2.js --render ~/my-render.js</code></pre>\n<h2>Programmatic usage</h2>\n<p>All the same options are available programmatically.\n\n</p>\n<pre><code class=\"lang-js\">var doctor = require(&#39;doctor&#39;);\nvar options = {\n  files: [&#39;myfile1.js&#39;, &#39;myfile2.js&#39;],\n  view: [&#39;default&#39;, &#39;~/my-view&#39;],\n  grammar: &#39;~/my-better-grammar.pegjs&#39;,\n  transform: [&#39;default&#39;, &#39;~/more-tranform-rules.js&#39;],\n  report: [&#39;default&#39;, &#39;~/more-report-rules.js&#39;],\n  render: &#39;markdown&#39;\n};\ndoctor.examine(options, function (err, report) {\n  // done\n});</code></pre>\n<p>Note that the above options probably don&#39;t really make sense. The default viewer\ndoesn&#39;t work with output from the markdown renderer.\n</p>",
       "groups": [
-        "transform"
+        "documents"
       ],
-      "name": "eachNodeRule",
-      "signatures": []
-    },
-    "util": {
-      "type": "module",
-      "key": "util",
-      "name": "util",
-      "groups": [
-        "modules"
-      ],
-      "items": [
-        "util.callbackify",
-        "util.asyncSync",
-        "util.flag",
-        "util.flag",
-        "util.flag",
-        "util.toArray",
-        "util.requireMaybe",
-        "util.compareFileDates",
-        "util.compareFileDatesSync",
-        "util.findRules",
-        "util.findFunctions",
-        "util.clone",
-        "util.newObj",
-        "util.dirExists",
-        "util.dirExistsSync",
-        "util.findFile",
-        "util.findFileSync",
-        "util.findDir",
-        "util.findDirSync",
-        "util.localizePaths",
-        "util.fs",
-        "util.path",
-        "util.async",
-        "util.sync"
-      ]
-    },
-    "util.callbackify": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.callbackify",
-      "params": [
-        {
-          "name": "thing"
-        },
-        {
-          "name": "canError"
-        }
-      ],
-      "description": "<p>turn synchronous things into callbacks to they can stand in\nfor asynchronous things</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "callbackify",
-      "signatures": []
-    },
-    "util.asyncSync": {
-      "type": "var",
-      "key": "util.asyncSync",
-      "groups": [
-        "util"
-      ],
-      "name": "asyncSync"
-    },
-    "util.flag": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.flag",
-      "params": [
-        {
-          "name": "yes"
-        }
-      ],
-      "groups": [
-        "util"
-      ],
-      "name": "flag",
-      "signatures": []
-    },
-    "util.toArray": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.toArray",
-      "params": [
-        {
-          "name": "maybeArray"
-        }
-      ],
-      "groups": [
-        "util"
-      ],
-      "name": "toArray",
-      "signatures": [],
-      "api": true
-    },
-    "util.requireMaybe": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.requireMaybe",
-      "params": [
-        {
-          "name": "moduleName"
-        }
-      ],
-      "groups": [
-        "util"
-      ],
-      "name": "requireMaybe",
-      "signatures": []
-    },
-    "util.compareFileDates": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.compareFileDates",
-      "params": [
-        {
-          "name": "a"
-        },
-        {
-          "name": "b"
-        },
-        {
-          "name": "cb"
-        },
-        {
-          "name": "sync"
-        }
-      ],
-      "description": "<p>Compare the modified time stamps of two files.</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "compareFileDates",
-      "signatures": [],
-      "api": true
-    },
-    "util.compareFileDatesSync": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.compareFileDatesSync",
-      "params": [
-        {
-          "name": "a"
-        },
-        {
-          "name": "b"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "util"
-      ],
-      "name": "compareFileDatesSync",
-      "signatures": []
-    },
-    "util.findRules": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.findRules",
-      "params": [
-        {
-          "name": "optionRules"
-        },
-        {
-          "name": "defaultDir"
-        }
-      ],
-      "description": "<p>Require the specified rule modules, either from the default location or from\nthe user-specified location.</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "findRules",
-      "signatures": [],
-      "api": true
-    },
-    "util.findFunctions": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.findFunctions",
-      "params": [
-        {
-          "name": "optionFunctions"
-        },
-        {
-          "name": "defaultDir"
-        }
-      ],
-      "description": "<p>Require the specified function modules, either in the default location or\nthe user-specified location.</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "findFunctions",
-      "signatures": [],
-      "api": true
-    },
-    "util.clone": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.clone",
-      "params": [
-        {
-          "name": "obj"
-        }
-      ],
-      "description": "<p>Shallow-copy an object.</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "clone",
-      "signatures": [],
-      "api": true
-    },
-    "util.newObj": {
-      "type": "var",
-      "key": "util.newObj",
-      "groups": [
-        "util"
-      ],
-      "name": "newObj"
-    },
-    "util.dirExists": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.dirExists",
-      "params": [
-        {
-          "name": "dir"
-        },
-        {
-          "name": "cb"
-        },
-        {
-          "name": "sync"
-        }
-      ],
-      "description": "<p>Check if a directory exists.</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "dirExists",
-      "signatures": []
-    },
-    "util.dirExistsSync": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.dirExistsSync",
-      "params": [
-        {
-          "name": "dir"
-        },
-        {
-          "name": "cb"
-        }
-      ],
-      "groups": [
-        "util"
-      ],
-      "name": "dirExistsSync",
-      "signatures": []
-    },
-    "util.findFile": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.findFile",
-      "params": [
-        {
-          "name": "fileList"
-        },
-        {
-          "name": "ifCb",
-          "description": "<p>If one is found, do this.</p>"
-        },
-        {
-          "name": "elseCb",
-          "description": "<p>If one is not found, do this.</p>"
-        },
-        {
-          "name": "sync"
-        }
-      ],
-      "description": "<p>Find one of a list of files.</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "findFile",
-      "signatures": [],
-      "api": true
-    },
-    "util.findFileSync": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.findFileSync",
-      "params": [
-        {
-          "name": "fileList"
-        },
-        {
-          "name": "ifCb"
-        },
-        {
-          "name": "elseCb"
-        }
-      ],
-      "groups": [
-        "util"
-      ],
-      "name": "findFileSync",
-      "signatures": []
-    },
-    "util.findDir": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.findDir",
-      "params": [
-        {
-          "name": "dirList"
-        },
-        {
-          "name": "ifCb",
-          "description": "<p>If one is found, do this.</p>"
-        },
-        {
-          "name": "elseCb",
-          "description": "<p>If one is not found, do this.</p>"
-        },
-        {
-          "name": "sync"
-        }
-      ],
-      "description": "<p>Find one of a list of directories.</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "findDir",
-      "signatures": [],
-      "api": true
-    },
-    "util.findDirSync": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.findDirSync",
-      "params": [
-        {
-          "name": "dirList"
-        },
-        {
-          "name": "ifCb"
-        },
-        {
-          "name": "elseCb"
-        }
-      ],
-      "groups": [
-        "util"
-      ],
-      "name": "findDirSync",
-      "signatures": []
-    },
-    "util.localizePaths": {
-      "type": "function",
-      "constructorFunction": false,
-      "key": "util.localizePaths",
-      "params": [
-        {
-          "name": "pathList"
-        }
-      ],
-      "description": "<p>Compress fully-qualified paths down to minimal non-colliding lengths.</p>",
-      "groups": [
-        "util"
-      ],
-      "name": "localizePaths",
-      "signatures": [],
-      "api": true
-    },
-    "util.fs": {
-      "type": "var",
-      "key": "util.fs",
-      "groups": [
-        "util"
-      ],
-      "name": "fs",
-      "api": true
-    },
-    "util.path": {
-      "type": "var",
-      "key": "util.path",
-      "groups": [
-        "util"
-      ],
-      "name": "path",
-      "api": true
-    },
-    "util.async": {
-      "type": "var",
-      "key": "util.async",
-      "groups": [
-        "util"
-      ],
-      "name": "async",
-      "api": true
-    },
-    "util.sync": {
-      "type": "var",
-      "key": "util.sync",
-      "groups": [
-        "util"
-      ],
-      "name": "sync",
-      "api": true,
-      "constructorFunction": false
+      "isSorted": true,
+      "isHome": true,
+      "isHomePath": true
     }
-  }
+  },
+  "home": "document.README.md"
 }
