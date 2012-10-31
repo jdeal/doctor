@@ -209,9 +209,9 @@ doc.itemDescription = function (item) {
   if (item.description) {
     description += item.description;
   }
-  if (item.constructorDescription && item.constructorDescription.description) {
-    description += item.constructorDescription.description;
-  }
+  // if (item.constructorDescription && item.constructorDescription.description) {
+  //   description += item.constructorDescription.description;
+  // }
   return description;
 };
 

@@ -8,7 +8,9 @@ rules.push({
   }
 });
 
-/* merge and normalize comments */
+/*
+merge and normalize comments
+*/
 rules.push({
   match: function (node) {
     return typeof node.comments !== 'undefined' && node.comments.length > 0;
@@ -162,7 +164,9 @@ function commentTransform(node, transform) {
   }
 }
 
-/* parse tags from comments */
+/*
+parse tags from comments
+*/
 rules.push({
   match: function (node) {
     return typeof node.commentText === 'string' && node.commentText !== '';
@@ -175,15 +179,20 @@ rules.push({
         commentTagFunctions[tag.name](tag.value, node);
       } else {
         //we don't know the tag
-        if(!transform.options.unknown)
-          throw new Error('Tag @'+tag.name+' unknown.');
-        else
+        if (!transform.options.unknown) {
+          throw new Error('Tag @' + tag.name + ' unknown.');
+        }
+        else {
           commentTagFunctions._unknown(tag.name, tag.value, node);
+        }
       }
     });
   }
 });
 
+/*
+Move info from comment parameter tags into node.
+*/
 function transformFunction(node) {
   var nameNode = node.nodes[0];
   var paramsNodes = node.nodes[1] ? node.nodes[1].nodes : [];
@@ -248,6 +257,67 @@ rules.push({
 rules.push({
   type: 'function',
   transform: transformFunction
+});
+
+/*
+Check for optional values.
+*/
+rules.push({
+  type: 'assign',
+  match: function (node) {
+    var parent = node.parent;
+    if (parent.type === 'nodes') {
+      parent = parent.parent;
+    }
+    if (parent.type !== 'function' && parent.type !== 'define-function') {
+      return false;
+    }
+    var op = node.nodes[0];
+    var left = node.nodes[1];
+    var right = node.nodes[2];
+    if (op.type !== 'operator' || op.value !== '=') {
+      return false;
+    }
+    if (left.type !== 'name') {
+      return false;
+    }
+    var leftName = left.value;
+    if (right.type !== 'binary') {
+      return false;
+    }
+    var rightOp = right.nodes[0];
+    if (rightOp.type !== 'operator' || rightOp.value !== '||') {
+      return false;
+    }
+    if (right.nodes[1].type !== 'name') {
+      return false;
+    }
+    var rightName = right.nodes[1].value;
+    if (leftName !== rightName) {
+      return false;
+    }
+    // now we have an optional parameter
+    return true;
+  },
+  transform: function (node) {
+    var paramName = node.nodes[1].value;
+    var paramValue = node.nodes[2].nodes[2];
+    var parent = node.parent;
+    if (parent.type === 'nodes') {
+      parent = parent.parent;
+    }
+    parent.params.forEach(function (param) {
+      if (param.name === paramName) {
+        param.optional = true;
+      }
+      if ('value' in paramValue) {
+        param.defaultValue = paramValue.value;
+        if (paramValue.type === 'string') {
+          param.defaultValue = JSON.stringify(paramValue.value);
+        }
+      }
+    });
+  }
 });
 
 module.exports = rules;

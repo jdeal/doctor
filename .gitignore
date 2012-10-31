@@ -8,3 +8,4 @@ node_modules
 /view/default/report.json
 TODO.txt
 npm-debug.log
+gen-doc.sh
