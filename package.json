@@ -17,6 +17,7 @@
     "async": "~0.1.9",
     "ncp": "=0.2.2",
     "pegjs": "=0.6.2",
+    
     "handlebars": "~1.0.0",
     "underscore": "~1.2.2",
     "mkdirp": "~0.2.1",
