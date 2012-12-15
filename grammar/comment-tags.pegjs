@@ -183,12 +183,34 @@ TypeList
   }
 
 DetachedTypeList
-  = "{" Blank* start:Identifier Blank* rest:("|" Blank* Identifier)* Blank* "}" {
-    var types = [start];
+  = "{" Blank* start:(Identifier TypeParameters?) Blank* rest:("|" Blank* Identifier TypeParameters?)* Blank* "}" {
+    var startType = start[0];
+    if (start[1]) {
+      startType = {type: start[0], params: start[1]};
+    }
+    var types = [startType];
     rest.forEach(function (item, i) {
       types.push(item[2]);
     });
     return types;
+  }
+
+TypeParameters
+  = "(" parameters:TypeParameterList? ")" {
+    if (parameters) {
+      return parameters;
+    } else {
+      return [];
+    }
+  }
+
+TypeParameterList
+  = start:Identifier rest:("," Blank* Identifier)* {
+    var parameters = [start];
+    rest.forEach(function (item, i) {
+      parameters.push(item[2]);
+    });
+    return parameters;
   }
 
 WhiteSpace "whitespace"

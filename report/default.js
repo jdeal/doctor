@@ -945,6 +945,29 @@ rules.push({
       if (key.indexOf('.') >= 0) {
         var moduleName = key.substr(0, key.indexOf('.'));
         if (modulesToRemove.indexOf(moduleName) >= 0) {
+          //console.log(key)
+          //console.log(item.visibility);
+          if (item.visibility === 'public') {
+            // don't remove public item
+            return;
+          } else {
+            // look for public constructor
+            var parts = key.split('.');
+            if (parts[1] === 'class') {
+              var className = parts[2];
+              var constructorItem = report.item(moduleName + '.' + className);
+              if (!constructorItem) {
+                constructorItem = report.item(moduleName + '.exports-' + className);
+              }
+              if (constructorItem) {
+                if (constructorItem.visibility === 'public') {
+                  // item is public indirectly via constructor
+                  return;
+                }
+              }
+            }
+          }
+          // item isn't marked directly or indirectly as public
           report.remove(key);
         }
       }

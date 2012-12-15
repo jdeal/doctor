@@ -106,7 +106,21 @@ doc.typesHtml = function (types) {
       if (i > 0) {
         html += ', ';
       }
-      html += '<span class="class-link" data-class-name="' + type + '">' + type + '</span>';
+      var typeString = type;
+      if (type.type) {
+        typeString = type.type;
+        if (type.params) {
+          typeString += '(';
+          type.params.forEach(function (param, i) {
+            if (i > 0) {
+              typeString += ', ';
+            }
+            typeString += param;
+          });
+          typeString += ')';
+        }
+      }
+      html += '<span class="class-link" data-class-name="' + typeString + '">' + typeString + '</span>';
     });
     html += '}</span>';
     return html;
@@ -531,6 +545,9 @@ doc.classNav = function (className) {
 
 doc.renderToc = function (report, group, element, nested, hide) {
   var ul = $('<ul>');
+  if (nested) {
+    ul.css('margin-left', '15px');
+  }
   element.append(ul);
 
   if (group.items) {
@@ -551,7 +568,7 @@ doc.renderToc = function (report, group, element, nested, hide) {
 
         var chevronStyle = "";
         if (!doc.hasTocItems(item)) {
-          chevronStyle = "display:none";
+          chevronStyle = "visibility:hidden";
         }
 
         var a = $('<a id="' + doc.idify(itemKey) + '" class="nav-' +

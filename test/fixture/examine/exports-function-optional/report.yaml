@@ -1,0 +1,41 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+    isSorted: true
+    itemTypeCounts:
+      group: 1
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    groups:
+    - root
+    items:
+    - foo
+    itemTypeCounts:
+      module: 1
+  foo:
+    type: module
+    key: foo
+    name: foo
+    groups:
+    - modules
+    items:
+    - foo.exports-bar
+    itemTypeCounts:
+      module-function: 1
+  foo.exports-bar:
+    type: module-function
+    isConstructor: false
+    key: foo.exports-bar
+    params:
+    - name: msg
+      optional: true
+      defaultValue: '"hello"'
+    description: <p>bar</p>
+    groups:
+    - foo
+    name: bar
+    signatures: []

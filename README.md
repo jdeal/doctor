@@ -75,6 +75,8 @@ path, whether it be local or absolute.
 These and other options are described in more detail in the command-line section
 below.
 
+You can also look at the [examples](http://jdeal.github.com/doctor/tree/master/examples).
+
 ## Command-line usage
 
 Dump a report file to the console:
@@ -164,8 +166,8 @@ doctor myfile1.js myfile2.js -r default -r ~/more-report-rules.js
 ```
 
 This is what doctor is all about. You can look at doctor's own rules
-(report/default), but these are pretty complicated. You're better off starting
-with the examples directory.
+(report/default), but these are pretty complicated. Some simpler examples are
+in the examples directory.
 
 You can also use a custom renderer:
 
@@ -415,6 +417,36 @@ function foo(x, y, z) {
 will add a description to the y parameter. This is different from JSDoc which
 matches the parameters by position.
 
+If a parameter is an object with certain properties, you can document the
+properties like this:
+
+```js
+/*
+@param {object} car - The car.
+@param {number} car.speed - The speed of the car.
+*/
+function drive(car) {
+  console.log("The car is going " + car.speed + "mph.");
+}
+```
+
+If a parameter is a function with certain parameters, you can document the
+parameters like this:
+
+```js
+/*
+@param {function(err, message)} callback - Function to call when finished.
+*/
+function waitAndThen(callback) {
+  setTimeout(function () {
+    callback(null, "hello");
+  }, 1000);
+}
+```
+
+Note that doctor's default view doesn't do anything except parrot these
+parameters, but they are available in the report.
+
 Optional parameters can be documented with brackets, and default values can be
 documented with an assignment.
 
@@ -506,7 +538,9 @@ function UsefulWidget() {
 ### @private, @public
 
 Doctor's default rules assume that everything exported is public and everything
-else is private. You can explicitly set something to private to hide it in
+else is private.
+
+You can explicitly set something to private to hide it in
 doctor's default rules.
 
 ```js
@@ -515,6 +549,24 @@ doctor's default rules.
 */
 module.exports._foo = function () {
   return "Don't use me. I'm not documented!";
+}
+```
+
+You can explicitly set something to public to force doctor to add it to the
+report. For example, in some cases, you may export something (say, via a
+return value of a function) that doctor doesn't see as public. If you mark a
+constructor as public, doctor will automatically add all methods of that class
+to the report as well.
+
+```js
+/*
+Secret constructor.
+
+@class Secret maker.
+
+@public
+*/
+function Secret() {
 }
 ```
 
@@ -577,3 +629,338 @@ function createVerboseTpsReport(name) {
 Really? What, are you a Java programmer?
 
 Fine, this marks a class as abstract.
+
+## Writing custom rules
+
+Doctor's default rules are useful for normal documentation tasks, but you can do
+all kinds of neat things by writing your own rules.
+
+A rules module should export an array of rules or an object with a "rules"
+property. If multiple rules match the same AST node type, then they will fire
+in the order in which they declare.
+
+### Transform rules
+
+Transform rules follow this pattern:
+
+```js
+{
+  type: 'define-function',
+  match: function (node) {
+    var name = node.nodes[0].value;
+    return name === 'foo';
+  },
+  transform: function (node, report) {
+    node.remove();
+  }
+}
+```
+
+__type__
+
+This property should be a string specifying the AST node type or an array of
+node types. Note that you can use pseudo-end node types, for which rules will
+fire after all descendent node rules have fired. For example, define-function
+has a corresponding end-define-function which will fire after the entire body
+of the function has been processed.
+
+__match__ (optional)
+
+This property is an optional function that can further filter the node.
+
+__transform__
+
+This property is a function that is called to transform the node.
+
+### Report rules
+
+Report rules follow this pattern:
+
+```js
+{
+  type: 'define-function',
+  match: function (node) {
+    var name = node.nodes[0].value;
+    return name === 'foo';
+  },
+  report: function (node, report) {
+    var name = node.nodes[0].value;
+    return {
+      key: 'define-function:' + name,
+      name: name
+    }
+  }
+}
+```
+
+__type__
+
+This property should be a string specifying the AST node type or an array of
+node types. Note that you can use pseudo-end node types, for which rules will
+fire after all descendent node rules have fired. For example, define-function
+has a corresponding end-define-function which will fire after the entire body
+of the function has been processed.
+
+__match__ (optional)
+
+This property is an optional function that can further filter the node.
+
+__report__
+
+This property is a function that manipulates the report, either via the report
+parameter or by returning a report item or an array of report items.
+
+## AST node types
+
+If you write your own rules, you'll need to know the following AST node types.
+
+As noted above, each AST node type has a corresponding end type. So
+define-function has a matching end-define-function.
+
+### files
+
+A group of all files. Rules for this node type (and the corresponding end-files)
+will fire only once.
+
+### file
+
+Each file.
+
+### undefined
+
+Undefined node. For example: if an else clause of an if statement is
+undefined, the else clause will be an undefined node.
+
+### name
+
+An identifier. For example: a function name, a variable name.
+
+### number
+
+A number. For example: 3, 5.6.
+
+### string
+
+A string. For example: "hello".
+
+### null
+
+A null literal.
+
+### boolean
+
+A boolean literal (true or false).
+
+### regex
+
+A literal regular expression.
+
+### regex-body
+
+The body (between the slashes) of a regular expression.
+
+### regex-flags
+
+The flags (after the second slash) of a regular expression.
+
+### this
+
+The "this" keyword.
+
+### object
+
+A literal object.
+
+### property
+
+A key and value set of a literal object.
+
+### get
+
+Getter.
+
+### set
+
+Setter.
+
+### new
+
+Using new to instantiate an object with a constructor.
+
+### dot
+
+Using dot to access a property or method. For example: foo.bar, foo.baz().
+
+### call
+
+A function call.
+
+### subscript
+
+Using brackets to access a property or index. For example: foo[0], foo["bar"].
+
+### expression
+
+A parenthetical expression. For example: (3 + 5), (a || b).
+
+### postfix
+
+A postfix expression. For example: x--, i++.
+
+### operator
+
+The operator used in an expression.
+
+### unary
+
+A unary prefix expression. For example: --x, ++i;
+
+### binary
+
+An binary expression. For example: 3 + 5, a || b.
+
+### conditional
+
+A conditional expression.
+
+### assign
+
+Assignment of a value to a variable.
+
+### vars
+
+A group of variable declarations.
+
+### var
+
+A single variable declaration.
+
+### empty
+
+An empty statment, which basically means a semicolon by itself.
+
+### if
+
+An if statement.
+
+### do-while
+
+A do-while statement.
+
+### while
+
+A while statement.
+
+### for
+
+A for loop.
+
+### for-in
+
+A for-in loop.
+
+### continue
+
+A continue statement.
+
+### break
+
+A break statement.
+
+### return
+
+A return statement.
+
+### with
+
+A with statement.
+
+### switch
+
+A switch statement.
+
+### case
+
+A case statement of a switch statement.
+
+### default
+
+A default statement of a switch statement.
+
+### nodes
+
+A group of AST nodes, which is part of another node. For example, the body of a
+function is a node of type "nodes" containing all the nodes of the body.
+
+### labeled-statement
+
+A labeled statement.
+
+### throw
+
+A throw.
+
+### try
+
+A try.
+
+### catch
+
+A catch clause of a try.
+
+### finally
+
+A finally clause of a try.
+
+### debug
+
+A debugger statement.
+
+### define-function
+
+A function definition.
+
+### function
+
+A function expression.
+
+### parameters
+
+The parameters of a function.
+
+## FAQ
+
+### Why did you do this? Don't you know [insert here] already exists.
+
+Yeah, but [insert here] works off of comment tags and not off of coding
+conventions. And [insert here] doesn't make it easy to add new conventions. And
+[insert here] isn't a pure node module. And doctor aims to be a general purpose
+code analysis tool.
+
+### Seriously, why did you do this?
+
+Some kind of OCD thing.
+
+### Why isn't this split into two projects, one for the analysis tool and another for code documentation?
+
+Maybe it should be. It grew up that way, and I haven't spent any thought or
+effort on splitting it.
+
+### Why is the code so ugly? What's with all these weird wrapping closures around fs and path?
+
+That is thanks to synchronous require. I love node, but I hate synchronous
+require. (Yes, I understand why it's synchronous.) Because I wanted doctor to
+work asynchronously or synchronously, I had to make asynchronous signatures for
+the synchronous functions and then swap them out as needed.
+
+The rest of the ugliness is my fault.
+
+### How do I contribute?
+
+The usual: fork, add a (preferably discrete) fix/change with the necessary
+tests, and do a pull request. I can't promise to respond immediately or even in
+a reasonable timeframe, but I'll do my best to eventually get to it.
+
+### Have these questions actually been frequently asked?
+
+No, just being proactive.
