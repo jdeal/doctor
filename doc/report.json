@@ -2101,11 +2101,13 @@
       "examples": [
         "var doctor = require('doctor');\n\nfunction hookMessage(title, info) {\n  return title + \" \" + info.name + \":\\n\" +\n    \"  type:   \" + info.type + \"\\n\" +\n    \"  line:   \" + info.line + \"\\n\" +\n    \"  column: \" + info.column + \"\\n\" +\n    \"  path:   \" + info.filename;\n}\n\ndoctor.hookEnterExit(\n  /foobar/,\n  function (info) {\n    console.log(hookMessage(\"Enter\", info));\n  },\n  function (info) {\n    console.log(hookMessage(\"Exit\", info));\n  }\n);\n\nrequire('./foobar');"
       ],
+      "visibility": "private",
       "groups": [
         "lib/doctor"
       ],
       "name": "hookEnterExit",
-      "signatures": []
+      "signatures": [],
+      "isPrivate": true
     },
     "lib/doctor._callEnterHook": {
       "type": "function",
@@ -2160,11 +2162,13 @@
       "examples": [
         "var doctor = require('doctor');\n\nvar source = doctor.insertEnterExitHooksSync('foobar.js', function (info) {\n  console.log(JSON.stringify(info, null, 2));\n});\n\neval(source);"
       ],
+      "visibility": "private",
       "groups": [
         "lib/doctor"
       ],
       "name": "insertEnterExitHooksSync",
-      "signatures": []
+      "signatures": [],
+      "isPrivate": true
     },
     "lib/doctor._callHook": {
       "type": "function",
