@@ -75,7 +75,7 @@ path, whether it be local or absolute.
 These and other options are described in more detail in the command-line section
 below.
 
-You can also look at the [examples](http://jdeal.github.com/doctor/tree/master/examples).
+You can also look at the [examples](http://github.com/jdeal/doctor/tree/master/examples).
 
 ## Command-line usage
 
