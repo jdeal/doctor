@@ -19,9 +19,9 @@ rules.push({
     var comments = node.comments;
     var lastComment = comments[comments.length - 1];
     var commentText = "";
-
     comments.forEach(function (comment, i) {
       var text;
+      // multi-line comment
       if (comment.indexOf('/*') === 0) {
         text = '  ' + comment.substr(2, comment.length - 4);
         text = text.replace(/^[\s\*]*(\r\n|\n|\r)/, '');
@@ -36,8 +36,12 @@ rules.push({
           }
         });
         text = lines.join('\n');
+      // single-line comment
       } else {
-        text = '  ' + comment.substr(2);
+        text = comment.substr(2);
+        // ignore extra slashes
+        text = text.replace(/^\/+/, '');
+        text = '  ' + text;
       }
       if (commentText !== '') {
         text = '\n' + text;

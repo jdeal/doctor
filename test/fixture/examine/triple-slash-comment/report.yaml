@@ -1,0 +1,38 @@
+items:
+  root:
+    type: group
+    items:
+    - modules
+    isSorted: true
+    itemTypeCounts:
+      group: 1
+  modules:
+    type: group
+    key: modules
+    name: Modules
+    groups:
+    - root
+    items:
+    - source
+    itemTypeCounts:
+      module: 1
+  source:
+    type: module
+    key: source
+    name: source
+    groups:
+    - modules
+    items:
+    - source.foo
+    itemTypeCounts:
+      function: 1
+  source.foo:
+    type: function
+    isConstructor: false
+    key: source.foo
+    params: []
+    description: <p>function comment</p>
+    groups:
+    - source
+    name: foo
+    signatures: []
