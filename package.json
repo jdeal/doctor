@@ -20,7 +20,8 @@
     "handlebars": "~1.0.0",
     "underscore": "~1.2.2",
     "mkdirp": "~0.3.4",
-    "marked": "~0.2.5"
+    "marked": "~0.2.5",
+    "fs-compare": "0.0.0"
   },
   "devDependencies": {
     "mocha": ">=0.12.1",
