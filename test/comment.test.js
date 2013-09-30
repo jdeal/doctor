@@ -1,15 +1,21 @@
-/*global suite:false, test:false*/
+/*global suite:false, test:false, before:false*/
 
-var peg = require('pegjs');
 var fs = require('fs');
 var Path = require('path');
+var quickpeg = require('quickpeg');
 
-var grammar = fs.readFileSync(Path.join(__dirname, '../grammar/comment-tags.pegjs'), 'utf8');
-var parser = peg.buildParser(grammar);
+var parser;
 
 var assert = require('chai').assert;
 
 suite('test comment tags');
+
+before(function (done) {
+  quickpeg(Path.join(__dirname, '../grammar/comment-tags.pegjs'), function (err, p) {
+    parser = p;
+    done();
+  });
+});
 
 test('simple returns tag', function () {
   var comment = "@returns description";
