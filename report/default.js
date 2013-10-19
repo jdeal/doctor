@@ -945,8 +945,6 @@ rules.push({
       if (key.indexOf('.') >= 0) {
         var moduleName = key.substr(0, key.indexOf('.'));
         if (modulesToRemove.indexOf(moduleName) >= 0) {
-          //console.log(key)
-          //console.log(item.visibility);
           if (item.visibility === 'public') {
             // don't remove public item
             return;
@@ -1123,49 +1121,6 @@ rules.push({
     }
   }
 });
-
-// rules.push({
-//   type: 'markdown-link',
-//   report: function (node, report) {
-//     var isToc = node.item('isToc');
-//     if (isToc) {
-//       if (node.nodes && node.nodes[0] && node.nodes[0].value) {
-//         return {
-//           key: ''
-//         }
-//       }
-//       console.log(node.nodes[0].value)
-//     }
-//   }
-// });
-
-// rules.push({
-//   type: 'markdown-content',
-//   report: function (node, report) {
-//     var content = node.item('document-content');
-//     content.push(node.value);
-//   }
-// });
-
-// rules.push({
-//   type: 'end-markdown',
-//   report: function (node, report) {
-//     var content = node.item('document-content');
-//     content = content.join('');
-//     var item = node.item('document-item');
-//     item.content = content;
-//   }
-// });
-
-  // rules.push({
-//   type: '',
-//   match: function (node) {
-//     return node.type.substring(0, 'markdown-'.length) === 'markdown-';
-//   },
-//   report: function (node, report) {
-//     console.log("begin:" + node.type);
-//   }
-// });
 
 module.exports = rules;
 
