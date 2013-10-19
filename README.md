@@ -2,10 +2,6 @@
 
 [![Build Status](https://secure.travis-ci.org/jdeal/doctor.png)](http://travis-ci.org/jdeal/doctor)
 
-__Doctor is still under development, so be careful.__ It is probably stable enough to be useful, but no promises.
-
-![pinch](https://github.com/jdeal/doctor/raw/master/images/pinch-points-warning-143.png)
-
 Doctor converts JavaScript source to documentation, using rules to rely on
 conventions so that comment tags are (mostly) not needed.
 
