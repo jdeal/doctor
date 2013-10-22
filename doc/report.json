@@ -73,13 +73,22 @@
       "groups": [
         "documents"
       ],
-      "isSorted": true
+      "isSorted": true,
+      "items": [
+        "document.examples/count-console-log/README.md",
+        "document.examples/doctor/README.md",
+        "document.examples/public-api/README.md",
+        "document.examples/remove-debug/README.md"
+      ],
+      "itemTypeCounts": {
+        "document": 4
+      }
     },
     "lib/util": {
       "type": "module",
       "key": "lib/util",
       "name": "util",
-      "description": "<p>This module contains various utility functions used by doctor.\n\n</p>\n<p>It notably contains some nasty synchronous versions of asynchronous modules.\n\n</p>\n<p>Say what?\n\n</p>\n<p>Yeah, that&#39;s right. This is so doctor can run synchronously or ansynhronously.\nDoctor wants to run asynchronously, so when we have to run synchronously (such\nas during that ugly startup phase where you have to deal with synchronous\nrequire), we have to fake it out with synchronous versions of asynchronous\nmodules. This is ugly, but it&#39;s better than having to write two different\nversions of doctor.</p>",
+      "description": "<p>This module contains various utility functions used by doctor.</p>",
       "groups": [
         "modules"
       ],
@@ -88,27 +97,13 @@
         "lib/util.findFunctions",
         "lib/util.findFile",
         "lib/util.findDir",
-        "lib/util.compareFileDates",
         "lib/util.toArray",
         "lib/util.localizePaths",
         "lib/util.cleanUndefinedProperties",
-        "lib/util.isCapitalized",
-        "lib/util.sync.findRules",
-        "lib/util.sync.findFunctions",
-        "lib/util.sync.findFile",
-        "lib/util.sync.findDir",
-        "lib/util.sync.compareFileDates",
-        "lib/util.sync.toArray",
-        "lib/util.sync.localizePaths",
-        "lib/util.sync.cleanUndefinedProperties",
-        "lib/util.sync.isCapitalized",
-        "lib/util.sync.async.forEachSeries",
-        "lib/util.sync.async.detect",
-        "lib/util.sync.async.some",
-        "lib/util.sync.async.forEach"
+        "lib/util.isCapitalized"
       ],
       "itemTypeCounts": {
-        "function": 22
+        "function": 8
       }
     },
     "lib/util.findRules": {
@@ -186,13 +181,6 @@
           "types": [
             "function"
           ]
-        },
-        {
-          "name": "sync",
-          "description": "<p>Flag to force function to run synchronously.</p>",
-          "types": [
-            "boolean"
-          ]
         }
       ],
       "description": "<p>Find one of a list of files.</p>",
@@ -227,13 +215,6 @@
           "types": [
             "function"
           ]
-        },
-        {
-          "name": "sync",
-          "description": "<p>Flag to force function to run synchronously.</p>",
-          "types": [
-            "boolean"
-          ]
         }
       ],
       "description": "<p>Find one of a list of directories.</p>",
@@ -241,47 +222,6 @@
         "lib/util"
       ],
       "name": "findDir",
-      "signatures": []
-    },
-    "lib/util.compareFileDates": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.compareFileDates",
-      "params": [
-        {
-          "name": "a",
-          "description": "<p>Path to first file.</p>",
-          "types": [
-            "String"
-          ]
-        },
-        {
-          "name": "b",
-          "description": "<p>Path to second file.</p>",
-          "types": [
-            "String"
-          ]
-        },
-        {
-          "name": "cb",
-          "description": "<p>Function to call with comparison value.</p>",
-          "types": [
-            "function"
-          ]
-        },
-        {
-          "name": "sync",
-          "description": "<p>Flag to force function to run synchronously.</p>",
-          "types": [
-            "boolean"
-          ]
-        }
-      ],
-      "description": "<p>Compare the modified time stamps of two files.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "compareFileDates",
       "signatures": []
     },
     "lib/util.toArray": {
@@ -356,320 +296,6 @@
         "lib/util"
       ],
       "name": "isCapitalized",
-      "signatures": []
-    },
-    "lib/util.sync.findRules": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.findRules",
-      "params": [
-        {
-          "name": "options"
-        },
-        {
-          "name": "optionRules",
-          "description": "<p>Rule modules.</p>",
-          "types": [
-            "Array",
-            "string"
-          ]
-        },
-        {
-          "name": "defaultDir",
-          "description": "<p>Default directory for rules.</p>",
-          "types": [
-            "string"
-          ]
-        }
-      ],
-      "description": "<p>Require the specified rule modules, either from the default location or from\nthe user-specified location.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.findRules",
-      "signatures": []
-    },
-    "lib/util.sync.findFunctions": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.findFunctions",
-      "params": [
-        {
-          "name": "optionFunctions"
-        },
-        {
-          "name": "defaultDir"
-        }
-      ],
-      "description": "<p>Require the specified function modules, either in the default location or\nthe user-specified location.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.findFunctions",
-      "signatures": []
-    },
-    "lib/util.sync.findFile": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.findFile",
-      "params": [
-        {
-          "name": "fileList",
-          "description": "<p>Possible files to find.</p>",
-          "types": [
-            "Array"
-          ]
-        },
-        {
-          "name": "ifCb",
-          "description": "<p>If one is found, do this.</p>",
-          "types": [
-            "function"
-          ]
-        },
-        {
-          "name": "elseCb",
-          "description": "<p>If one is not found, do this.</p>",
-          "types": [
-            "function"
-          ]
-        }
-      ],
-      "description": "<p>Find one of a list of files.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.findFile",
-      "signatures": []
-    },
-    "lib/util.sync.findDir": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.findDir",
-      "params": [
-        {
-          "name": "dirList",
-          "description": "<p>Possible directories to find.</p>",
-          "types": [
-            "Array"
-          ]
-        },
-        {
-          "name": "ifCb",
-          "description": "<p>If one is found, do this.</p>",
-          "types": [
-            "function"
-          ]
-        },
-        {
-          "name": "elseCb",
-          "description": "<p>If one is not found, do this.</p>",
-          "types": [
-            "function"
-          ]
-        }
-      ],
-      "description": "<p>Find one of a list of directories.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.findDir",
-      "signatures": []
-    },
-    "lib/util.sync.compareFileDates": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.compareFileDates",
-      "params": [
-        {
-          "name": "a",
-          "description": "<p>Path to first file.</p>",
-          "types": [
-            "String"
-          ]
-        },
-        {
-          "name": "b",
-          "description": "<p>Path to second file.</p>",
-          "types": [
-            "String"
-          ]
-        },
-        {
-          "name": "cb",
-          "description": "<p>Function to call with comparison value.</p>",
-          "types": [
-            "function"
-          ]
-        }
-      ],
-      "description": "<p>Compare the modified time stamps of two files.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.compareFileDates",
-      "signatures": []
-    },
-    "lib/util.sync.toArray": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.toArray",
-      "params": [
-        {
-          "name": "maybeArray",
-          "description": "<p>Array or value.</p>"
-        }
-      ],
-      "description": "<p>Take an array or a value, and if it&#39;s a value, wrap it in an array.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.toArray",
-      "signatures": []
-    },
-    "lib/util.sync.localizePaths": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.localizePaths",
-      "params": [
-        {
-          "name": "pathList",
-          "description": "<p>List of absolute paths.</p>",
-          "types": [
-            "Array"
-          ]
-        }
-      ],
-      "description": "<p>Compress absolute paths down to minimal non-colliding lengths.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.localizePaths",
-      "signatures": []
-    },
-    "lib/util.sync.cleanUndefinedProperties": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.cleanUndefinedProperties",
-      "params": [
-        {
-          "name": "obj",
-          "description": "<p>Object to copy.</p>"
-        }
-      ],
-      "description": "<p>Create a copy of the object without the undefined properties.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.cleanUndefinedProperties",
-      "signatures": []
-    },
-    "lib/util.sync.isCapitalized": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.isCapitalized",
-      "params": [
-        {
-          "name": "string",
-          "description": "<p>String to check.</p>",
-          "types": [
-            "string"
-          ]
-        }
-      ],
-      "description": "<p>Check if string starts with a captial letter.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.isCapitalized",
-      "signatures": []
-    },
-    "lib/util.sync.async.forEachSeries": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.async.forEachSeries",
-      "params": [
-        {
-          "name": "array"
-        },
-        {
-          "name": "eachCb"
-        },
-        {
-          "name": "finalCb"
-        }
-      ],
-      "description": "<p>Synchronous forEachSeries, with an asynchronous signature. Because it&#39;s\nsynchronous, it can also be used as the forEach function.\n\n</p>\n<p>See the async module for details.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.async.forEachSeries",
-      "signatures": []
-    },
-    "lib/util.sync.async.detect": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.async.detect",
-      "params": [
-        {
-          "name": "array"
-        },
-        {
-          "name": "passCb"
-        },
-        {
-          "name": "resultCb"
-        }
-      ],
-      "description": "<p>Synchronous detect, with an asynchronous signature.\n\n</p>\n<p>See the async module for details.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.async.detect",
-      "signatures": []
-    },
-    "lib/util.sync.async.some": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.async.some",
-      "params": [
-        {
-          "name": "array"
-        },
-        {
-          "name": "passCb"
-        },
-        {
-          "name": "doneCb"
-        }
-      ],
-      "description": "<p>Synchronous some, with an asynchronous signature.\n\n</p>\n<p>See the async module for details.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.async.some",
-      "signatures": []
-    },
-    "lib/util.sync.async.forEach": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/util.sync.async.forEach",
-      "params": [
-        {
-          "name": "array"
-        },
-        {
-          "name": "eachCb"
-        },
-        {
-          "name": "finalCb"
-        }
-      ],
-      "description": "<p>Synchronous forEachSeries, with an asynchronous signature. Because it&#39;s\nsynchronous, it can also be used as the forEach function.\n\n</p>\n<p>See the async module for details.</p>",
-      "groups": [
-        "lib/util"
-      ],
-      "name": "sync.async.forEach",
       "signatures": []
     },
     "lib/nice-ast": {
@@ -1940,17 +1566,10 @@
         "modules"
       ],
       "items": [
-        "lib/doctor.examine",
-        "lib/doctor.harmony",
-        "lib/doctor.hookEnterExit",
-        "lib/doctor._callEnterHook",
-        "lib/doctor._callExitHook",
-        "lib/doctor.insertEnterExitHooksSync",
-        "lib/doctor._callHook",
-        "lib/doctor._wrapCall"
+        "lib/doctor.examine"
       ],
       "itemTypeCounts": {
-        "function": 8
+        "function": 1
       }
     },
     "lib/doctor.examine": {
@@ -2064,162 +1683,6 @@
       "name": "examine",
       "signatures": []
     },
-    "lib/doctor.harmony": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/doctor.harmony",
-      "params": [],
-      "description": "<p><strong>EXPERIMENTAL!</strong> <strong>(and not even close to finished)</strong> Registers a compiler\nfor the .js extension that will compile harmony files to ECMAScript 5.</p>",
-      "visibility": "private",
-      "groups": [
-        "lib/doctor"
-      ],
-      "name": "harmony",
-      "signatures": [],
-      "isPrivate": true
-    },
-    "lib/doctor.hookEnterExit": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/doctor.hookEnterExit",
-      "params": [
-        {
-          "name": "options",
-          "description": "<p>{Object|RegExp} Pass in a regular expression apply the compiler\nonly to paths matching that regular expression.</p>"
-        },
-        {
-          "name": "enterCb",
-          "description": "<p>{function} Calls this function (passing it info) when a\nfunction is entered.</p>",
-          "optional": true
-        },
-        {
-          "name": "exitCb",
-          "description": "<p>{Fucntion} Calls this function (passing it info) when a function\nis exited.</p>"
-        }
-      ],
-      "description": "<p><strong>EXPERIMENTAL!</strong> Registers a compiler for the .js extension that will catch\nfunction entry/exit.</p>",
-      "examples": [
-        "var doctor = require('doctor');\n\nfunction hookMessage(title, info) {\n  return title + \" \" + info.name + \":\\n\" +\n    \"  type:   \" + info.type + \"\\n\" +\n    \"  line:   \" + info.line + \"\\n\" +\n    \"  column: \" + info.column + \"\\n\" +\n    \"  path:   \" + info.filename;\n}\n\ndoctor.hookEnterExit(\n  /foobar/,\n  function (info) {\n    console.log(hookMessage(\"Enter\", info));\n  },\n  function (info) {\n    console.log(hookMessage(\"Exit\", info));\n  }\n);\n\nrequire('./foobar');"
-      ],
-      "visibility": "private",
-      "groups": [
-        "lib/doctor"
-      ],
-      "name": "hookEnterExit",
-      "signatures": [],
-      "isPrivate": true
-    },
-    "lib/doctor._callEnterHook": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/doctor._callEnterHook",
-      "params": [],
-      "groups": [
-        "lib/doctor"
-      ],
-      "name": "_callEnterHook",
-      "signatures": [],
-      "isPrivate": true
-    },
-    "lib/doctor._callExitHook": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/doctor._callExitHook",
-      "params": [],
-      "groups": [
-        "lib/doctor"
-      ],
-      "name": "_callExitHook",
-      "signatures": [],
-      "isPrivate": true
-    },
-    "lib/doctor.insertEnterExitHooksSync": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/doctor.insertEnterExitHooksSync",
-      "params": [
-        {
-          "name": "filename",
-          "description": "<p>{String} Filename of file to trasform. Callback hooks are\nregistered to this filename.</p>"
-        },
-        {
-          "name": "enterCb",
-          "description": "<p>{function} Function to call when entering function. If exitCb\nis not defined, enterCb will be called for exit as well.</p>",
-          "optional": true
-        },
-        {
-          "name": "exitCb",
-          "description": "<p>{function} Function to call when exiting function.</p>",
-          "optional": true
-        },
-        {
-          "name": "sourceCb",
-          "description": "<p>{function} Function to call when building the source for a function.</p>",
-          "optional": true
-        }
-      ],
-      "description": "<p><strong>EXPERIMENTAL</strong> Inserts enter/exit hooks into a JavaScript file. Registers\ncallback hooks for that file.</p>",
-      "examples": [
-        "var doctor = require('doctor');\n\nvar source = doctor.insertEnterExitHooksSync('foobar.js', function (info) {\n  console.log(JSON.stringify(info, null, 2));\n});\n\neval(source);"
-      ],
-      "visibility": "private",
-      "groups": [
-        "lib/doctor"
-      ],
-      "name": "insertEnterExitHooksSync",
-      "signatures": [],
-      "isPrivate": true
-    },
-    "lib/doctor._callHook": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/doctor._callHook",
-      "params": [
-        {
-          "name": "type"
-        },
-        {
-          "name": "filename"
-        },
-        {
-          "name": "info"
-        }
-      ],
-      "groups": [
-        "lib/doctor"
-      ],
-      "name": "_callHook",
-      "signatures": [],
-      "isPrivate": true
-    },
-    "lib/doctor._wrapCall": {
-      "type": "function",
-      "isConstructor": false,
-      "key": "lib/doctor._wrapCall",
-      "params": [
-        {
-          "name": "fn"
-        },
-        {
-          "name": "ctx"
-        },
-        {
-          "name": "args"
-        },
-        {
-          "name": "filename"
-        },
-        {
-          "name": "info"
-        }
-      ],
-      "groups": [
-        "lib/doctor"
-      ],
-      "name": "_wrapCall",
-      "signatures": [],
-      "isPrivate": true
-    },
     "lib/cli": {
       "type": "module",
       "key": "lib/cli",
@@ -2266,6 +1729,46 @@
       "isSorted": true,
       "isHome": true,
       "isHomePath": true
+    },
+    "document.examples/count-console-log/README.md": {
+      "key": "document.examples/count-console-log/README.md",
+      "name": "count-console-log",
+      "type": "document",
+      "content": "<p>This example counts the number of times console.log appears in the source. This\ncould be useful if you want to check for unwanted console.log statements during\nyour build process.\n\n</p>\n<p>From the doctor source, in the examples/count-console-log directory, run this\ncommand:\n\n</p>\n<pre><code class=\"lang-bash\">doctor foo.js -r report --verbose</code></pre>\n<p>Note that the default rules are disabled and overridden by the rules in\nreport.js.</p>",
+      "groups": [
+        "toc.2"
+      ],
+      "isSorted": true
+    },
+    "document.examples/doctor/README.md": {
+      "key": "document.examples/doctor/README.md",
+      "name": "doctor",
+      "type": "document",
+      "content": "<p>The doctor documentation is created using doctor. From the root of the doctor\nsource, you can run this:\n\n</p>\n<pre><code class=\"lang-bash\">mkdir output\ndoctor lib/*.js README.md examples/*/README.md TOC.md -v default -v doctor -o output --verbose</code></pre>\n<p>This reads all the source from lib, adds in the root README and all the example\nREADME files, and uses the TOC.md file to create a custom table of contents.\n\n</p>\n<p>The built-in default view and the doctor view are merged along with the\nreport.json file to the output directory.\n\n</p>\n<p>The verbose option just prints out some debug info so you cna see what&#39;s going on.</p>",
+      "groups": [
+        "toc.2"
+      ],
+      "isSorted": true
+    },
+    "document.examples/public-api/README.md": {
+      "key": "document.examples/public-api/README.md",
+      "name": "public-api",
+      "type": "document",
+      "content": "<p>This example creates a report from a CommonJS package, using doctor&#39;s default\nrules. A factory function is exported, so to document the associated class, the\n@public tag is used on the constructor.\n\n</p>\n<p>You can run the following command in examples/public-api to try it out.\n\n</p>\n<pre><code class=\"lang-bash\">doctor greeter/package.json</code></pre>",
+      "groups": [
+        "toc.2"
+      ],
+      "isSorted": true
+    },
+    "document.examples/remove-debug/README.md": {
+      "key": "document.examples/remove-debug/README.md",
+      "name": "remove-debug",
+      "type": "document",
+      "content": "<p>This example uses custom transform rules to remove debug code from the source.\nLook at the AstNode class in doctor&#39;s API documentation for the manipulation\nyou can do to AST nodes. Here, the remove method is used to remove a function\ncall if the name of the function is &quot;debug&quot;.\n\n</p>\n<pre><code class=\"lang-js\">rules.push({\n  type: &#39;call&#39;,\n  match: function (node) {\n    return node.nodes[0].value === &#39;debug&#39;;\n  },\n  transform: function (node) {\n    node.remove();\n  }\n});</code></pre>\n<p>The ast report rules are used to simply copy the ast into the report. The source\nrenderer is then used to convert the ast back into source code.\n\n</p>\n<p>You can run the following command in examples/remove-debug to try it out.\n\n</p>\n<pre><code class=\"lang-bash\">doctor square.js -t transform.js --render source --report ast</code></pre>",
+      "groups": [
+        "toc.2"
+      ],
+      "isSorted": true
     }
   },
   "home": "document.README.md"
