@@ -38,13 +38,13 @@ grammars, rules, etc. and use it as a general-purpose AST analysis tool.
 ## Installation
 
 ```bash
-npm install doctor
+npm install doctor -g
 ```
 
 or if you want the latest
 
 ```bash
-npm install git:github.com/jdeal/doctor.git
+npm install git+https://github.com/jdeal/doctor.git -g
 ```
 
 ## Examples, please!
